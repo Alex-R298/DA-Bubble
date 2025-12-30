@@ -8,7 +8,7 @@ import { RouterOutlet } from '@angular/router';
   template: `
     <div class="app-container">
       <header class="app-header">
-        <h1>DA Bubble</h1>
+        <h1>da bubble 200</h1>
       </header>
       <main class="app-main">
         <router-outlet></router-outlet>
@@ -45,6 +45,6 @@ import { RouterOutlet } from '@angular/router';
   `]
 })
 export class AppComponent {
-  title = 'DA Bubble';
+  title = 'da bubble 200';
 }
 
