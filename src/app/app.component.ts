@@ -9,7 +9,6 @@ import { RouterOutlet } from '@angular/router';
     <div class="app-container">
       <header class="app-header">
         <h1>DA Bubble</h1>
-        <p>Slack Clone Application</p>
       </header>
       <main class="app-main">
         <router-outlet></router-outlet>
