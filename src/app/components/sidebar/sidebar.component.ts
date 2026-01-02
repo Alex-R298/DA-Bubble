@@ -7,6 +7,7 @@ import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 // import { Channel } from '../../models/channel.model';
 // import { User } from '../../models/user.model';
+import { ChannelService } from '../../services/channel.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -20,6 +21,7 @@ export class SidebarComponent implements OnInit {
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private channelService = inject(ChannelService);
 
   channels: any[] = [];
   users: any[] = [];
@@ -38,7 +40,7 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit(): void {
     // subscriptions disabled until services/models are available
-    // this.subscribeToChannels();
+    this.subscribeToChannels();
     this.subscribeToUsers();
     this.subscribeToCurrentUser();
   }
@@ -89,9 +91,16 @@ export class SidebarComponent implements OnInit {
   closeNewChannelModal(): void { this.showNewChannelModal = false; }
 
   async createChannel(): Promise<void> {
-    if (!this.newChannelName.trim()) return;
-    if (!this.validateUserLoggedIn()) return;
-    await this.performChannelCreation();
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) return;
+
+    await this.channelService.createChannel(
+      this.newChannelName,
+      this.newChannelDescription,
+      currentUser.uid
+    );
+
+    this.closeNewChannelModal();
   }
 
   private validateUserLoggedIn(): boolean {
