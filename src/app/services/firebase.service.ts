@@ -1,4 +1,3 @@
-// src/app/services/firebase.service.ts
 import { Injectable } from '@angular/core';
 import { initializeApp, FirebaseApp } from 'firebase/app';
 import { getFirestore, Firestore } from 'firebase/firestore';
