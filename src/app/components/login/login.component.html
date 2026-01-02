@@ -1,44 +1,63 @@
 <div class="login-container">
-  <div class="login-header">
-    <button routerLink="/signup" class="signup-link-button">Sign Up</button>
-  </div>
   <div class="login-card">
-    <h2>Login</h2>
-    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-      <div class="form-group">
-        <label for="email">Email</label>
+    <h1 class="login-title">Anmeldung</h1>
+    <p class="login-subtitle">Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
+    
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form">
+      <div class="input-group">
+        <div class="input-icon">
+          <app-svg-images iconName="mail" [width]="'20'" [height]="'16'"></app-svg-images>
+        </div>
         <input
           type="email"
           id="email"
           name="email"
           [(ngModel)]="email"
           required
-          placeholder="Enter your email"
+          placeholder="beispielname@email.com"
+          class="form-input"
         />
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
+      
+      <div class="input-group">
+        <div class="input-icon">
+          <app-svg-images iconName="lock" [width]="'16'" [height]="'21'"></app-svg-images>
+        </div>
         <input
           type="password"
           id="password"
           name="password"
           [(ngModel)]="password"
           required
-          placeholder="Enter your password"
+          placeholder="Passwort"
+          class="form-input"
         />
       </div>
-      <button type="submit" [disabled]="!loginForm.valid" class="submit-button">
-        Login
+      
+      <a href="#" class="forgot-password-link">Passwort vergessen?</a>
+      
+      <div class="divider">
+        <span>ODER</span>
+      </div>
+      
+      <button type="button" (click)="onGoogleLogin()" class="google-login-button">
+        <app-svg-images 
+          iconName="google" 
+          [width]="'20'" 
+          [height]="'20'" 
+          [className]="'google-icon'">
+        </app-svg-images>
+        <span>Anmelden mit Google</span>
+      </button>
+      
+      <button type="submit" [disabled]="!loginForm.valid" class="primary-login-button">
+        Anmelden
+      </button>
+      
+      <button type="button" routerLink="/dashboard" class="guest-login-button">
+        Gäste-Login
       </button>
     </form>
-    <div class="guest-login-section">
-      <div class="divider">
-        <span>or</span>
-      </div>
-      <button routerLink="/dashboard" class="guest-button">
-        Continue as Guest
-      </button>
-    </div>
   </div>
 </div>
 
