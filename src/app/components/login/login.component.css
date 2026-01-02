@@ -69,3 +69,45 @@
   cursor: not-allowed;
 }
 
+.guest-login-section {
+  margin-top: 1.5rem;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: #999;
+  font-size: 0.875rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #ddd;
+}
+
+.divider span {
+  padding: 0 1rem;
+}
+
+.guest-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: transparent;
+  color: #4a154b;
+  border: 2px solid #4a154b;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.guest-button:hover {
+  background-color: #4a154b;
+  color: white;
+}
+
