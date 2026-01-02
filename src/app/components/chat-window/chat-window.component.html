@@ -56,10 +56,10 @@
 
         <div class="message">
           <div class="message-header">
-            <span class="message-sender">{{ message.sender }}</span>
+            <span class="message-sender">{{ message.senderName }}</span>
             <span class="message-timestamp">{{ message.timestamp | date:'short' }}</span>
           </div>
-          <div class="message-text">{{ message.text }}</div>
+          <div class="message-text">{{ message.content }}</div>
         </div>
       </ng-container>
     </ng-template>

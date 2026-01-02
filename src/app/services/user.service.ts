@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { doc, setDoc, collection, onSnapshot } from 'firebase/firestore';
+import { doc, setDoc, collection, onSnapshot, getDoc } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
 import { Observable } from 'rxjs';
 
@@ -57,4 +57,23 @@ export class UserService {
       return () => unsubscribe();
     });
   }
+
+  async getUserById(uid: string): Promise<User | null> {
+  const userDoc = doc(this.firebaseService.db, 'users', uid);
+  const docSnap = await getDoc(userDoc);
+  
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    return {
+      uid: data['uid'],
+      email: data['email'],
+      name: data['name'],
+      profileImageUrl: data['profileImageUrl'],
+      status: data['status'],
+      createdAt: data['createdAt'].toDate()
+    };
+  }
+  
+  return null;  // ← Wichtig: null zurückgeben wenn User nicht existiert
+}
 }
