@@ -33,4 +33,8 @@ export class AuthService {
   async logout() {
     await signOut(this.firebaseService.auth);
   }
+
+  getCurrentUser() {
+  return this.firebaseService.auth.currentUser;
+}
 }

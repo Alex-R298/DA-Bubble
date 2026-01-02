@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 // import { ChatService } from '../../services/chat.service';
-// import { UserService } from '../../services/user.service';
-// import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
 // import { Channel } from '../../models/channel.model';
 // import { User } from '../../models/user.model';
 
@@ -17,8 +17,8 @@ import { Router } from '@angular/router';
 })
 export class SidebarComponent implements OnInit {
   // private chatService = inject(ChatService);
-  // private userService = inject(UserService);
-  // private authService = inject(AuthService);
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
   private router = inject(Router);
 
   channels: any[] = [];
@@ -39,8 +39,8 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     // subscriptions disabled until services/models are available
     // this.subscribeToChannels();
-    // this.subscribeToUsers();
-    // this.subscribeToCurrentUser();
+    this.subscribeToUsers();
+    this.subscribeToCurrentUser();
   }
 
   private subscribeToChannels(): void {
@@ -48,10 +48,10 @@ export class SidebarComponent implements OnInit {
   }
 
   private subscribeToUsers(): void {
-    // this.userService.allUsers$.subscribe(users => {
-    //   const currentUid = this.authService.getCurrentUser()?.uid;
-    //   this.users = users.filter(u => u.uid !== currentUid);
-    // });
+    this.userService.getAllUsersRealtime().subscribe(users => {
+      const currentUid = this.authService.getCurrentUser()?.uid;
+      this.users = users.filter(u => u.uid !== currentUid);
+    });
   }
 
   private subscribeToCurrentUser(): void {

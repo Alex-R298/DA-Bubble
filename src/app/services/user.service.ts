@@ -1,6 +1,16 @@
 import { Injectable, inject } from '@angular/core';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, onSnapshot } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
+import { Observable } from 'rxjs';
+
+export interface User {
+  uid: string;
+  email: string;
+  name: string;
+  profileImageUrl: string;
+  status: 'online' | 'offline' | 'away';
+  createdAt: Date;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +33,28 @@ export class UserService {
     await setDoc(userDoc, userData);
     console.log('User-Profil erstellt:', name);
     return userData;
+  }
+
+  getAllUsersRealtime(): Observable<User[]> {
+    return new Observable(observer => {
+      const usersRef = collection(this.firebaseService.db, 'users');
+      
+      const unsubscribe = onSnapshot(usersRef, (snapshot) => {
+        const users = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            uid: data['uid'],
+            email: data['email'],
+            name: data['name'],
+            profileImageUrl: data['profileImageUrl'],
+            status: data['status'],
+            createdAt: data['createdAt'].toDate()
+          };
+        });
+        observer.next(users);
+      });
+      
+      return () => unsubscribe();
+    });
   }
 }
