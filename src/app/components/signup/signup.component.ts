@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -11,14 +12,17 @@ import { RouterModule } from '@angular/router';
   styleUrl: './signup.component.css'
 })
 export class SignupComponent {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
   displayName: string = '';
 
-  onSubmit(): void {
-    // Signup logic will be implemented here
-    console.log('Signup attempt:', { email: this.email, displayName: this.displayName });
+  async onSubmit(): Promise<void> {
+    await this.authService.register(this.email, this.password, this.displayName);
+    this.router.navigate(['/login']);
   }
 }
 
