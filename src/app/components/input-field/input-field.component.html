@@ -1,0 +1,13 @@
+<div class="input-field-container">
+  <textarea
+    [(ngModel)]="message"
+    (keydown)="onKeyPress($event)"
+    placeholder="Type a message..."
+    class="input-field"
+    rows="1"
+  ></textarea>
+  <button (click)="sendMessage()" [disabled]="!message.trim()" class="send-button">
+    Send
+  </button>
+</div>
+

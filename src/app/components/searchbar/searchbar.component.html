@@ -1,0 +1,11 @@
+<div class="searchbar-container">
+  <input
+    type="text"
+    [(ngModel)]="searchQuery"
+    (input)="onInputChange()"
+    placeholder="Search messages..."
+    class="searchbar-input"
+  />
+  <button (click)="onSearch()" class="searchbar-button">Search</button>
+</div>
+

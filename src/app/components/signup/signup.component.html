@@ -1,0 +1,55 @@
+<div class="signup-container">
+  <div class="signup-card">
+    <h2>Sign Up</h2>
+    <form (ngSubmit)="onSubmit()" #signupForm="ngForm">
+      <div class="form-group">
+        <label for="displayName">Display Name</label>
+        <input
+          type="text"
+          id="displayName"
+          name="displayName"
+          [(ngModel)]="displayName"
+          required
+          placeholder="Enter your display name"
+        />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          placeholder="Enter your email"
+        />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          placeholder="Enter your password"
+        />
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          [(ngModel)]="confirmPassword"
+          required
+          placeholder="Confirm your password"
+        />
+      </div>
+      <button type="submit" [disabled]="!signupForm.valid" class="submit-button">
+        Sign Up
+      </button>
+    </form>
+  </div>
+</div>
+

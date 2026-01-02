@@ -1,0 +1,22 @@
+<div class="thread">
+  <div class="thread-header">
+    <h4>Thread</h4>
+    <button class="close-button" (click)="closeThread()">×</button>
+  </div>
+  <div class="thread-messages">
+    <div *ngFor="let message of threadMessages" class="thread-message">
+      <div class="thread-message-header">
+        <span class="thread-message-sender">{{ message.sender }}</span>
+        <span class="thread-message-timestamp">{{ message.timestamp | date:'short' }}</span>
+      </div>
+      <div class="thread-message-text">{{ message.text }}</div>
+    </div>
+    <div *ngIf="threadMessages.length === 0" class="empty-state">
+      <p>No replies yet.</p>
+    </div>
+  </div>
+  <div class="thread-input">
+    <app-input-field (messageSent)="onReplySent($event)"></app-input-field>
+  </div>
+</div>
+

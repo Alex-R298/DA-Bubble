@@ -1,0 +1,16 @@
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h3>Channels</h3>
+  </div>
+  <nav class="sidebar-nav">
+    <a
+      *ngFor="let channel of channels"
+      [routerLink]="['/channel', channel.id]"
+      class="channel-link"
+      routerLinkActive="active"
+    >
+      # {{ channel.name }}
+    </a>
+  </nav>
+</div>
+

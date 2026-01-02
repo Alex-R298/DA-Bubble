@@ -1,0 +1,39 @@
+.imprint-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  min-height: 100vh;
+}
+
+.imprint-content h1 {
+  color: #4a154b;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+.imprint-section {
+  margin-bottom: 2rem;
+}
+
+.imprint-section h2 {
+  color: #333;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 2px solid #4a154b;
+  padding-bottom: 0.5rem;
+}
+
+.imprint-section h3 {
+  color: #555;
+  font-size: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.imprint-section p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+

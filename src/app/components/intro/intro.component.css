@@ -1,0 +1,60 @@
+.intro-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #4a154b 0%, #5a1a5b 100%);
+  color: white;
+}
+
+.intro-content {
+  text-align: center;
+  padding: 2rem;
+}
+
+.intro-content h1 {
+  font-size: 3rem;
+  margin: 0 0 1rem 0;
+  font-weight: 700;
+}
+
+.intro-subtitle {
+  font-size: 1.25rem;
+  margin: 0 0 2rem 0;
+  opacity: 0.9;
+}
+
+.intro-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.intro-button {
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: inline-block;
+}
+
+.intro-button-primary {
+  background-color: white;
+  color: #4a154b;
+}
+
+.intro-button-primary:hover {
+  background-color: #f0f0f0;
+}
+
+.intro-button-secondary {
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.intro-button-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+

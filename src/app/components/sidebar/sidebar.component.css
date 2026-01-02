@@ -1,0 +1,44 @@
+.sidebar {
+  width: 240px;
+  background-color: #3f0e40;
+  color: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 0.5rem 0;
+  overflow-y: auto;
+}
+
+.channel-link {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #d1d2d3;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.channel-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.channel-link.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-weight: 600;
+}
+

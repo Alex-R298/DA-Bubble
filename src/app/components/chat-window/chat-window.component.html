@@ -1,0 +1,18 @@
+<div class="chat-window">
+  <div class="messages-container">
+    <div *ngFor="let message of messages" class="message">
+      <div class="message-header">
+        <span class="message-sender">{{ message.sender }}</span>
+        <span class="message-timestamp">{{ message.timestamp | date:'short' }}</span>
+      </div>
+      <div class="message-text">{{ message.text }}</div>
+    </div>
+    <div *ngIf="messages.length === 0" class="empty-state">
+      <p>No messages yet. Start the conversation!</p>
+    </div>
+  </div>
+  <div class="input-container">
+    <app-input-field (messageSent)="onMessageSent($event)"></app-input-field>
+  </div>
+</div>
+
