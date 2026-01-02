@@ -19,7 +19,7 @@ export class FirebaseService {
     this.db = getFirestore(this.app);
     this.auth = getAuth(this.app);
     this.storage = getStorage(this.app);
-    
+
     console.log('Firebase initialized successfully');
   }
 
