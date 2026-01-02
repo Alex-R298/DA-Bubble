@@ -10,7 +10,7 @@ export class UserService {
 
   async createUserProfile(uid: string, email: string, name: string) {
     const userDoc = doc(this.firebaseService.db, 'users', uid);
-    
+
     const userData = {
       uid: uid,
       email: email,

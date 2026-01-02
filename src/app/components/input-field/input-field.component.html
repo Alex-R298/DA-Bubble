@@ -1,13 +1,46 @@
-<div class="input-field-container">
-  <textarea
-    [(ngModel)]="message"
-    (keydown)="onKeyPress($event)"
-    placeholder="Type a message..."
-    class="input-field"
-    rows="1"
-  ></textarea>
-  <button (click)="sendMessage()" [disabled]="!message.trim()" class="send-button">
-    Send
-  </button>
+<div class="chat-input-container">
+  <div class="emoji-picker" *ngIf="showEmojiPicker">
+    <button
+      type="button"
+      class="emoji-btn"
+      *ngFor="let emoji of emojis"
+      (click)="insertEmoji(emoji)"
+    >
+      {{ emoji }}
+    </button>
+  </div>
+
+  <div class="input-wrapper">
+    <textarea
+      [(ngModel)]="message"
+      (keydown)="onKeyPress($event)"
+      [placeholder]="channelName ? ('Nachricht an #' + channelName) : 'Nachricht eingeben...'"
+      class="input-field"
+      rows="1"
+      [disabled]="isSending"
+    ></textarea>
+
+    <div class="actions-bar">
+      <div class="actions-left">
+        <button type="button" class="action-btn" (click)="toggleEmojiPicker()" title="Emoji">
+          (smiley img)
+        </button>
+        <button type="button" class="action-btn" title="Person erwähnen" (click)="insertMention()">
+          (&#64; img)
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="btn-send"
+        (click)="sendMessage()"
+        [disabled]="!message.trim() || isSending"
+        title="Nachricht senden"
+      >
+        <ng-container *ngIf="isSending; else sendIcon"><span class="loading">⏳</span></ng-container>
+        <ng-template #sendIcon><span>➤</span></ng-template>
+      </button>
+    </div>
+  </div>
 </div>
 

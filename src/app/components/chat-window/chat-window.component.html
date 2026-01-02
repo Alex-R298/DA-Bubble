@@ -1,16 +1,70 @@
 <div class="chat-window">
-  <div class="messages-container">
-    <div *ngFor="let message of messages" class="message">
-      <div class="message-header">
-        <span class="message-sender">{{ message.sender }}</span>
-        <span class="message-timestamp">{{ message.timestamp | date:'short' }}</span>
+  <div class="chat-header">
+    <ng-container *ngIf="currentChannel; else dmOrChoose">
+      <div class="channel-info">
+        <span class="channel-icon">#</span>
+        <h3>{{ currentChannel.name }}</h3>
       </div>
-      <div class="message-text">{{ message.text }}</div>
-    </div>
-    <div *ngIf="messages.length === 0" class="empty-state">
-      <p>No messages yet. Start the conversation!</p>
-    </div>
+      <button class="btn-members" (click)="toggleMembersList()">
+        <span class="members-count">{{ currentChannel.members?.length }}</span>
+        <span>Mitglieder</span>
+      </button>
+    </ng-container>
+
+    <ng-template #dmOrChoose>
+      <ng-container *ngIf="currentDMUser; else chooseOne">
+        <div class="channel-info dm-info">
+          <img [src]="currentDMUser.profileImageUrl" [alt]="currentDMUser.name" class="dm-avatar" />
+          <h3>{{ currentDMUser.name }}</h3>
+          <span class="dm-status" [class.online]="currentDMUser.status === 'online'">
+            {{ currentDMUser.status === 'online' ? 'Online' : 'Offline' }}
+          </span>
+        </div>
+      </ng-container>
+    </ng-template>
+
+    <ng-template #chooseOne>
+      <div class="channel-info">
+        <h3>Wähle einen Channel</h3>
+      </div>
+    </ng-template>
   </div>
+
+  <ng-container *ngIf="showMembersList && currentChannel">
+    <app-channel-members-list [channel]="currentChannel"></app-channel-members-list>
+  </ng-container>
+
+  <div class="messages-container" #messagesContainer>
+    <ng-container *ngIf="!messages || messages.length === 0; else messagesList">
+      <div class="empty-chat">
+        <ng-container *ngIf="currentChannel; else dmEmpty">
+          <p>Noch keine Nachrichten in #{{ currentChannel.name }}</p>
+          <p class="hint">Sei der Erste, der etwas schreibt!</p>
+        </ng-container>
+        <ng-template #dmEmpty>
+          <p *ngIf="currentDMUser">Noch keine Nachrichten mit {{ currentDMUser.name }}</p>
+          <p class="hint">Schreibe eine Nachricht um das Gespräch zu starten!</p>
+        </ng-template>
+      </div>
+    </ng-container>
+
+    <ng-template #messagesList>
+      <ng-container *ngFor="let message of messages; let i = index">
+        <div *ngIf="shouldShowDateSeparator(i)" class="date-separator">
+          <span>{{ getMessageDate(message) }}</span>
+        </div>
+
+        <div class="message">
+          <div class="message-header">
+            <span class="message-sender">{{ message.sender }}</span>
+            <span class="message-timestamp">{{ message.timestamp | date:'short' }}</span>
+          </div>
+          <div class="message-text">{{ message.text }}</div>
+        </div>
+      </ng-container>
+    </ng-template>
+  </div>
+
   <div class="input-container">
     <app-input-field (messageSent)="onMessageSent($event)"></app-input-field>
   </div>

@@ -1,16 +1,96 @@
-<div class="sidebar">
-  <div class="sidebar-header">
-    <h3>Channels</h3>
-  </div>
-  <nav class="sidebar-nav">
-    <a
-      *ngFor="let channel of channels"
-      [routerLink]="['/channel', channel.id]"
-      class="channel-link"
-      routerLinkActive="active"
-    >
-      # {{ channel.name }}
-    </a>
-  </nav>
+<div class="sidebar-wrapper">
+  <button class="btn-toggle" (click)="toggleSidebar()">
+    <span class="toggle-icon">{{ isCollapsed ? '▶' : '◀' }}</span>
+    <span class="toggle-text">{{ isCollapsed ? 'Workspace-Menü öffnen' : 'Workspace-Menü schließen' }}</span>
+  </button>
+
+  <aside class="sidebar" [class.collapsed]="isCollapsed">
+    <div class="sidebar-header">
+      <ng-container *ngIf="!isCollapsed">
+        <div class="header-left">
+          (img)
+          <h2>Devspace</h2>
+        </div>
+        <button class="btn-new-chat" (click)="openNewChannelModal()">
+          <span class="icon">(img)</span>
+        </button>
+      </ng-container>
+    </div>
+
+    <ng-container *ngIf="!isCollapsed">
+      <div class="sidebar-content">
+        <div class="sidebar-section">
+          <div class="section-header" (click)="toggleChannels()">
+            <span class="expand-icon">{{ channelsExpanded ? '▼' : '▶' }}</span>
+            <span class="section-title">(img) Channels</span>
+            <button class="btn-add" (click)="openNewChannelModal(); $event.stopPropagation()" title="Channel hinzufügen">+</button>
+          </div>
+
+          <ng-container *ngIf="channelsExpanded">
+            <ul class="channel-list" *ngIf="channels.length; else noChannels">
+              <li class="channel-item"
+                  *ngFor="let channel of channels"
+                  [class.active]="selectedChannelId === channel.id"
+                  (click)="selectChannel(channel)">
+                <span class="channel-icon">#</span>
+                <span class="channel-name">{{ channel.name }}</span>
+              </li>
+            </ul>
+            <ng-template #noChannels>
+              <div class="empty-state">Keine Channels</div>
+            </ng-template>
+          </ng-container>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="section-header" (click)="toggleDirectMessages()">
+            <span class="expand-icon">{{ directMessagesExpanded ? '▼' : '▶' }}</span>
+            <span class="section-title">(img) Direktnachrichten</span>
+          </div>
+
+          <ng-container *ngIf="directMessagesExpanded">
+            <ul class="user-list" *ngIf="users.length; else noUsers">
+              <li class="user-item"
+                  *ngFor="let user of users"
+                  [class.active]="selectedUserId === user.uid"
+                  (click)="startDirectMessage(user)">
+                <div class="user-avatar">
+                  <img [src]="user.profileImageUrl || 'assets/avatars/avatar-1.png'" [alt]="user.name" />
+                  <span class="status-indicator" [ngClass]="getStatusClass(user)"></span>
+                </div>
+                <span class="user-name">{{ user.name }}</span>
+              </li>
+            </ul>
+            <ng-template #noUsers>
+              <div class="empty-state">Keine Kontakte</div>
+            </ng-template>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </aside>
+
+  <ng-container *ngIf="showNewChannelModal">
+    <div class="modal-overlay" (click)="closeNewChannelModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h3>Neuen Channel erstellen</h3>
+
+        <div class="form-group">
+          <label for="channelName">Channel-Name</label>
+          <input type="text" id="channelName" [(ngModel)]="newChannelName" placeholder="z.B. allgemein" />
+        </div>
+
+        <div class="form-group">
+          <label for="channelDescription">Beschreibung (optional)</label>
+          <textarea id="channelDescription" [(ngModel)]="newChannelDescription" placeholder="Worum geht es in diesem Channel?" rows="3"></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="closeNewChannelModal()">Abbrechen</button>
+          <button class="btn-primary" (click)="createChannel()" [disabled]="!newChannelName.trim()">Erstellen</button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
 </div>
 

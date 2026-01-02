@@ -1,0 +1,19 @@
+.members-list {
+  padding: 8px;
+}
+
+.members-list h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+}
+
+.members-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.members-list li {
+  padding: 6px 4px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}/*# sourceMappingURL=channel-members-list.component.css.map */

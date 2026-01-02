@@ -1,0 +1,46 @@
+<ng-container *ngIf="message">
+	<div class="message-item" [class.own-message]="isOwnMessage">
+		<div class="message-avatar">
+			<img [src]="getAvatarSrc()" [alt]="getSenderName()" />
+		</div>
+
+		<div class="message-content">
+			<div class="message-header">
+				<span class="sender-name">{{ getSenderName() }}</span>
+				<span class="message-time">{{ getTime() }}</span>
+				<span class="edited-label" *ngIf="message.isEdited">(bearbeitet)</span>
+			</div>
+
+			<div class="message-bubble">
+				<p>{{ getContent() }}</p>
+			</div>
+
+			<div class="message-reactions">
+				<button
+					type="button"
+					class="reaction-badge"
+					*ngFor="let reaction of getReactions()"
+					[class.has-reacted]="reaction.hasReacted"
+					(click)="toggleReaction(reaction.emoji)"
+				>
+					{{ reaction.emoji }} {{ reaction.count }}
+				</button>
+
+				<div class="reaction-picker-wrapper" *ngIf="!isOwnMessage">
+					<button type="button" class="btn-add-reaction" (click)="toggleReactionPicker()">➕</button>
+
+					<div class="reaction-picker" *ngIf="showReactionPicker">
+						<button
+							type="button"
+							class="reaction-option"
+							*ngFor="let emoji of availableReactions"
+							(click)="addReaction(emoji)"
+						>
+							{{ emoji }}
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-container>

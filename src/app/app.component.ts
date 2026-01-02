@@ -24,6 +24,8 @@ import { HeaderComponent } from './components/header/header.component';
     }
     .app-main {
       flex: 1;
+      display: flex;
+      min-height: 0;
     }
   `]
 })
