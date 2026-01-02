@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { SvgImagesComponent } from '../svg-images/svg-images.component';
+import { SvgImagesComponent } from '../../svg-images/svg-images.component';
 
 @Component({
   selector: 'app-login',

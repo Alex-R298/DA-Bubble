@@ -45,7 +45,12 @@
       </div>
       
       <button type="button" (click)="onGoogleLogin()" class="google-login-button">
-        <app-svg-images iconName="google" width="20" height="20" className="google-icon"></app-svg-images>
+        <app-svg-images 
+          iconName="google" 
+          [width]="'20'" 
+          [height]="'20'" 
+          [className]="'google-icon'">
+        </app-svg-images>
         <span>Anmelden mit Google</span>
       </button>
       
