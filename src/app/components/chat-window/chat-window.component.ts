@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { InputFieldComponent } from '../input-field/input-field.component';
 
 @Component({
   selector: 'app-chat-window',
   standalone: true,
-  imports: [CommonModule, InputFieldComponent],
+  imports: [CommonModule, DatePipe, InputFieldComponent],
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.css'
 })
