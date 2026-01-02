@@ -20,10 +20,22 @@ import { HeaderComponent } from './components/header/header.component';
     .app-wrapper {
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      width: 100vw;
+      height: 100vh;
+      max-width: 100vw;
+      max-height: 100vh;
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
     }
     .app-main {
       flex: 1;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
     }
   `]
 })

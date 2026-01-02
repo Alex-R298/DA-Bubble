@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
-
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -14,14 +13,23 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LoginComponent {
   private authService = inject(AuthService);
-    private router = inject(Router);
+  private router = inject(Router);
 
   email: string = '';
   password: string = '';
 
   async onSubmit(): Promise<void> {
-    await this.authService.login(this.email, this.password);
-    this.router.navigate(['/dashboard']);
+    if (this.email && this.password) {
+      await this.authService.login(this.email, this.password);
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  async onGoogleLogin(): Promise<void> {
+    // Google authentication implementation
+    // await this.authService.loginWithGoogle();
+    // this.router.navigate(['/dashboard']);
+    console.log('Google login triggered');
   }
 }
 
