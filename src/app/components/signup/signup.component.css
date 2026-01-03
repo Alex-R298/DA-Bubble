@@ -4,21 +4,11 @@
   align-items: center;
   min-height: 100vh;
   width: 100vw;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
   padding: 2rem;
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
-  animation: gradientShift 15s ease infinite;
-}
-
-@keyframes gradientShift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
 }
 
 .back-button {
@@ -104,7 +94,7 @@
 
 .signup-title {
   margin: 0 0 0.75rem 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #444DF2 0%, #797EF3 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -169,14 +159,14 @@
 .form-input:focus {
   outline: none;
   background: #ffffff;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #444DF2;
+  box-shadow: 0 0 0 3px rgba(68, 77, 242, 0.1);
   transform: translateY(-2px);
 }
 
 .form-input:focus + .input-icon,
 .input-group:focus-within .input-icon {
-  color: #667eea;
+  color: #444DF2;
   transform: scale(1.1);
 }
 
@@ -186,16 +176,16 @@
   gap: 0.75rem;
   margin-top: -0.25rem;
   padding: 1rem;
-  background: rgba(102, 126, 234, 0.05);
+  background: rgba(68, 77, 242, 0.05);
   border-radius: 12px;
-  border: 1px solid rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(68, 77, 242, 0.1);
 }
 
 .checkbox-input {
   width: 1.25rem;
   height: 1.25rem;
   cursor: pointer;
-  accent-color: #667eea;
+  accent-color: #444DF2;
   flex-shrink: 0;
   margin-top: 0.125rem;
 }
@@ -210,21 +200,21 @@
 }
 
 .privacy-link {
-  color: #667eea;
+  color: #444DF2;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease;
 }
 
 .privacy-link:hover {
-  color: #764ba2;
+  color: #797EF3;
   text-decoration: underline;
 }
 
 .primary-button {
   width: 100%;
   padding: 1.125rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #444DF2 0%, #797EF3 100%);
   color: #ffffff;
   border: none;
   border-radius: 16px;
@@ -234,7 +224,7 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
   margin-top: 0.5rem;
-  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 14px rgba(68, 77, 242, 0.4);
   position: relative;
   overflow: hidden;
 }
@@ -256,7 +246,7 @@
 
 .primary-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+  box-shadow: 0 6px 20px rgba(68, 77, 242, 0.5);
 }
 
 .primary-button:active:not(:disabled) {

@@ -4,21 +4,11 @@
   align-items: center;
   min-height: 100vh;
   width: 100vw;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
   padding: 2rem;
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
-  animation: gradientShift 15s ease infinite;
-}
-
-@keyframes gradientShift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
 }
 
 .decorative-curve {
@@ -75,7 +65,7 @@
 
 .login-title {
   margin: 0 0 0.75rem 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #444DF2 0%, #797EF3 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -140,19 +130,19 @@
 .form-input:focus {
   outline: none;
   background: #ffffff;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #444DF2;
+  box-shadow: 0 0 0 3px rgba(68, 77, 242, 0.1);
   transform: translateY(-2px);
 }
 
 .form-input:focus + .input-icon,
 .input-group:focus-within .input-icon {
-  color: #667eea;
+  color: #444DF2;
   transform: scale(1.1);
 }
 
 .forgot-password-link {
-  color: #667eea;
+  color: #444DF2;
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
@@ -164,7 +154,7 @@
 }
 
 .forgot-password-link:hover {
-  color: #764ba2;
+  color: #797EF3;
   text-decoration: underline;
 }
 
@@ -235,7 +225,7 @@
 .primary-login-button {
   flex: 1;
   padding: 1.125rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #444DF2 0%, #797EF3 100%);
   color: #ffffff;
   border: none;
   border-radius: 16px;
@@ -244,7 +234,7 @@
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
-  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 14px rgba(68, 77, 242, 0.4);
   position: relative;
   overflow: hidden;
 }
@@ -266,7 +256,7 @@
 
 .primary-login-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+  box-shadow: 0 6px 20px rgba(68, 77, 242, 0.5);
 }
 
 .primary-login-button:active:not(:disabled) {
@@ -283,8 +273,8 @@
   flex: 1;
   padding: 1.125rem;
   background: transparent;
-  color: #667eea;
-  border: 2px solid #667eea;
+  color: #444DF2;
+  border: 2px solid #444DF2;
   border-radius: 16px;
   font-size: 1rem;
   font-weight: 700;
@@ -294,9 +284,9 @@
 }
 
 .guest-login-button:hover {
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(68, 77, 242, 0.1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 4px 12px rgba(68, 77, 242, 0.2);
 }
 
 .guest-login-button:active {
