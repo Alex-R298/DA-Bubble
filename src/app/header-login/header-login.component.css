@@ -17,22 +17,9 @@
   align-items: center;
 }
 
-.logo-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  background-color: #444DF2;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(68, 77, 242, 0.3);
-}
-
-.logo-text {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #FFFFFF;
-  text-align: center;
+.header-left app-svg-images {
+  display: block;
+  height: 2.9rem;
 }
 
 .header-right {
@@ -81,13 +68,8 @@
     padding: 0.625rem 1.25rem;
   }
 
-  .logo-placeholder {
-    width: 40px;
-    height: 40px;
-  }
-
-  .logo-text {
-    font-size: 0.625rem;
+  .header-left app-svg-images {
+    height: 2.25rem;
   }
 }
 
