@@ -21,6 +21,6 @@ export const routes: Routes = [
       { path: 'chat/user/:id', component: ChatWindowComponent }
     ]
   },
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: 'login' }
 ];
 

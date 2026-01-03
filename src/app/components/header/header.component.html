@@ -8,7 +8,7 @@
       <input
         type="text"
         class="search-input"
-        placeholder="Code learning durchsuchen"
+        placeholder="Devspace durchsuchen"
         [(ngModel)]="searchQuery"
       />
       <span class="search-icon">(img)</span>
@@ -18,7 +18,7 @@
       <div class="user-info" (click)="toggleUserMenu()">
         <span class="user-name">{{ userProfile?.name || 'User' }}</span>
         <img
-          [src]="userProfile?.profileImageUrl || 'assets/avatars/avatar-1.png'"
+          [src]="userProfile?.profileImageUrl || ''"
           alt="Profilbild"
           class="user-avatar"
         />

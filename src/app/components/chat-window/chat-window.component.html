@@ -37,13 +37,24 @@
   <div class="messages-container" #messagesContainer>
     <ng-container *ngIf="!messages || messages.length === 0; else messagesList">
       <div class="empty-chat">
-        <ng-container *ngIf="currentChannel; else dmEmpty">
-          <p>Noch keine Nachrichten in #{{ currentChannel.name }}</p>
-          <p class="hint">Sei der Erste, der etwas schreibt!</p>
+        <ng-container *ngIf="currentChannel; else dmOrNoneSelected">
+          <h2 class="empty-title">(img) {{ currentChannel.name }}</h2>
+          <p class="empty-text">
+            {{ getChannelCreatedHint(currentChannel) }} Das ist der Anfang des Channels
+            <span class="empty-channel-tag">#{{ currentChannel.name }}</span>.
+          </p>
         </ng-container>
-        <ng-template #dmEmpty>
-          <p *ngIf="currentDMUser">Noch keine Nachrichten mit {{ currentDMUser.name }}</p>
-          <p class="hint">Schreibe eine Nachricht um das Gespräch zu starten!</p>
+        <ng-template #dmOrNoneSelected>
+          <ng-container *ngIf="currentDMUser; else noneSelected">
+            <h2 class="empty-title">{{ currentDMUser.name }}</h2>
+            <p class="empty-text">
+              Das ist der Anfang eures Gesprächs mit {{ currentDMUser.name }}.
+            </p>
+          </ng-container>
+          <ng-template #noneSelected>
+            <h2 class="empty-title">Wähle einen Channel</h2>
+            <p class="empty-text">Wähle links einen Channel aus, um Nachrichten zu sehen.</p>
+          </ng-template>
         </ng-template>
       </div>
     </ng-container>

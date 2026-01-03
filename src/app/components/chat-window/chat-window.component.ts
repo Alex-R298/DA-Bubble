@@ -149,5 +149,56 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     // ChatService not available — temporarily log message
     console.log('message sent (stub):', text.trim());
   }
+
+  getChannelCreatedHint(channel: any): string {
+    const createdAt = this.toDate(channel?.createdAt);
+    if (!createdAt) {
+      return 'Das ist der Anfang dieses Channels.';
+    }
+
+    const todayStart = this.startOfDay(new Date());
+    const createdStart = this.startOfDay(createdAt);
+    const diffDays = Math.floor((todayStart.getTime() - createdStart.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (diffDays <= 0) return 'Du hast diesen Channel heute erstellt.';
+    if (diffDays === 1) return 'Du hast diesen Channel gestern erstellt.';
+    if (diffDays < 7) return `Du hast diesen Channel vor ${diffDays} Tagen erstellt.`;
+
+    if (diffDays < 30) {
+      const weeks = Math.floor(diffDays / 7);
+      return `Du hast diesen Channel vor ${weeks} ${weeks === 1 ? 'Woche' : 'Wochen'} erstellt.`;
+    }
+
+    if (diffDays < 365) {
+      const months = Math.floor(diffDays / 30);
+      return `Du hast diesen Channel vor ${months} ${months === 1 ? 'Monat' : 'Monaten'} erstellt.`;
+    }
+
+    const years = Math.floor(diffDays / 365);
+    return `Du hast diesen Channel vor ${years} ${years === 1 ? 'Jahr' : 'Jahren'} erstellt.`;
+  }
+
+  private startOfDay(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  private toDate(value: unknown): Date | null {
+    if (!value) return null;
+    if (value instanceof Date) return value;
+    if (typeof value === 'number') return new Date(value);
+    if (typeof value === 'string') {
+      const parsed = new Date(value);
+      return isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    // Firestore Timestamp-like: { toDate(): Date }
+    const maybeToDate = (value as any)?.toDate;
+    if (typeof maybeToDate === 'function') {
+      const date = maybeToDate.call(value);
+      return date instanceof Date ? date : null;
+    }
+
+    return null;
+  }
 }
 

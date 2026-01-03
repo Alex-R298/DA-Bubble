@@ -18,6 +18,15 @@ export class ChannelService {
   private firebaseService = inject(FirebaseService);
 
   async createChannel(name: string, description: string, createdById: string): Promise<Channel> {
+    // ===== TEMP-FIX BEGIN (DEV-ONLY, later removable) =====
+    // Ohne Firebase-Config soll die App nicht komplett crashen.
+    // Später löschen: Guard entfernen, sobald Firebase konfiguriert ist.
+    if (!this.firebaseService.isEnabled()) {
+      throw new Error('Firebase is not configured. Cannot create channel.');
+    }
+    // ===== TEMP-FIX END =====
+
+    // ===== ORIGINAL (Firebase ist konfiguriert) =====
     const channelData = {
       createdAt: new Date(),
       createdById: createdById,
@@ -32,7 +41,7 @@ export class ChannelService {
     );
 
     console.log('Kanal erstellt:', name, 'ID:', docRef.id);
-    
+
     return {
       id: docRef.id,
       ...channelData
