@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { SvgImagesComponent } from '../../svg-images/svg-images.component';
+import { HeaderLoginComponent } from '../../header-login/header-login.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SvgImagesComponent],
+  imports: [CommonModule, FormsModule, RouterModule, SvgImagesComponent, HeaderLoginComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
