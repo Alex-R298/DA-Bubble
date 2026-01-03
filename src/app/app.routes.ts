@@ -3,6 +3,7 @@ import { LoginComponent } from './components/login/login.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { IntroComponent } from './components/intro/intro.component';
 import { ImprintComponent } from './components/imprint/imprint.component';
+import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ChatWindowComponent } from './components/chat-window/chat-window.component';
 
@@ -12,6 +13,7 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'intro', component: IntroComponent },
   { path: 'imprint', component: ImprintComponent },
+  { path: 'privacy-policy', component: PrivacyPolicyComponent },
   {
     path: 'dashboard',
     component: DashboardComponent,
