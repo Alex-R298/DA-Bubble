@@ -16,7 +16,7 @@
     gap: 16px;
     align-items: stretch;
     padding: 16px;
-    background-color: #ECEEFE;
+    background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
     overflow: visible;
 }
 
@@ -26,6 +26,14 @@
     /* important for scrolling children */
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    border-radius: 30px;
+}
+
+.thread-area {
+    flex: 0 0 auto;
+    min-height: 0;
+    height: 100%;
     overflow: hidden;
     border-radius: 30px;
 }

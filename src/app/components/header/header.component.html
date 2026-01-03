@@ -17,11 +17,14 @@
     <div class="user-area">
       <div class="user-info" (click)="toggleUserMenu()">
         <span class="user-name">{{ userProfile?.name || 'User' }}</span>
-        <img
-          [src]="userProfile?.profileImageUrl || ''"
-          alt="Profilbild"
-          class="user-avatar"
-        />
+        <div class="user-avatar-wrapper">
+          <img
+            [src]="userProfile?.profileImageUrl || ''"
+            alt="Profilbild"
+            class="user-avatar"
+          />
+          <span class="status-indicator" [ngClass]="getStatusClass(userProfile)"></span>
+        </div>
         <span class="dropdown-arrow">{{ showUserMenu ? '▲' : '▼' }}</span>
       </div>
 
@@ -31,19 +34,9 @@
           <p>Profil</p>
         </button>
 
-        <a class="dropdown-item" routerLink="/privacy" (click)="closeUserMenu()">
-          <span></span>
-          <p>Datenschutz</p>
-        </a>
-
-        <a class="dropdown-item" routerLink="/imprint" (click)="closeUserMenu()">
-          <span></span>
-          <p>Impressum</p>
-        </a>
-
         <button class="dropdown-item logout" (click)="onLogout()">
           <span></span>
-          <p>Abmelden</p>
+          <p>Log out</p>
         </button>
       </div>
     </div>

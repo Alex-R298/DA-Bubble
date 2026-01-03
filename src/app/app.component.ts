@@ -10,7 +10,7 @@ import { filter, Subscription } from 'rxjs';
   standalone: true,
   imports: [RouterOutlet, FooterComponent, HeaderComponent, NgIf],
   template: `
-    <div class="app-wrapper">
+    <div class="app-wrapper" [class.auth-gradient]="useAuthGradient">
       <app-header *ngIf="showHeader"></app-header>
       <main class="app-main">
         <router-outlet></router-outlet>
@@ -26,6 +26,9 @@ import { filter, Subscription } from 'rxjs';
       width: 100%;
       overflow: hidden;
     }
+    .app-wrapper.auth-gradient {
+      background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
+    }
     .app-main {
       flex: 1;
       display: flex;
@@ -37,6 +40,7 @@ import { filter, Subscription } from 'rxjs';
 export class AppComponent implements OnDestroy {
   showHeader = true;
   showFooter = true;
+  useAuthGradient = false;
 
   private routerSub?: Subscription;
 
@@ -55,11 +59,14 @@ export class AppComponent implements OnDestroy {
   private updateVisibility(url: string): void {
     const path = this.normalizePath(url);
 
+    const authGradientOn = ['/', '/login', '/signup'];
+    this.useAuthGradient = this.matchesAnyPath(path, authGradientOn);
+
     // Login/Register pages (in this project: login + signup + root login)
-    const hideHeaderOn = ['/', '/login', '/signup'];
+    const hideHeaderOn = ['/', '/login', '/signup', '/imprint', '/privacy'];
 
     // Footer should also be hidden on the dashboard view
-    const hideFooterOn = ['/dashboard'];
+    const hideFooterOn = ['/dashboard', '/imprint', '/privacy'];
 
     this.showHeader = !this.matchesAnyPath(path, hideHeaderOn);
     this.showFooter = !this.matchesAnyPath(path, hideFooterOn);

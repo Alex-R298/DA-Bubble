@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
@@ -14,9 +14,13 @@ export class HeaderComponent {
   private router = inject(Router);
 
   // Keep it compatible with your desired template fields.
-  userProfile: { name?: string; profileImageUrl?: string } | null = null;
+  userProfile: { name?: string; profileImageUrl?: string; status?: 'online' | 'offline' } | null = null;
   searchQuery = '';
   showUserMenu = false;
+
+  getStatusClass(user: { status?: 'online' | 'offline' } | null): string {
+    return user?.status === 'online' ? 'status-online' : 'status-offline';
+  }
 
   toggleUserMenu(): void {
     this.showUserMenu = !this.showUserMenu;

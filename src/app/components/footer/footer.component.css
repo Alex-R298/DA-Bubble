@@ -1,6 +1,5 @@
 .app-footer {
-  background-color: #ECEEFE;
-  /* danach auf transparent setzen, gilt nur als Referenz */
+  background-color: transparent;
   width: 100%;
   margin-bottom: 40px;
 }
