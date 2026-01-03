@@ -4,6 +4,7 @@ import { SignupComponent } from './components/signup/signup.component';
 import { IntroComponent } from './components/intro/intro.component';
 import { ImprintComponent } from './components/imprint/imprint.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ChatWindowComponent } from './components/chat-window/chat-window.component';
 
@@ -23,6 +24,6 @@ export const routes: Routes = [
       { path: 'chat/user/:id', component: ChatWindowComponent }
     ]
   },
-  { path: '**', redirectTo: 'login' }
+  { path: '**', component: PageNotFoundComponent }
 ];
 

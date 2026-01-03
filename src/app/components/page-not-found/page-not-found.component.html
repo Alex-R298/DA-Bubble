@@ -1,0 +1,24 @@
+<div class="not-found-container">
+  <div class="not-found-content">
+    <div class="error-code">404</div>
+    <h1 class="error-title">Seite nicht gefunden</h1>
+    <p class="error-message">
+      Die von Ihnen gesuchte Seite existiert leider nicht.
+      <br>
+      Möglicherweise wurde sie verschoben oder gelöscht.
+    </p>
+    <div class="button-group">
+      <button (click)="goToHome()" class="home-button">
+        Zurück zur Startseite
+      </button>
+      <button routerLink="/dashboard" class="dashboard-button">
+        Zum Dashboard
+      </button>
+    </div>
+  </div>
+  <div class="decorative-background">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+    <div class="circle circle-3"></div>
+  </div>
+</div>
