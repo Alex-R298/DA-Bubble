@@ -148,6 +148,9 @@
 .divider span {
   padding: 0 1rem;
   background-color: #ffffff;
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: #686868;
 }
 
 .google-login-button {
