@@ -26,6 +26,8 @@ export class SvgImagesComponent {
         return '0 0 16 16';
       case 'person_filled':
         return '0 0 16 16';
+      case 'dabubble':
+        return '0 0 243 70';
       default:
         return '0 0 24 24';
     }
@@ -49,5 +51,9 @@ export class SvgImagesComponent {
 
   isPersonFilledIcon(): boolean {
     return this.iconName === 'person_filled';
+  }
+
+  isDABubbleIcon(): boolean {
+    return this.iconName === 'dabubble';
   }
 }
