@@ -1,58 +1,75 @@
 <div class="signup-container">
-  <div class="signup-header">
-    <button routerLink="/login" class="login-link-button">Back to Login</button>
-  </div>
+  <button class="back-button" (click)="goBack()">
+    <app-svg-images iconName="arrow_back" [width]="'1rem'" [height]="'1rem'"></app-svg-images>
+  </button>
+  <div class="decorative-curve"></div>
   <div class="signup-card">
-    <h2>Sign Up</h2>
-    <form (ngSubmit)="onSubmit()" #signupForm="ngForm">
-      <div class="form-group">
-        <label for="displayName">Display Name</label>
+    <h1 class="signup-title">Konto erstellen</h1>
+    <p class="signup-subtitle">Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.</p>
+    
+    <form (ngSubmit)="onSubmit()" #signupForm="ngForm" class="signup-form">
+      <div class="input-group">
+        <div class="input-icon">
+          <app-svg-images iconName="person_filled" [width]="'16'" [height]="'16'"></app-svg-images>
+        </div>
         <input
           type="text"
           id="displayName"
           name="displayName"
           [(ngModel)]="displayName"
           required
-          placeholder="Enter your display name"
+          placeholder="Name und Nachname"
+          class="form-input"
         />
       </div>
-      <div class="form-group">
-        <label for="email">Email</label>
+      
+      <div class="input-group">
+        <div class="input-icon">
+          <app-svg-images iconName="mail" [width]="'20'" [height]="'16'"></app-svg-images>
+        </div>
         <input
           type="email"
           id="email"
           name="email"
           [(ngModel)]="email"
           required
-          placeholder="Enter your email"
+          placeholder="beispielname@email.com"
+          class="form-input"
         />
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
+      
+      <div class="input-group">
+        <div class="input-icon">
+          <app-svg-images iconName="lock" [width]="'16'" [height]="'21'"></app-svg-images>
+        </div>
         <input
           type="password"
           id="password"
           name="password"
           [(ngModel)]="password"
           required
-          placeholder="Enter your password"
+          placeholder="Passwort"
+          class="form-input"
         />
       </div>
-      <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
+      
+      <div class="checkbox-group">
         <input
-          type="password"
-          id="confirmPassword"
-          name="confirmPassword"
-          [(ngModel)]="confirmPassword"
+          type="checkbox"
+          id="privacy"
+          name="privacy"
+          [(ngModel)]="privacyAccepted"
           required
-          placeholder="Confirm your password"
+          class="checkbox-input"
         />
+        <label for="privacy" class="checkbox-label">
+          Ich stimme der <a href="#" class="privacy-link">Datenschutzerklärung</a> zu.
+        </label>
       </div>
-      <button type="submit" [disabled]="!signupForm.valid" class="submit-button">
-        Sign Up
+      
+      <button type="submit" [disabled]="!signupForm.valid || !privacyAccepted" class="primary-button">
+        Weiter
       </button>
     </form>
   </div>
 </div>
-
