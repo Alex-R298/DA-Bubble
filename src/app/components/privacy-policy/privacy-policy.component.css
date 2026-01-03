@@ -1,11 +1,12 @@
 .privacy-container {
-  min-height: 100vh;
+  height: 100vh;
   width: 100vw;
   background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
   padding: 2rem;
   box-sizing: border-box;
   position: relative;
-  overflow-y: auto;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .back-button {
@@ -33,12 +34,13 @@
 
 .privacy-content {
   max-width: 50rem;
-  margin: 0 auto;
+  margin: 0 auto 2rem auto;
   background: #FFFFFF;
   padding: 3rem;
   border-radius: 30px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
+  min-height: min-content;
 }
 
 .privacy-title {
@@ -132,6 +134,33 @@
 .accept-button:hover {
   background-color: #3A42D9;
   box-shadow: 0 4px 12px rgba(68, 77, 242, 0.4);
+}
+
+.privacy-container::-webkit-scrollbar {
+  width: 12px;
+}
+
+.privacy-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.privacy-container::-webkit-scrollbar-thumb {
+  background: rgba(68, 77, 242, 0.5);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.privacy-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(68, 77, 242, 0.7);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.privacy-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(68, 77, 242, 0.5) rgba(255, 255, 255, 0.1);
 }
 
 @media (max-width: 768px) {
