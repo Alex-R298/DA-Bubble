@@ -1,4 +1,6 @@
 <div class="login-container">
+  <app-header-login></app-header-login>
+  <div class="decorative-curve"></div>
   <div class="login-card">
     <h1 class="login-title">Anmeldung</h1>
     <p class="login-subtitle">Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
@@ -50,13 +52,15 @@
         <span>Anmelden mit Google</span>
       </button>
       
-      <button type="submit" [disabled]="!loginForm.valid" class="primary-login-button">
-        Anmelden
-      </button>
-      
-      <button type="button" routerLink="/dashboard" class="guest-login-button">
-        Gäste-Login
-      </button>
+      <div class="button-group">
+        <button type="submit" [disabled]="!loginForm.valid" class="primary-login-button">
+          Anmelden
+        </button>
+        
+        <button type="button" routerLink="/dashboard" class="guest-login-button">
+          Gäste-Login
+        </button>
+      </div>
     </form>
   </div>
 </div>

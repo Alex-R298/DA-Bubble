@@ -4,8 +4,11 @@ import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
 import { InputFieldComponent } from '../input-field/input-field.component';
 import { ChannelMembersListComponent } from '../channel-members-list/channel-members-list.component';
+import { ChannelService } from '../../services/channel.service';
+import { MessageService } from '../../services/message.service';
+import { AuthService } from '../../services/auth.service';
 // import { ChatService } from '../../services/chat.service';
-// import { UserService } from '../../services/user.service';
+import { UserService } from '../../services/user.service';
 // import { Channel } from '../../models/channel.model';
 // import { Message } from '../../models/message.model';
 // import { User } from '../../models/user.model';
@@ -21,6 +24,10 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   // private chatService = inject(ChatService);
   // private userService = inject(UserService);
   private route = inject(ActivatedRoute);
+  private channelService = inject(ChannelService);
+  private messageService = inject(MessageService);
+  private authService = inject(AuthService);
+  private userService = inject(UserService);
 
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;
 
@@ -37,6 +44,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     // this.subscribeToChannel();
     // this.subscribeToDMUser();
     // this.subscribeToMessages();
+    this.loadChannel();
   }
 
   private subscribeToRoute(): void {
@@ -94,6 +102,21 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     // this.userService.getUser(userId).then(user => this.currentDMUser = user);
   }
 
+  private loadChannel(): void {
+    this.route.params.subscribe(async params => {
+      const channelId = params['id'];
+      if (channelId) {
+        this.currentChannel = await this.channelService.getChannelById(channelId);
+        console.log('Channel geladen:', this.currentChannel);
+
+        this.messageService.getMessagesByChannelId(channelId).subscribe(messages => {
+          this.messages = messages;
+          console.log('Messages geladen:', messages);
+        });
+      }
+    });
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
@@ -114,6 +137,23 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   toggleMembersList(): void {
     this.showMembersList = !this.showMembersList;
   }
+
+  async onMessageSent(text: string): Promise<void> {
+    if (!text.trim() || !this.currentChannel) return;
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) return;
+    const userData = await this.userService.getUserById(currentUser.uid);
+    const senderName = userData?.name || currentUser.displayName || 'Unbekannt';
+
+    await this.messageService.createMessage(
+      this.currentChannel.id!,
+      currentUser.uid,
+      text.trim(),
+      senderName
+    );
+  }
+
+
 
   getMessageDate(message: any): string { // Message type not available yet
     const date = new Date(message.timestamp);
@@ -141,13 +181,6 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     const curr = new Date(this.messages[index].timestamp).toDateString();
     const prev = new Date(this.messages[index - 1].timestamp).toDateString();
     return curr !== prev;
-  }
-
-  // Event handler for input-field
-  onMessageSent(text: string): void {
-    if (!text || !text.trim()) return;
-    // ChatService not available — temporarily log message
-    console.log('message sent (stub):', text.trim());
   }
 
   getChannelCreatedHint(channel: any): string {

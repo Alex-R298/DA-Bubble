@@ -46,7 +46,7 @@ export class SidebarComponent implements OnInit {
   }
 
   private subscribeToChannels(): void {
-    // this.chatService.channels$.subscribe(channels => this.channels = channels);
+    this.channelService.getAllChannels().subscribe(channels => this.channels = channels);
   }
 
   private subscribeToUsers(): void {
