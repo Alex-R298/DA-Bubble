@@ -14,7 +14,7 @@ import { ChannelService } from '../../services/channel.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.css']
+  styleUrls: ['../../shared/styles/shared-ui.css', './sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
   // private chatService = inject(ChatService);
