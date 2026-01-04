@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Location } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { SvgImagesComponent } from '../../svg-images/svg-images.component';
 
 @Component({
@@ -10,9 +11,9 @@ import { SvgImagesComponent } from '../../svg-images/svg-images.component';
   styleUrl: './privacy-policy.component.css'
 })
 export class PrivacyPolicyComponent {
-  constructor(private router: Router) {}
+  constructor(private location: Location) {}
 
   goBack(): void {
-    this.router.navigate(['/signup']);
+    this.location.back();
   }
 }
