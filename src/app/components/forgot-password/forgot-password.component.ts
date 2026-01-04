@@ -14,6 +14,7 @@ import { SvgImagesComponent } from '../../svg-images/svg-images.component';
 export class ForgotPasswordComponent {
   email: string = '';
   isSubmitted: boolean = false;
+  resetLink: string = '';
 
   constructor(private router: Router) {}
 
@@ -23,16 +24,26 @@ export class ForgotPasswordComponent {
 
   onSubmit(): void {
     if (this.email) {
-      this.isSubmitted = true;
-      
       // Generate example reset token (in production, this would be done by backend)
       const resetToken = this.generateMockToken();
-      const resetLink = `${window.location.origin}/reset-password?token=${resetToken}`;
+      this.resetLink = `${window.location.origin}/reset-password?token=${resetToken}`;
       
-      console.log('Password reset email sent to:', this.email);
-      console.log('Reset link (for testing):', resetLink);
+      console.log('===================================');
+      console.log('PASSWORD RESET LINK (FOR TESTING):');
+      console.log(this.resetLink);
+      console.log('===================================');
+      console.log('Email:', this.email);
       console.log('Token:', resetToken);
+      console.log('===================================');
+      
+      this.isSubmitted = true;
     }
+  }
+
+  copyToClipboard(): void {
+    navigator.clipboard.writeText(this.resetLink).then(() => {
+      alert('Link in Zwischenablage kopiert!');
+    });
   }
 
   private generateMockToken(): string {
