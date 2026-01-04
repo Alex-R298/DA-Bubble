@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { SvgImagesComponent } from '../../svg-images/svg-images.component';
-import { HeaderLoginComponent } from '../../header-login/header-login.component';
+import { SvgImagesComponent } from '../svg-images/svg-images.component';
+import { HeaderLoginComponent } from '../header-login/header-login.component';
 
 @Component({
   selector: 'app-login',

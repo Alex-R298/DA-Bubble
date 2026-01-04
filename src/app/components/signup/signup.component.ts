@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { PrivacyStateService } from '../../services/privacy-state.service';
-import { SvgImagesComponent } from '../../svg-images/svg-images.component';
+import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { Subscription } from 'rxjs';
 
 @Component({

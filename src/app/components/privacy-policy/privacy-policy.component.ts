@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { SvgImagesComponent } from '../../svg-images/svg-images.component';
+import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { PrivacyStateService } from '../../services/privacy-state.service';
 
 @Component({

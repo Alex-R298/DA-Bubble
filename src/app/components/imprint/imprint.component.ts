@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { SvgImagesComponent } from '../../svg-images/svg-images.component';
+import { SvgImagesComponent } from '../svg-images/svg-images.component';
 
 @Component({
   selector: 'app-imprint',

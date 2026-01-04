@@ -21,3 +21,4 @@ describe('SvgImagesComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

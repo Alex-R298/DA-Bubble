@@ -57,3 +57,4 @@ export class SvgImagesComponent {
     return this.iconName === 'dabubble';
   }
 }
+

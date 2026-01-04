@@ -12,3 +12,4 @@ import { SvgImagesComponent } from '../svg-images/svg-images.component';
 export class HeaderLoginComponent {
 
 }
+
