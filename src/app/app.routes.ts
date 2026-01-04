@@ -26,6 +26,6 @@ export const routes: Routes = [
       { path: 'chat/user/:id', component: ChatWindowComponent }
     ]
   },
-  { path: '**', component: PageNotFoundComponent }
+  { path: '**', component: PageNotFoundComponent, data: { hideHeaderFooter: true } }
 ];
 

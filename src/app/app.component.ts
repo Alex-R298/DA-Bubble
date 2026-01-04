@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { NgIf } from '@angular/common';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { filter, Subscription } from 'rxjs';
@@ -44,7 +44,7 @@ export class AppComponent implements OnDestroy {
 
   private routerSub?: Subscription;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
     this.updateVisibility(this.router.url);
 
     this.routerSub = this.router.events
@@ -59,14 +59,28 @@ export class AppComponent implements OnDestroy {
   private updateVisibility(url: string): void {
     const path = this.normalizePath(url);
 
-    const authGradientOn = ['/', '/login', '/signup'];
+    // Check if current route has hideHeaderFooter data
+    let currentRoute = this.activatedRoute;
+    while (currentRoute.firstChild) {
+      currentRoute = currentRoute.firstChild;
+    }
+    const hideHeaderFooter = currentRoute.snapshot.data['hideHeaderFooter'];
+
+    if (hideHeaderFooter) {
+      this.showHeader = false;
+      this.showFooter = false;
+      this.useAuthGradient = false;
+      return;
+    }
+
+    const authGradientOn = ['/', '/login', '/signup', '/forgot-password'];
     this.useAuthGradient = this.matchesAnyPath(path, authGradientOn);
 
     // Login/Register pages (in this project: login + signup + root login)
-    const hideHeaderOn = ['/', '/login', '/signup', '/imprint', '/privacy'];
+    const hideHeaderOn = ['/', '/login', '/signup', '/forgot-password', '/imprint', '/privacy-policy'];
 
     // Footer should also be hidden on the dashboard view
-    const hideFooterOn = ['/dashboard', '/imprint', '/privacy'];
+    const hideFooterOn = ['/dashboard', '/imprint', '/privacy-policy'];
 
     this.showHeader = !this.matchesAnyPath(path, hideHeaderOn);
     this.showFooter = !this.matchesAnyPath(path, hideFooterOn);
