@@ -1,13 +1,13 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SvgImagesComponent } from '../../svg-images/svg-images.component';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, SvgImagesComponent],
+  imports: [CommonModule, FormsModule, RouterModule, SvgImagesComponent],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
 })
