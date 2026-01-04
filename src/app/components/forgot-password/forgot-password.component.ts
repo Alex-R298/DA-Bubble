@@ -24,8 +24,19 @@ export class ForgotPasswordComponent {
   onSubmit(): void {
     if (this.email) {
       this.isSubmitted = true;
-      // Password reset logic would go here
+      
+      // Generate example reset token (in production, this would be done by backend)
+      const resetToken = this.generateMockToken();
+      const resetLink = `${window.location.origin}/reset-password?token=${resetToken}`;
+      
       console.log('Password reset email sent to:', this.email);
+      console.log('Reset link (for testing):', resetLink);
+      console.log('Token:', resetToken);
     }
+  }
+
+  private generateMockToken(): string {
+    return Math.random().toString(36).substring(2, 15) + 
+           Math.random().toString(36).substring(2, 15);
   }
 }
