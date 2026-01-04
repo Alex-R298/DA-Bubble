@@ -1,39 +1,204 @@
 .imprint-container {
-  max-width: 800px;
-  margin: 0 auto;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
   padding: 2rem;
-  background-color: #ffffff;
-  min-height: 100vh;
+  box-sizing: border-box;
+  position: relative;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
-.imprint-content h1 {
-  color: #4a154b;
-  margin-bottom: 2rem;
-  font-size: 2rem;
+.back-button {
+  position: fixed;
+  top: 2rem;
+  left: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  background-color: #FFFFFF;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.back-button:hover {
+  background-color: #ECEEFE;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.imprint-content {
+  max-width: 50rem;
+  margin: 0 auto 2rem auto;
+  background: #FFFFFF;
+  padding: 3rem;
+  border-radius: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  min-height: min-content;
+}
+
+.imprint-title {
+  margin: 0 0 2rem 0;
+  color: #444DF2;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .imprint-section {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .imprint-section h2 {
-  color: #333;
-  font-size: 1.25rem;
-  margin-bottom: 0.75rem;
-  border-bottom: 2px solid #4a154b;
-  padding-bottom: 0.5rem;
+  color: #444DF2;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 2rem 0 1rem 0;
+  line-height: 1.3;
 }
 
 .imprint-section h3 {
-  color: #555;
-  font-size: 1rem;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
+  color: #000000;
+  font-size: 1.375rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.75rem 0;
+  line-height: 1.4;
+}
+
+.imprint-section h4 {
+  color: #000000;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.5rem 0;
+  line-height: 1.4;
 }
 
 .imprint-section p {
-  color: #666;
+  color: #000000;
+  font-size: 1rem;
+  font-weight: 400;
   line-height: 1.6;
-  margin-bottom: 0.5rem;
+  margin: 0 0 1rem 0;
 }
 
+.imprint-section a {
+  color: #444DF2;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.imprint-section a:hover {
+  color: #797EF3;
+  text-decoration: underline;
+}
+
+.contact-info {
+  background-color: #ECEEFE;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #444DF2;
+  margin: 1rem 0;
+  line-height: 1.6;
+}
+
+.footer-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid #ECEEFE;
+}
+
+.accept-button {
+  padding: 1rem 2.5rem;
+  background-color: #444DF2;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 8px rgba(68, 77, 242, 0.3);
+}
+
+.accept-button:hover {
+  background-color: #3A42D9;
+  box-shadow: 0 4px 12px rgba(68, 77, 242, 0.4);
+}
+
+.imprint-container::-webkit-scrollbar {
+  width: 12px;
+}
+
+.imprint-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.imprint-container::-webkit-scrollbar-thumb {
+  background: rgba(68, 77, 242, 0.5);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.imprint-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(68, 77, 242, 0.7);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.imprint-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(68, 77, 242, 0.5) rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .imprint-container {
+    padding: 1.5rem;
+  }
+
+  .back-button {
+    top: 1.5rem;
+    left: 1.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .imprint-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .imprint-title {
+    font-size: 2rem;
+  }
+
+  .imprint-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .imprint-section h3 {
+    font-size: 1.25rem;
+  }
+
+  .imprint-section h4 {
+    font-size: 1.0625rem;
+  }
+
+  .imprint-section p {
+    font-size: 0.9375rem;
+  }
+
+  .accept-button {
+    font-size: 1rem;
+    padding: 0.875rem 2rem;
+  }
+}
