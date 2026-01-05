@@ -61,7 +61,6 @@ export class SidebarComponent implements OnInit {
     this.channelsSubscription = this.channelService.getAllChannels()
       .subscribe(channels => {
         this.channels = channels;
-        console.log('📺 Channels updated:', channels.length); // ← Debug
       });
   }
 
@@ -70,7 +69,6 @@ export class SidebarComponent implements OnInit {
       .subscribe(users => {
         const currentUid = this.authService.getCurrentUser()?.uid;
         this.users = users.filter(u => u.uid !== currentUid);
-        console.log('👥 Users updated:', this.users.map(u => `${u.name}: ${u.status}`)); // ← Debug
       });
   }
 
@@ -91,12 +89,11 @@ export class SidebarComponent implements OnInit {
 
   }
 
-  async startDirectMessage(user: any): Promise<void> {
-  this.selectedUserId = user.uid;
-  this.selectedChannelId = null;
-  await this.router.navigate(['/dashboard/chat/user', user.uid]);
-
-}
+  startDirectMessage(user: any): void {
+    this.selectedUserId = user.uid;
+    this.selectedChannelId = null;
+    this.router.navigate(['/dashboard/chat/user', user.uid]);
+  }
 
   openNewChannelModal(): void {
     this.showNewChannelModal = true;

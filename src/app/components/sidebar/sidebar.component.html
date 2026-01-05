@@ -63,7 +63,7 @@
               <li class="user-item display-ai-center"
                   *ngFor="let user of users"
                   [class.active]="selectedUserId === user.uid"
-                  (click)="startDirectMessage(user)">
+                  (mousedown)="startDirectMessage(user)">
                 <div class="user-avatar">
                   <img [src]="user.profileImageUrl || 'assets/avatars/avatar-1.png'" [alt]="user.name" />
                   <span class="status-indicator" [ngClass]="getStatusClass(user)"></span>

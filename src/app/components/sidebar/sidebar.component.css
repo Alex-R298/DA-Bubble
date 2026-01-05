@@ -200,11 +200,12 @@
   gap: 8px;
   padding: 4px 16px;
   cursor: pointer;
-  transition: background 0.2s;
   border-radius: 20px;
   margin-left: 24px;
   width: fit-content;
-  transition: color 0.2s;
+  transition: color 0.2s, background 0.2s;
+  pointer-events: auto;
+  user-select: none;
 }
 
 .channel-item:hover {
@@ -234,11 +235,12 @@
   gap: 15px;
   padding: 4px 20px;
   cursor: pointer;
-  transition: background 0.2s;
   border-radius: 30px;
   margin-left: 24px;
   width: fit-content;
   transition: color 0.125s, background 0.100s;
+  pointer-events: auto;
+  user-select: none;
 }
 
 .user-item:hover {
