@@ -40,28 +40,30 @@ export class MessageService {
     };
   } 
 
-  getMessagesByChannelId(channelId: string): Observable<Message[]> {
-    return new Observable<Message[]>(observer => {
-      const messagesRef = collection(this.firebaseService.db, 'messages'); 
-      
-      const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
-        const messages = snapshot.docs
-          .map(doc => {
-            const data = doc.data();
-            return {
-              id: doc.id, 
-              channelId: data['channelId'],
-              senderId: data['senderId'],
-              content: data['content'],
-              senderName: data['senderName'],
-              timestamp: data['timestamp'].toDate()
-            };
-          })
-          .filter(message => message.channelId === channelId);  
-        observer.next(messages);
-      });
-
-      return () => unsubscribe(); 
+getMessagesByChannelId(channelId: string): Observable<Message[]> {
+  return new Observable<Message[]>(observer => {
+    const messagesRef = collection(this.firebaseService.db, 'messages'); 
+    
+    const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
+      const messages = snapshot.docs
+        .map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id, 
+            channelId: data['channelId'],
+            senderId: data['senderId'],
+            content: data['content'],
+            senderName: data['senderName'],
+            timestamp: data['timestamp'].toDate(),
+            parentMessageId: data['parentMessageId'], 
+            replies: data['replies'] || []              
+          };
+        })
+        .filter(message => message.channelId === channelId && !message.parentMessageId);
+      observer.next(messages);
     });
-  }
+
+    return () => unsubscribe(); 
+  });
+}
 }

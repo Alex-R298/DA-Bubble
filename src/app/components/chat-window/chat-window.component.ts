@@ -5,8 +5,9 @@ import { Subscription, combineLatest } from 'rxjs';
 import { InputFieldComponent } from '../input-field/input-field.component';
 import { ChannelMembersListComponent } from '../channel-members-list/channel-members-list.component';
 import { ChannelService } from '../../services/channel.service';
-import { MessageService } from '../../services/message.service';
+import { Message, MessageService } from '../../services/message.service';
 import { AuthService } from '../../services/auth.service';
+import { ThreadStateService } from '../../services/thread-state.service';
 // import { ChatService } from '../../services/chat.service';
 import { UserService } from '../../services/user.service';
 // import { Channel } from '../../models/channel.model';
@@ -28,6 +29,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private threadStateService = inject(ThreadStateService);
 
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;
 
@@ -35,6 +37,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   currentDMUser: any | null = null;
   messages: any[] = [];
   showMembersList = false;
+  selectedMessage: Message | null = null;
   private shouldScrollToBottom = false;
   private subscriptions: Subscription[] = [];
 
@@ -46,6 +49,11 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     // this.subscribeToMessages();
     this.loadChannel();
   }
+
+ openThread(message: Message): void {
+  this.threadStateService.openThread(message, this.currentChannel!.id!);
+  console.log('Thread geöffnet:', message.id);
+}
 
   private subscribeToRoute(): void {
     this.subscriptions.push(

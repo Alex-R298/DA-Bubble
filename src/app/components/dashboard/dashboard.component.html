@@ -5,7 +5,11 @@
 		<router-outlet></router-outlet>
 	</div>
 
+	@if (selectedMessageId) {
 	<div class="thread-area">
-		<app-thread></app-thread>
+		<app-thread [parentMessageId]="selectedMessageId" [channelId]="selectedChannelId"
+			[parentMessage]="selectedMessage" (threadClosed)="closeThread()">
+		</app-thread>
 	</div>
+	}
 </div>

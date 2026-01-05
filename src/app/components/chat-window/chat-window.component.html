@@ -71,6 +71,13 @@
             <span class="message-timestamp">{{ message.timestamp | date:'short' }}</span>
           </div>
           <div class="message-text">{{ message.content }}</div>
+          <button (click)="openThread(message)">
+            <ng-container *ngIf="message.replies?.length; else noReplies">
+              {{ message.replies.length }}
+              {{ message.replies.length === 1 ? 'Antwort' : 'Antworten' }}
+            </ng-container>
+            <ng-template #noReplies>Antworten</ng-template>
+          </button>
         </div>
       </ng-container>
     </ng-template>
@@ -80,4 +87,3 @@
     <app-input-field (messageSent)="onMessageSent($event)"></app-input-field>
   </div>
 </div>
-
