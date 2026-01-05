@@ -8,6 +8,7 @@ import { AuthService } from '../../services/auth.service';
 // import { Channel } from '../../models/channel.model';
 // import { User } from '../../models/user.model';
 import { ChannelService } from '../../services/channel.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
@@ -22,6 +23,8 @@ export class SidebarComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private channelService = inject(ChannelService);
+   private usersSubscription?: Subscription; // ← NEU
+  private channelsSubscription?: Subscription;
 
   channels: any[] = [];
   users: any[] = [];
@@ -45,15 +48,30 @@ export class SidebarComponent implements OnInit {
     this.subscribeToCurrentUser();
   }
 
+  ngOnDestroy(): void {
+    if (this.usersSubscription) {
+      this.usersSubscription.unsubscribe();
+    }
+    if (this.channelsSubscription) {
+      this.channelsSubscription.unsubscribe();
+    }
+  }
+
   private subscribeToChannels(): void {
-    this.channelService.getAllChannels().subscribe(channels => this.channels = channels);
+    this.channelsSubscription = this.channelService.getAllChannels()
+      .subscribe(channels => {
+        this.channels = channels;
+        console.log('📺 Channels updated:', channels.length); // ← Debug
+      });
   }
 
   private subscribeToUsers(): void {
-    this.userService.getAllUsersRealtime().subscribe(users => {
-      const currentUid = this.authService.getCurrentUser()?.uid;
-      this.users = users.filter(u => u.uid !== currentUid);
-    });
+    this.usersSubscription = this.userService.getAllUsersRealtime()
+      .subscribe(users => {
+        const currentUid = this.authService.getCurrentUser()?.uid;
+        this.users = users.filter(u => u.uid !== currentUid);
+        console.log('👥 Users updated:', this.users.map(u => `${u.name}: ${u.status}`)); // ← Debug
+      });
   }
 
   private subscribeToCurrentUser(): void {
@@ -122,7 +140,9 @@ export class SidebarComponent implements OnInit {
   }
 
   getStatusClass(user: any): string {
-    return user?.status === 'online' ? 'status-online' : 'status-offline';
+    if (user?.status === 'online') return 'status-online';
+    if (user?.status === 'away') return 'status-away'; // ← Away hinzufügen!
+    return 'status-offline';
   }
 }
 

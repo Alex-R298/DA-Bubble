@@ -1,18 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { doc, setDoc, collection, onSnapshot, getDoc, updateDoc } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
-// ===== TEMP-FIX BEGIN (DEV-ONLY, later removable) =====
-// Warum gibt es das?
-// - Ohne Firebase-Config soll die Sidebar/Dashboard trotzdem rendern.
-// - Dafür liefern wir unten bei getAllUsersRealtime() ein leeres Array.
-//
-// Später löschen:
-// - Diese "of"-Import-Zeile wieder entfernen
-// - Und unten den TEMP-FIX-Return of([]) entfernen
-import { Observable, of } from 'rxjs';
-// ===== TEMP-FIX END =====
-// ===== ORIGINAL (Firebase ist konfiguriert) =====
-// import { Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 export interface User {
   uid: string;
@@ -21,6 +10,7 @@ export interface User {
   profileImageUrl: string;
   status: 'online' | 'offline' | 'away';
   createdAt: Date;
+  lastSeen?: Date;
 }
 
 @Injectable({
@@ -30,14 +20,6 @@ export class UserService {
   private firebaseService = inject(FirebaseService);
 
   async createUserProfile(uid: string, email: string, name: string) {
-    // ===== TEMP-FIX BEGIN (DEV-ONLY, later removable) =====
-    // Später löschen: Guard entfernen, sobald Firebase läuft.
-    if (!this.firebaseService.isEnabled()) {
-      throw new Error('Firebase is not configured. Cannot create user profile.');
-    }
-    // ===== TEMP-FIX END =====
-
-    // ===== ORIGINAL (Firebase ist konfiguriert) =====
     const userDoc = doc(this.firebaseService.db, 'users', uid);
 
     const userData = {
@@ -50,19 +32,10 @@ export class UserService {
     };
 
     await setDoc(userDoc, userData);
-    console.log('User-Profil erstellt:', name);
     return userData;
   }
 
   getAllUsersRealtime(): Observable<User[]> {
-    // ===== TEMP-FIX BEGIN (DEV-ONLY, later removable) =====
-    // Ohne Firebase: leere User-Liste liefern, damit UI nicht crasht.
-    if (!this.firebaseService.isEnabled()) {
-      return of([]);
-    }
-    // ===== TEMP-FIX END =====
-
-    // ===== ORIGINAL (Firebase ist konfiguriert) =====
     return new Observable(observer => {
       const usersRef = collection(this.firebaseService.db, 'users');
 
@@ -75,7 +48,8 @@ export class UserService {
             name: data['name'],
             profileImageUrl: data['profileImageUrl'],
             status: data['status'],
-            createdAt: data['createdAt'].toDate()
+            createdAt: data['createdAt'].toDate(),
+            lastSeen: data['lastSeen']?.toDate()
           };
         });
         observer.next(users);
@@ -101,19 +75,56 @@ export class UserService {
       };
     }
 
-    return null;  // ← Wichtig: null zurückgeben wenn User nicht existiert
+    return null;
   }
 
-  async updateUserName(uid: string, name: string): Promise<void> {
+  async updateUserProfile(uid: string, name: string): Promise<void> {
     const nextName = name.trim();
     if (!nextName) return;
 
-    // Keep UI working without Firebase.
-    if (!this.firebaseService.isEnabled()) {
-      return;
-    }
-
     const userDoc = doc(this.firebaseService.db, 'users', uid);
     await updateDoc(userDoc, { name: nextName });
+  }
+
+  async updateUserStatus(uid: string, status: 'online' | 'offline' | 'away'): Promise<void> {
+    const userDoc = doc(this.firebaseService.db, 'users', uid);
+    await updateDoc(userDoc, {
+      status: status,
+      lastSeen: new Date()
+    });
+  }
+
+  updateUserStatusSync(uid: string, status: 'online' | 'offline' | 'away'): void {
+    const userDoc = doc(this.firebaseService.db, 'users', uid);
+    
+    updateDoc(userDoc, {
+      status: status,
+      lastSeen: new Date()
+    }).catch(err => console.error('Status update failed:', err));
+  }
+
+  subscribeToUser(uid: string): Observable<User | null> {
+    return new Observable(observer => {
+      const userDoc = doc(this.firebaseService.db, 'users', uid);
+      
+      const unsubscribe = onSnapshot(userDoc, (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          observer.next({
+            uid: data['uid'],
+            email: data['email'],
+            name: data['name'],
+            profileImageUrl: data['profileImageUrl'],
+            status: data['status'],
+            createdAt: data['createdAt'].toDate(),
+            lastSeen: data['lastSeen']?.toDate()
+          });
+        } else {
+          observer.next(null);
+        }
+      });
+      
+      return () => unsubscribe();
+    });
   }
 }

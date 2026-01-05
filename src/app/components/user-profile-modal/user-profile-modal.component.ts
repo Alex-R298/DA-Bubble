@@ -77,7 +77,7 @@ export class UserProfileModalComponent {
         this.user = { ...this.user, name: nextName };
 
         try {
-            await this.userService.updateUserName(currentUid, nextName);
+            await this.userService.updateUserProfile(currentUid, nextName);
         } catch {
             // If persistence fails (e.g. Firebase disabled), keep the optimistic name.
         }

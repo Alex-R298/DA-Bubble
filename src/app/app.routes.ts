@@ -9,6 +9,7 @@ import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-poli
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ChatWindowComponent } from './components/chat-window/chat-window.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -22,6 +23,7 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [authGuard],
     children: [
       { path: '', component: ChatWindowComponent },
       { path: 'chat/channel/:id', component: ChatWindowComponent },

@@ -4,13 +4,12 @@ import { FirebaseService } from './firebase.service';
 import { Observable } from 'rxjs';
 
 export interface Channel {
-  id?: string;  // Optional, wird von Firebase generiert
+  id?: string;
   createdAt: Date;
-  createdById: string;  // Besser als "createdId"
+  createdById: string;
   name: string;
   description: string;
   members: string[];
-
 }
 
 @Injectable({
@@ -20,15 +19,6 @@ export class ChannelService {
   private firebaseService = inject(FirebaseService);
 
   async createChannel(name: string, description: string, createdById: string): Promise<Channel> {
-    // ===== TEMP-FIX BEGIN (DEV-ONLY, later removable) =====
-    // Ohne Firebase-Config soll die App nicht komplett crashen.
-    // Später löschen: Guard entfernen, sobald Firebase konfiguriert ist.
-    if (!this.firebaseService.isEnabled()) {
-      throw new Error('Firebase is not configured. Cannot create channel.');
-    }
-    // ===== TEMP-FIX END =====
-
-    // ===== ORIGINAL (Firebase ist konfiguriert) =====
     const channelData = {
       createdAt: new Date(),
       createdById: createdById,
@@ -42,8 +32,6 @@ export class ChannelService {
       channelData
     );
 
-    console.log('Kanal erstellt:', name, 'ID:', docRef.id);
-
     return {
       id: docRef.id,
       ...channelData
@@ -52,27 +40,26 @@ export class ChannelService {
 
   getAllChannels(): Observable<Channel[]> {
     return new Observable<Channel[]>(observer => {
-          const channelsRef = collection(this.firebaseService.db, 'channels');
-          
-          const unsubscribe = onSnapshot(channelsRef, (snapshot) => {
-            const channels = snapshot.docs.map(doc => {
-              const data = doc.data();
-              return {
-                name: data['name'],
-                description : data['description'],
-                createdAt: data['createdAt'].toDate(),
-                createdById: data['createdById'],
-                members: data['members'],
-                id: doc.id
-              };
-            });
-            observer.next(channels);
-          });
-          
-          return () => unsubscribe();
+      const channelsRef = collection(this.firebaseService.db, 'channels');
+      
+      const unsubscribe = onSnapshot(channelsRef, (snapshot) => {
+        const channels = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            name: data['name'],
+            description: data['description'],
+            createdAt: data['createdAt'].toDate(),
+            createdById: data['createdById'],
+            members: data['members'],
+            id: doc.id
+          };
         });
+        observer.next(channels);
+      });
+      
+      return () => unsubscribe();
+    });
   }
-
 
   async getChannelById(channelId: string): Promise<Channel | null> {
     const channelDoc = doc(this.firebaseService.db, 'channels', channelId);

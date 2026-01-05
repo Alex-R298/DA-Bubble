@@ -114,6 +114,10 @@
   background: #9ca3af;
 }
 
+.status-indicator.status-away {
+  background: #daac2f;
+}
+
 .user-name {
   font-size: 32px;
   font-weight: 700;
@@ -274,6 +278,10 @@
 
 .profile-status-dot.status-offline {
   background: #9ca3af;
+}
+
+.profile-status-dot.status-away {
+  background: #daac2f;
 }
 
 .profile-status-text {

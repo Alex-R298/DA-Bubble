@@ -5,12 +5,13 @@ import { Message } from '../../models/message.model';
 import { ThreadService } from '../../services/thread.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
+import { MessageItemComponent } from '../message-item/message-item.component';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-thread',
   standalone: true,
-  imports: [CommonModule, DatePipe, InputFieldComponent],
+  imports: [CommonModule, DatePipe, InputFieldComponent , MessageItemComponent],
   templateUrl: './thread.component.html',
   styleUrl: './thread.component.css'
 })

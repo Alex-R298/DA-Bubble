@@ -16,14 +16,14 @@
 
     <div class="user-area">
       <div class="user-info display-ai-center" (click)="toggleUserMenu()">
-        <span class="user-name">{{ userProfile?.name || 'User' }}</span>
+        <span class="user-name">{{ user?.name || 'User' }}</span>
         <div class="user-avatar-wrapper">
           <img
-            [src]="userProfile?.profileImageUrl || 'assets/avatars/avatar-1.png'"
+            [src]="user?.profileImageUrl || 'assets/avatars/avatar-1.png'"
             alt="Profilbild"
             class="user-avatar"
           />
-          <span class="status-indicator" [ngClass]="getStatusClass(userProfile)"></span>
+          <span class="status-indicator" [ngClass]="getStatusClass(user)"></span>
         </div>
         <span class="dropdown-arrow">{{ showUserMenu ? '▲' : '▼' }}</span>
       </div>
@@ -49,19 +49,19 @@
         <div class="profile-avatar-section ui-avatar-center">
           <img
             class="profile-avatar ui-avatar"
-            [src]="userProfile?.profileImageUrl || 'assets/avatars/avatar-1.png'"
+            [src]="user?.profileImageUrl || 'assets/avatars/avatar-1.png'"
             alt="Profilbild"
           />
         </div>
 
         <div class="profile-name-row display-flex-column">
           <div class="profile-name-main display-ai-center">
-            <span class="profile-username">{{ userProfile?.name || 'User' }}</span>
+            <span class="profile-username">{{ user?.name || 'User' }}</span>
             <button class="profile-edit" type="button" (click)="openEditProfile()">Bearbeiten</button>
           </div>
           <div class="profile-status-row display-ai-center">
-            <span class="profile-status-dot" [ngClass]="getStatusClass(userProfile)"></span>
-            <span class="profile-status-text">{{ getStatusText(userProfile) }}</span>
+            <span class="profile-status-dot" [ngClass]="getStatusClass(user)"></span>
+            <span class="profile-status-text">{{ getStatusText(user) }}</span>
           </div>
         </div>
 
@@ -72,7 +72,7 @@
             </svg>
             <span>E-Mail-Adresse</span>
           </div>
-          <div class="profile-email-value">{{ userProfile?.email || 'user@email.com' }}</div>
+          <div class="profile-email-value">{{ user?.email || 'user@email.com' }}</div>
         </div>
       </div>
 
@@ -85,7 +85,7 @@
         <div class="profile-avatar-section ui-avatar-center">
           <img
             class="profile-avatar ui-avatar"
-            [src]="userProfile?.profileImageUrl || 'assets/avatars/avatar-1.png'"
+            [src]="user?.profileImageUrl || 'assets/avatars/avatar-1.png'"
             alt="Profilbild"
           />
         </div>
@@ -102,7 +102,7 @@
             class="edit-input"
             type="text"
             [(ngModel)]="editedFullName"
-            [placeholder]="editNameFocused ? '' : (userProfile?.name || 'User')"
+            [placeholder]="editNameFocused ? '' : (user?.name || 'User')"
             (focus)="onEditNameFocus()"
             (blur)="onEditNameBlur()"
           />

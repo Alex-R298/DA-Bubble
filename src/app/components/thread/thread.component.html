@@ -5,21 +5,19 @@
   </div>
   
   <div class="thread-messages">
-    <div *ngIf="parentMessage" class="original-message">
-      <div class="thread-message-header">
-        <span class="thread-message-sender">{{ parentMessage.senderName }}</span>
-        <span class="thread-message-timestamp">{{ parentMessage.timestamp | date:'short' }}</span>
-      </div>
-      <div class="thread-message-text">{{ parentMessage.content }}</div>
-      <div class="thread-divider">Antworten:</div>
-    </div>
-    <div *ngFor="let message of threadMessages" class="thread-message reply-message">
-      <div class="thread-message-header">
-        <span class="thread-message-sender">{{ message.senderName }}</span>
-        <span class="thread-message-timestamp">{{ message.timestamp | date:'short' }}</span>
-      </div>
-      <div class="thread-message-text">{{ message.content }}</div>
-    </div>
+    <app-message-item 
+      *ngIf="parentMessage" 
+      [message]="parentMessage"
+      class="original-message">
+    </app-message-item>
+    
+    <div *ngIf="parentMessage" class="thread-divider">Antworten:</div>
+    
+    <app-message-item 
+      *ngFor="let message of threadMessages" 
+      [message]="message"
+      class="reply-message">
+    </app-message-item>
     
     <div *ngIf="threadMessages.length === 0 && parentMessage" class="empty-state">
       <p>No replies yet.</p>

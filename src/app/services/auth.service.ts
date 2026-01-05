@@ -1,7 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged 
+} from 'firebase/auth';
 import { FirebaseService } from './firebase.service';
 import { UserService } from './user.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,18 +15,53 @@ import { UserService } from './user.service';
 export class AuthService {
   private firebaseService = inject(FirebaseService);
   private userService = inject(UserService);
+  
+  private authStateSubject = new BehaviorSubject<any>(undefined);
+  authState$ = this.authStateSubject.asObservable();
+  
+  private activityTimeout: any;
+  private currentUserId: string | null = null;
+
+  constructor() {
+    onAuthStateChanged(this.firebaseService.auth, async (user) => {
+      this.authStateSubject.next(user);
+      this.currentUserId = user?.uid || null;
+      
+      if (user) {
+        await this.userService.updateUserStatus(user.uid, 'online');
+        this.startActivityMonitoring(user.uid);
+      }
+    });
+    
+    window.addEventListener('beforeunload', () => {
+      if (this.currentUserId) {
+        this.userService.updateUserStatusSync(this.currentUserId, 'offline');
+      }
+    });
+  }
+
+  private startActivityMonitoring(uid: string): void {
+    const activity = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+    
+    activity.forEach(event => {
+      document.addEventListener(event, () => {
+        this.resetActivityTimer(uid);
+      });
+    });
+    
+    this.resetActivityTimer(uid);
+  }
+
+  private resetActivityTimer(uid: string): void {
+    this.userService.updateUserStatus(uid, 'online');
+    
+    clearTimeout(this.activityTimeout);
+    this.activityTimeout = setTimeout(async () => {
+      await this.userService.updateUserStatus(uid, 'away');
+    }, 5 * 60 * 1000);
+  }
 
   async register(email: string, password: string, name: string) {
-    // ===== TEMP-FIX BEGIN (DEV-ONLY, later removable) =====
-    // Ziel: Ohne Firebase-Config soll die App nicht crashen.
-    // Später löschen: diesen Guard komplett entfernen, sobald Firebase korrekt konfiguriert ist.
-    if (!this.firebaseService.isEnabled()) {
-      throw new Error('Firebase is not configured. Cannot register user.');
-    }
-    // ===== TEMP-FIX END =====
-
-    // ===== ORIGINAL (Firebase ist konfiguriert) =====
-    // -> Dann braucht es keinen Guard.
     const userCredential = await createUserWithEmailAndPassword(
       this.firebaseService.auth,
       email,
@@ -32,14 +73,6 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
-    // ===== TEMP-FIX BEGIN (DEV-ONLY, later removable) =====
-    // Später löschen: Guard entfernen, sobald Firebase korrekt läuft.
-    if (!this.firebaseService.isEnabled()) {
-      throw new Error('Firebase is not configured. Cannot login.');
-    }
-    // ===== TEMP-FIX END =====
-
-    // ===== ORIGINAL (Firebase ist konfiguriert) =====
     const userCredential = await signInWithEmailAndPassword(
       this.firebaseService.auth,
       email,
@@ -49,22 +82,15 @@ export class AuthService {
   }
 
   async logout() {
-    // ===== TEMP-FIX BEGIN (DEV-ONLY, later removable) =====
-    // Ohne Firebase: einfach "no-op", damit UI/Routing weiter funktioniert.
-    if (!this.firebaseService.isEnabled()) return;
-    // ===== TEMP-FIX END =====
-
-    // ===== ORIGINAL (Firebase ist konfiguriert) =====
+    if (this.currentUserId) {
+      await this.userService.updateUserStatus(this.currentUserId, 'offline');
+    }
+    
     await signOut(this.firebaseService.auth);
+    this.currentUserId = null;
   }
 
   getCurrentUser() {
-    // ===== TEMP-FIX BEGIN (DEV-ONLY, later removable) =====
-    // Ohne Firebase: null zurückgeben, damit Komponenten nicht crashen.
-    if (!this.firebaseService.isEnabled()) return null;
-    // ===== TEMP-FIX END =====
-
-    // ===== ORIGINAL (Firebase ist konfiguriert) =====
     return this.firebaseService.auth.currentUser;
   }
 }
