@@ -4,12 +4,14 @@ import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
 import { InputFieldComponent } from '../input-field/input-field.component';
 import { ChannelMembersListComponent } from '../channel-members-list/channel-members-list.component';
+import { UserProfileModalComponent, UserProfileModalUser } from '../user-profile-modal/user-profile-modal.component';
 import { ChannelService } from '../../services/channel.service';
 import { Message, MessageService } from '../../services/message.service';
 import { AuthService } from '../../services/auth.service';
 import { ThreadStateService } from '../../services/thread-state.service';
 // import { ChatService } from '../../services/chat.service';
 import { UserService } from '../../services/user.service';
+import { Router } from '@angular/router';
 // import { Channel } from '../../models/channel.model';
 // import { Message } from '../../models/message.model';
 // import { User } from '../../models/user.model';
@@ -17,7 +19,7 @@ import { UserService } from '../../services/user.service';
 @Component({
   selector: 'app-chat-window',
   standalone: true,
-  imports: [CommonModule, InputFieldComponent, ChannelMembersListComponent],
+  imports: [CommonModule, InputFieldComponent, ChannelMembersListComponent, UserProfileModalComponent],
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.css']
 })
@@ -30,6 +32,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private threadStateService = inject(ThreadStateService);
+  private router = inject(Router);
 
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;
 
@@ -38,8 +41,16 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   messages: any[] = [];
   showMembersList = false;
   selectedMessage: Message | null = null;
+  showUserProfileModal = false;
+  selectedProfileUser: UserProfileModalUser | null = null;
   private shouldScrollToBottom = false;
   private subscriptions: Subscription[] = [];
+
+  isSelectedProfileOwn(): boolean {
+    const currentUid = this.authService.getCurrentUser()?.uid;
+    if (!currentUid) return false;
+    return this.selectedProfileUser?.uid === currentUid;
+  }
 
   ngOnInit(): void {
     // service-based subscriptions are disabled while stubs/models are missing
@@ -50,10 +61,10 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.loadChannel();
   }
 
- openThread(message: Message): void {
-  this.threadStateService.openThread(message, this.currentChannel!.id!);
-  console.log('Thread geöffnet:', message.id);
-}
+  openThread(message: Message): void {
+    this.threadStateService.openThread(message, this.currentChannel!.id!);
+    console.log('Thread geöffnet:', message.id);
+  }
 
   private subscribeToRoute(): void {
     this.subscriptions.push(
@@ -144,6 +155,55 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   toggleMembersList(): void {
     this.showMembersList = !this.showMembersList;
+  }
+
+  openUserProfile(user: any): void {
+    if (!user) return;
+    this.setSelectedProfileUser(user);
+    this.showUserProfileModal = true;
+    this.enrichOwnProfile();
+  }
+
+  private setSelectedProfileUser(user: any): void {
+    this.selectedProfileUser = {
+      uid: user.uid,
+      name: user.name,
+      email: user.email,
+      profileImageUrl: user.profileImageUrl,
+      status: user.status
+    };
+  }
+
+  private enrichOwnProfile(): void {
+    const currentUid = this.authService.getCurrentUser()?.uid;
+    if (currentUid && currentUid === this.selectedProfileUser?.uid) {
+      this.userService.getUserById(currentUid).then(full => this.updateProfileWithFullData(full, currentUid));
+    }
+  }
+
+  private updateProfileWithFullData(full: any, currentUid: string): void {
+    if (!full || !this.selectedProfileUser) return;
+    if (this.selectedProfileUser.uid !== currentUid) return;
+    this.selectedProfileUser = {
+      uid: full.uid,
+      name: full.name,
+      email: full.email,
+      profileImageUrl: full.profileImageUrl,
+      status: full.status
+    };
+  }
+
+  closeUserProfile(): void {
+    this.showUserProfileModal = false;
+    this.selectedProfileUser = null;
+  }
+
+  async startDirectMessageFromProfile(user: UserProfileModalUser): Promise<void> {
+    this.closeUserProfile();
+    if (!user?.uid) return;
+    // If the user clicked their own profile (shouldn't happen when button is hidden), do nothing.
+    if (user.uid === this.authService.getCurrentUser()?.uid) return;
+    await this.router.navigate(['/dashboard/chat/user', user.uid]);
   }
 
   async onMessageSent(text: string): Promise<void> {
