@@ -1,17 +1,17 @@
-<div class="sidebar-wrapper">
-  <button class="btn-toggle" (click)="toggleSidebar()">
+<div class="sidebar-wrapper display-ai-center">
+  <button class="btn-toggle display-center-center display-flex-column" (click)="toggleSidebar()">
     <span class="toggle-icon">{{ isCollapsed ? '▶' : '◀' }}</span>
     <span class="toggle-text">{{ isCollapsed ? 'Workspace-Menü öffnen' : 'Workspace-Menü schließen' }}</span>
   </button>
 
-  <aside class="sidebar" [class.collapsed]="isCollapsed">
-    <div class="sidebar-header">
+  <aside class="sidebar display-flex-column" [class.collapsed]="isCollapsed">
+    <div class="sidebar-header display-ai-center">
       <ng-container *ngIf="!isCollapsed">
-        <div class="header-left">
+        <div class="header-left display-ai-center">
           (img)
           <h2>Devspace</h2>
         </div>
-        <button class="btn-new-chat" (click)="openNewChannelModal()">
+        <button class="btn-new-chat display-ai-center" (click)="openNewChannelModal()">
           <span class="icon">(img)</span>
         </button>
       </ng-container>
@@ -20,14 +20,14 @@
     <ng-container *ngIf="!isCollapsed">
       <div class="sidebar-content">
         <div class="sidebar-section">
-          <div class="section-header" (click)="toggleChannels()">
+          <div class="section-header display-ai-center" (click)="toggleChannels()">
             <span class="expand-icon">{{ channelsExpanded ? '▼' : '▶' }}</span>
             <span class="section-title">(img) Channels</span>
             <button class="btn-add" (click)="openNewChannelModal(); $event.stopPropagation()" title="Channel hinzufügen">+</button>
           </div>
 
           <ng-container *ngIf="channelsExpanded">
-            <ul class="channel-list" *ngIf="channels.length; else noChannels">
+            <ul class="channel-list display-flex-column" *ngIf="channels.length; else noChannels">
               <li class="channel-item"
                   *ngFor="let channel of channels"
                   [class.active]="selectedChannelId === channel.id"
@@ -43,14 +43,14 @@
         </div>
 
         <div class="sidebar-section">
-          <div class="section-header" (click)="toggleDirectMessages()">
+          <div class="section-header display-ai-center" (click)="toggleDirectMessages()">
             <span class="expand-icon">{{ directMessagesExpanded ? '▼' : '▶' }}</span>
             <span class="section-title">(img) Direktnachrichten</span>
           </div>
 
           <ng-container *ngIf="directMessagesExpanded">
-            <ul class="user-list" *ngIf="users.length; else noUsers">
-              <li class="user-item"
+            <ul class="user-list display-flex-column" *ngIf="users.length; else noUsers">
+              <li class="user-item display-ai-center"
                   *ngFor="let user of users"
                   [class.active]="selectedUserId === user.uid"
                   (click)="startDirectMessage(user)">
@@ -71,7 +71,7 @@
   </aside>
 
   <ng-container *ngIf="showNewChannelModal">
-    <div class="modal-overlay" (click)="closeNewChannelModal()">
+    <div class="modal-overlay display-center-center" (click)="closeNewChannelModal()">
       <div class="modal ui-panel ui-panel--modal" (click)="$event.stopPropagation()">
         <div class="modal-header ui-panel-header">
         <h3>Channel erstellen</h3>

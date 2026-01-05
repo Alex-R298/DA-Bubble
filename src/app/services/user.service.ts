@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { doc, setDoc, collection, onSnapshot, getDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, onSnapshot, getDoc, updateDoc } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
 // ===== TEMP-FIX BEGIN (DEV-ONLY, later removable) =====
 // Warum gibt es das?
@@ -86,21 +86,34 @@ export class UserService {
   }
 
   async getUserById(uid: string): Promise<User | null> {
-  const userDoc = doc(this.firebaseService.db, 'users', uid);
-  const docSnap = await getDoc(userDoc);
-  
-  if (docSnap.exists()) {
-    const data = docSnap.data();
-    return {
-      uid: data['uid'],
-      email: data['email'],
-      name: data['name'],
-      profileImageUrl: data['profileImageUrl'],
-      status: data['status'],
-      createdAt: data['createdAt'].toDate()
-    };
+    const userDoc = doc(this.firebaseService.db, 'users', uid);
+    const docSnap = await getDoc(userDoc);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      return {
+        uid: data['uid'],
+        email: data['email'],
+        name: data['name'],
+        profileImageUrl: data['profileImageUrl'],
+        status: data['status'],
+        createdAt: data['createdAt'].toDate()
+      };
+    }
+
+    return null;  // ← Wichtig: null zurückgeben wenn User nicht existiert
   }
-  
-  return null;  // ← Wichtig: null zurückgeben wenn User nicht existiert
-}
+
+  async updateUserName(uid: string, name: string): Promise<void> {
+    const nextName = name.trim();
+    if (!nextName) return;
+
+    // Keep UI working without Firebase.
+    if (!this.firebaseService.isEnabled()) {
+      return;
+    }
+
+    const userDoc = doc(this.firebaseService.db, 'users', uid);
+    await updateDoc(userDoc, { name: nextName });
+  }
 }

@@ -32,6 +32,38 @@
     border-radius: 30px;
 }
 
+.display-flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.display-flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.display-ai-center {
+    display: flex;
+    align-items: center;
+}
+
+.display-center-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.display-jc-center {
+    display: flex;
+    justify-content: center;
+}
+
+.display-ai-center-jc-spacebetween {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .ui-panel-header {
     display: flex;
     align-items: center;

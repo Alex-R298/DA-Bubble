@@ -14,8 +14,13 @@
     <ng-template #dmOrChoose>
       <ng-container *ngIf="currentDMUser; else chooseOne">
         <div class="channel-info dm-info">
-          <img [src]="currentDMUser.profileImageUrl" [alt]="currentDMUser.name" class="dm-avatar" />
-          <h3>{{ currentDMUser.name }}</h3>
+          <img
+            [src]="currentDMUser.profileImageUrl"
+            [alt]="currentDMUser.name"
+            class="dm-avatar dm-profile-trigger"
+            (click)="openUserProfile(currentDMUser)"
+          />
+          <h3 class="dm-profile-trigger" (click)="openUserProfile(currentDMUser)">{{ currentDMUser.name }}</h3>
           <span class="dm-status" [class.online]="currentDMUser.status === 'online'">
             {{ currentDMUser.status === 'online' ? 'Online' : 'Offline' }}
           </span>
@@ -46,9 +51,19 @@
         </ng-container>
         <ng-template #dmOrNoneSelected>
           <ng-container *ngIf="currentDMUser; else noneSelected">
-            <h2 class="empty-title">{{ currentDMUser.name }}</h2>
+            <div class="dm-empty-header">
+              <img
+                [src]="currentDMUser.profileImageUrl"
+                [alt]="currentDMUser.name"
+                class="dm-empty-avatar"
+                (click)="openUserProfile(currentDMUser)"
+              />
+              <h2 class="empty-title dm-profile-trigger" (click)="openUserProfile(currentDMUser)">{{ currentDMUser.name }}</h2>
+            </div>
             <p class="empty-text">
-              Das ist der Anfang eures Gesprächs mit {{ currentDMUser.name }}.
+              Diese Unterhaltung findet nur zwischen
+              <span class="dm-mention dm-profile-trigger" (click)="openUserProfile(currentDMUser)">&#64;{{ currentDMUser.name }}</span>
+              und dir statt.
             </p>
           </ng-container>
           <ng-template #noneSelected>
@@ -86,4 +101,13 @@
   <div class="input-container">
     <app-input-field (messageSent)="onMessageSent($event)"></app-input-field>
   </div>
+
+  <app-user-profile-modal
+    *ngIf="showUserProfileModal"
+    [user]="selectedProfileUser"
+    [allowEdit]="isSelectedProfileOwn()"
+    [showMessageButton]="!isSelectedProfileOwn()"
+    (closed)="closeUserProfile()"
+    (message)="startDirectMessageFromProfile($event)"
+  ></app-user-profile-modal>
 </div>
