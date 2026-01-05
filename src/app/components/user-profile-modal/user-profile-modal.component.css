@@ -83,11 +83,11 @@
 }
 
 .profile-status-dot.status-online {
-    background: #22c55e;
+    background: #92C83E;
 }
 
 .profile-status-dot.status-offline {
-    background: #9ca3af;
+    background: #686868;
 }
 
 .profile-status-text {
