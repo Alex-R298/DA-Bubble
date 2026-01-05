@@ -12,6 +12,7 @@ import { ThreadStateService } from '../../services/thread-state.service';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { DirectMessageService } from '../../services/direct-message.service';
+import { NewMessageStateService } from '../../services/new-message-state.service';
 
 @Component({
   selector: 'app-chat-window',
@@ -29,6 +30,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   private threadStateService = inject(ThreadStateService);
   private router = inject(Router);
   private directMessageService = inject(DirectMessageService);
+  private newMessageStateService = inject(NewMessageStateService);
   private messagesSubscription?: Subscription;
 
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;
@@ -36,6 +38,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   currentChannel: any | null = null;
   currentDMUser: any | null = null;
   messages: any[] = [];
+  isNewMessageMode = false;
+  newMessageRecipient = '';
   showMembersList = false;
   selectedMessage: Message | null = null;
   showUserProfileModal = false;
@@ -50,6 +54,16 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   }
 
   ngOnInit(): void {
+    this.subscriptions.push(
+      this.newMessageStateService.isNewMessageActive$.subscribe(isActive => {
+        this.isNewMessageMode = isActive;
+        if (isActive) {
+          this.showMembersList = false;
+          this.newMessageRecipient = '';
+          this.messages = [];
+        }
+      })
+    );
     this.loadChannel();
   }
 
@@ -58,55 +72,63 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   }
 
   private loadChannel(): void {
-  if (this.messagesSubscription) {
-    this.messagesSubscription.unsubscribe();
-  }
-  
-  this.subscriptions.push(
-    this.route.params.subscribe(async params => {
-      const channelId = params['id'];
-      const userId = params['userId'];
-      
-      if (channelId) {
-        this.currentChannel = await this.channelService.getChannelById(channelId);
-        this.currentDMUser = null;
-        
-        if (this.messagesSubscription) {
-          this.messagesSubscription.unsubscribe();
-        }
-        
-        this.messagesSubscription = this.messageService.getMessagesByChannelId(channelId)
-          .subscribe(messages => {
-            if (messages.length > this.messages.length) {
-              this.shouldScrollToBottom = true;
-            }
-            this.messages = messages;
-          });
-          
-      } else if (userId) {
-        this.currentChannel = null;
-        this.currentDMUser = await this.userService.getUserById(userId);
-        
-        const currentUserId = this.authService.getCurrentUser()?.uid;
-        if (currentUserId && this.currentDMUser) {
-          const conversationId = this.createConversationId(currentUserId, userId);
-          
+    if (this.messagesSubscription) {
+      this.messagesSubscription.unsubscribe();
+    }
+
+    this.subscriptions.push(
+      this.route.params.subscribe(async params => {
+        const channelId = params['id'];
+        const userId = params['userId'];
+
+        if (channelId) {
+          this.newMessageStateService.closeNewMessage();
+          this.currentChannel = await this.channelService.getChannelById(channelId);
+          this.currentDMUser = null;
+
           if (this.messagesSubscription) {
             this.messagesSubscription.unsubscribe();
           }
-          
-          this.messagesSubscription = this.directMessageService.getMessagesByConversationId(conversationId)
+
+          this.messagesSubscription = this.messageService.getMessagesByChannelId(channelId)
             .subscribe(messages => {
               if (messages.length > this.messages.length) {
                 this.shouldScrollToBottom = true;
               }
               this.messages = messages;
             });
+
+        } else if (userId) {
+          this.newMessageStateService.closeNewMessage();
+          this.currentChannel = null;
+          this.currentDMUser = await this.userService.getUserById(userId);
+
+          const currentUserId = this.authService.getCurrentUser()?.uid;
+          if (currentUserId && this.currentDMUser) {
+            const conversationId = this.createConversationId(currentUserId, userId);
+
+            if (this.messagesSubscription) {
+              this.messagesSubscription.unsubscribe();
+            }
+
+            this.messagesSubscription = this.directMessageService.getMessagesByConversationId(conversationId)
+              .subscribe(messages => {
+                if (messages.length > this.messages.length) {
+                  this.shouldScrollToBottom = true;
+                }
+                this.messages = messages;
+              });
+          }
+        } else {
+          // No route params selected (e.g. /dashboard)
+          this.currentChannel = null;
+          this.currentDMUser = null;
+          this.messages = [];
+          this.showMembersList = false;
         }
-      }
-    })
-  );
-}
+      })
+    );
+  }
 
   private createConversationId(userId1: string, userId2: string): string {
     const [first, second] = [userId1, userId2].sort();
@@ -187,10 +209,10 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   async onMessageSent(text: string): Promise<void> {
     if (!text.trim()) return;
-    
+
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) return;
-    
+
     const userData = await this.userService.getUserById(currentUser.uid);
     const senderName = userData?.name || currentUser.displayName || 'Unbekannt';
 
@@ -203,7 +225,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
       );
     } else if (this.currentDMUser) {
       const conversationId = this.createConversationId(currentUser.uid, this.currentDMUser.uid);
-      
+
       await this.directMessageService.createDirectMessage(
         conversationId,
         currentUser.uid,

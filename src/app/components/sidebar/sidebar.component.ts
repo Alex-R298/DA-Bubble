@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth.service';
 // import { User } from '../../models/user.model';
 import { ChannelService } from '../../services/channel.service';
 import { Subscription } from 'rxjs';
+import { NewMessageStateService } from '../../services/new-message-state.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -23,7 +24,8 @@ export class SidebarComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private channelService = inject(ChannelService);
-   private usersSubscription?: Subscription; // ← NEU
+  private newMessageStateService = inject(NewMessageStateService);
+  private usersSubscription?: Subscription; // ← NEU
   private channelsSubscription?: Subscription;
 
   channels: any[] = [];
@@ -81,6 +83,7 @@ export class SidebarComponent implements OnInit {
   toggleDirectMessages(): void { this.directMessagesExpanded = !this.directMessagesExpanded; }
 
   selectChannel(channel: any): void {
+    this.newMessageStateService.closeNewMessage();
     this.selectedChannelId = channel.id;
     this.selectedUserId = null;
     // this.chatService.selectChannel(channel.id);
@@ -90,9 +93,15 @@ export class SidebarComponent implements OnInit {
   }
 
   startDirectMessage(user: any): void {
+    this.newMessageStateService.closeNewMessage();
     this.selectedUserId = user.uid;
     this.selectedChannelId = null;
     this.router.navigate(['/dashboard/chat/user', user.uid]);
+  }
+
+  openNewMessage(): void {
+    this.newMessageStateService.openNewMessage();
+    this.router.navigate(['/dashboard']);
   }
 
   openNewChannelModal(): void {
