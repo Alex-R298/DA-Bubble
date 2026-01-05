@@ -9,12 +9,9 @@ import { ChannelService } from '../../services/channel.service';
 import { Message, MessageService } from '../../services/message.service';
 import { AuthService } from '../../services/auth.service';
 import { ThreadStateService } from '../../services/thread-state.service';
-// import { ChatService } from '../../services/chat.service';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
-// import { Channel } from '../../models/channel.model';
-// import { Message } from '../../models/message.model';
-// import { User } from '../../models/user.model';
+import { DirectMessageService } from '../../services/direct-message.service';
 
 @Component({
   selector: 'app-chat-window',
@@ -24,8 +21,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./chat-window.component.css']
 })
 export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked {
-  // private chatService = inject(ChatService);
-  // private userService = inject(UserService);
   private route = inject(ActivatedRoute);
   private channelService = inject(ChannelService);
   private messageService = inject(MessageService);
@@ -33,6 +28,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   private userService = inject(UserService);
   private threadStateService = inject(ThreadStateService);
   private router = inject(Router);
+  private directMessageService = inject(DirectMessageService);
+  private messagesSubscription?: Subscription;
 
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;
 
@@ -53,91 +50,74 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   }
 
   ngOnInit(): void {
-    // service-based subscriptions are disabled while stubs/models are missing
-    // this.subscribeToRoute();
-    // this.subscribeToChannel();
-    // this.subscribeToDMUser();
-    // this.subscribeToMessages();
     this.loadChannel();
   }
 
   openThread(message: Message): void {
     this.threadStateService.openThread(message, this.currentChannel!.id!);
-    console.log('Thread geöffnet:', message.id);
-  }
-
-  private subscribeToRoute(): void {
-    this.subscriptions.push(
-      combineLatest([this.route.url, this.route.params]).subscribe(([segments, params]) => {
-        this.handleRouteChange(segments, params['id']);
-      })
-    );
-  }
-
-  private handleRouteChange(segments: UrlSegment[], id: string): void {
-    const path = segments.map(s => s.path).join('/');
-    if (path.includes('channel') && id) {
-      this.currentDMUser = null;
-      // this.chatService.selectChannel(id);
-    } else if (path.includes('user') && id) {
-      this.currentChannel = null;
-      // this.chatService.selectDirectMessage(id);
-      // this.loadDMUser(id);
-    }
-  }
-
-  private subscribeToChannel(): void {
-    // disabled until ChatService is available
-    // this.subscriptions.push(
-    //   this.chatService.currentChannel$.subscribe(channel => {
-    //     this.currentChannel = channel;
-    //     if (channel) this.currentDMUser = null;
-    //     this.shouldScrollToBottom = true;
-    //   })
-    // );
-  }
-
-  private subscribeToDMUser(): void {
-    // disabled until ChatService is available
-    // this.subscriptions.push(
-    //   this.chatService.currentDMUserId$.subscribe(userId => {
-    //     if (userId) this.loadDMUser(userId);
-    //   })
-    // );
-  }
-
-  private subscribeToMessages(): void {
-    // disabled until ChatService is available
-    // this.subscriptions.push(
-    //   this.chatService.messages$.subscribe(messages => {
-    //     if (messages.length > this.messages.length) this.shouldScrollToBottom = true;
-    //     this.messages = messages;
-    //   })
-    // );
-  }
-
-  private loadDMUser(userId: string): void {
-    // disabled until UserService is available
-    // this.userService.getUser(userId).then(user => this.currentDMUser = user);
   }
 
   private loadChannel(): void {
+  if (this.messagesSubscription) {
+    this.messagesSubscription.unsubscribe();
+  }
+  
+  this.subscriptions.push(
     this.route.params.subscribe(async params => {
       const channelId = params['id'];
+      const userId = params['userId'];
+      
       if (channelId) {
         this.currentChannel = await this.channelService.getChannelById(channelId);
-        console.log('Channel geladen:', this.currentChannel);
-
-        this.messageService.getMessagesByChannelId(channelId).subscribe(messages => {
-          this.messages = messages;
-          console.log('Messages geladen:', messages);
-        });
+        this.currentDMUser = null;
+        
+        if (this.messagesSubscription) {
+          this.messagesSubscription.unsubscribe();
+        }
+        
+        this.messagesSubscription = this.messageService.getMessagesByChannelId(channelId)
+          .subscribe(messages => {
+            if (messages.length > this.messages.length) {
+              this.shouldScrollToBottom = true;
+            }
+            this.messages = messages;
+          });
+          
+      } else if (userId) {
+        this.currentChannel = null;
+        this.currentDMUser = await this.userService.getUserById(userId);
+        
+        const currentUserId = this.authService.getCurrentUser()?.uid;
+        if (currentUserId && this.currentDMUser) {
+          const conversationId = this.createConversationId(currentUserId, userId);
+          
+          if (this.messagesSubscription) {
+            this.messagesSubscription.unsubscribe();
+          }
+          
+          this.messagesSubscription = this.directMessageService.getMessagesByConversationId(conversationId)
+            .subscribe(messages => {
+              if (messages.length > this.messages.length) {
+                this.shouldScrollToBottom = true;
+              }
+              this.messages = messages;
+            });
+        }
       }
-    });
+    })
+  );
+}
+
+  private createConversationId(userId1: string, userId2: string): string {
+    const [first, second] = [userId1, userId2].sort();
+    return `${first}_${second}`;
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+    if (this.messagesSubscription) {
+      this.messagesSubscription.unsubscribe();
+    }
   }
 
   ngAfterViewChecked(): void {
@@ -201,29 +181,39 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   async startDirectMessageFromProfile(user: UserProfileModalUser): Promise<void> {
     this.closeUserProfile();
     if (!user?.uid) return;
-    // If the user clicked their own profile (shouldn't happen when button is hidden), do nothing.
     if (user.uid === this.authService.getCurrentUser()?.uid) return;
     await this.router.navigate(['/dashboard/chat/user', user.uid]);
   }
 
   async onMessageSent(text: string): Promise<void> {
-    if (!text.trim() || !this.currentChannel) return;
+    if (!text.trim()) return;
+    
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) return;
+    
     const userData = await this.userService.getUserById(currentUser.uid);
     const senderName = userData?.name || currentUser.displayName || 'Unbekannt';
 
-    await this.messageService.createMessage(
-      this.currentChannel.id!,
-      currentUser.uid,
-      text.trim(),
-      senderName
-    );
+    if (this.currentChannel) {
+      await this.messageService.createMessage(
+        this.currentChannel.id!,
+        currentUser.uid,
+        text.trim(),
+        senderName
+      );
+    } else if (this.currentDMUser) {
+      const conversationId = this.createConversationId(currentUser.uid, this.currentDMUser.uid);
+      
+      await this.directMessageService.createDirectMessage(
+        conversationId,
+        currentUser.uid,
+        text.trim(),
+        senderName
+      );
+    }
   }
 
-
-
-  getMessageDate(message: any): string { // Message type not available yet
+  getMessageDate(message: any): string {
     const date = new Date(message.timestamp);
     if (this.isToday(date)) return 'Heute';
     if (this.isYesterday(date)) return 'Gestern';
@@ -292,7 +282,6 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
       return isNaN(parsed.getTime()) ? null : parsed;
     }
 
-    // Firestore Timestamp-like: { toDate(): Date }
     const maybeToDate = (value as any)?.toDate;
     if (typeof maybeToDate === 'function') {
       const date = maybeToDate.call(value);
@@ -302,4 +291,3 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     return null;
   }
 }
-

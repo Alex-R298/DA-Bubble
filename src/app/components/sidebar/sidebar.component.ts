@@ -92,13 +92,11 @@ export class SidebarComponent implements OnInit {
   }
 
   async startDirectMessage(user: any): Promise<void> {
-    this.selectedUserId = user.uid;
-    this.selectedChannelId = null;
-    // const conversationId = await this.chatService.startDirectMessage(user.uid);
-    this.router.navigate(['/dashboard/chat/user', user.uid]);
+  this.selectedUserId = user.uid;
+  this.selectedChannelId = null;
+  await this.router.navigate(['/dashboard/chat/user', user.uid]);
 
-
-  }
+}
 
   openNewChannelModal(): void {
     this.showNewChannelModal = true;

@@ -27,7 +27,7 @@ export const routes: Routes = [
     children: [
       { path: '', component: ChatWindowComponent },
       { path: 'chat/channel/:id', component: ChatWindowComponent },
-      { path: 'chat/user/:id', component: ChatWindowComponent }
+      { path: 'chat/user/:userId', component: ChatWindowComponent }
     ]
   },
   { path: '**', component: PageNotFoundComponent, data: { hideHeaderFooter: true } }
