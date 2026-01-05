@@ -10,6 +10,7 @@
 
 .logo-area {
   min-width: 320px;
+  width: 360px;
   height: 100%;
   gap: 12px;
   padding-left: 8px;
@@ -103,15 +104,15 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 2px solid #3f3d56;
+  border: 2px solid white;
 }
 
 .status-indicator.status-online {
-  background: #22c55e;
+  background: #92C83E;
 }
 
 .status-indicator.status-offline {
-  background: #9ca3af;
+  background: #686868;
 }
 
 .status-indicator.status-away {

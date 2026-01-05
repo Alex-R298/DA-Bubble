@@ -39,6 +39,16 @@
             <ng-template #noChannels>
               <div class="empty-state"> Keine Channels </div>
             </ng-template>
+
+            <button
+              type="button"
+              class="btn-add-channel display-ai-center"
+              (click)="openNewChannelModal(); $event.stopPropagation()"
+              title="Channel hinzufügen"
+            >
+              <span class="btn-add-channel-icon" aria-hidden="true">(img)</span>
+              <span>Channel hinzufügen</span>
+            </button>
           </ng-container>
         </div>
 

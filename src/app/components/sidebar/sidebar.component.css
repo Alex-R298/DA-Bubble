@@ -9,21 +9,25 @@
   left: -16px;
   top: 70%;
   transform: translateY(-70%);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transform-origin: left center;
+  font-family: inherit;
+  font-weight: 500;
   gap: 8px;
   background: white;
   border: none;
-  box-shadow: #33333335 0px 2px 2px 2px;
+  box-shadow: 4px 4px 7px 0px #00000033;
   cursor: pointer;
-  padding: 12px 8px;
-  border-radius: 0 20px 20px 0;
+  padding: 20px 12px;
+  border-radius: 0 30px 30px 0;
   height: auto;
-  transition: background 0.2s;
+  transition: transform 0.125s ease, color 0.125s ease, font-weight 0.125s ease;
   z-index: 100;
 }
 
 .btn-toggle:hover {
-  background: #d9dbf7;
+  transform: translateY(-70%) scale(1.02);
+  color: #444DF2;
+  font-weight: 700;
 }
 
 .btn-toggle .toggle-text {
@@ -31,7 +35,7 @@
   text-orientation: mixed;
   transform: rotate(180deg);
   font-size: 16px;
-  font-weight: 500;
+  font-weight: inherit;
   white-space: nowrap;
 }
 
@@ -41,12 +45,13 @@
 
 .sidebar {
   position: relative;
-  width: 320px;
+  width: 360px;
   height: 100%;
   background: white;
   color: black;
   transition: width 0.3s ease;
   border-radius: 30px;
+  padding: 32px 30px;
   overflow: hidden;
 }
 
@@ -82,8 +87,8 @@
 }
 
 .sidebar-header {
+  display: flex;
   justify-content: space-between;
-  padding: 16px;
   min-height: 70px;
 }
 
@@ -119,7 +124,7 @@
 
 .section-header {
   gap: 8px;
-  padding: 8px 16px;
+  padding-left: 8px;
   cursor: pointer;
   transition: background 0.2s;
   margin-bottom: 16px;
@@ -140,6 +145,11 @@
   font-weight: 700;
   font-size: 20px;
   color: rgba(0, 0, 0, 0.8);
+  transition: color 0.2s;
+}
+
+.section-title:hover {
+  color: #444DF2;
 }
 
 .btn-add {
@@ -165,6 +175,25 @@
   gap: 8px;
 }
 
+.btn-add-channel {
+  margin-left: 24px;
+  margin-top: 10px;
+  gap: 10px;
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: black;
+  border-radius: 20px;
+  font-family: inherit;
+}
+
+.btn-add-channel:hover {
+  color: #444DF2;
+}
+
 .channel-item {
   display: inline-flex;
   align-items: center;
@@ -173,11 +202,13 @@
   cursor: pointer;
   transition: background 0.2s;
   border-radius: 20px;
-  margin-left: 32px;
+  margin-left: 24px;
   width: fit-content;
+  transition: color 0.2s;
 }
 
 .channel-item:hover {
+  color: #444DF2;
   background: rgba(120, 125, 245, 0.15);
 }
 
@@ -191,7 +222,7 @@
 }
 
 .channel-icon {
-  color: rgba(0, 0, 0, 0.6);
+  color: black;
   font-weight: bold;
 }
 
@@ -200,16 +231,18 @@
 }
 
 .user-item {
-  gap: 10px;
-  padding: 4px 16px;
+  gap: 15px;
+  padding: 4px 20px;
   cursor: pointer;
   transition: background 0.2s;
-  border-radius: 20px;
-  margin-left: 32px;
+  border-radius: 30px;
+  margin-left: 24px;
   width: fit-content;
+  transition: color 0.125s, background 0.100s;
 }
 
 .user-item:hover {
+  color: #444DF2;
   background: rgba(120, 125, 245, 0.15);
 }
 
@@ -224,8 +257,8 @@
 
 .user-avatar {
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 50px;
+  height: 50px;
 }
 
 .user-avatar img {
@@ -239,28 +272,28 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 10px;
-  height: 10px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  border: 2px solid #3f3d56;
+  border: 2px solid white;
 }
 
 .status-indicator.status-online {
-  background: #22c55e;
+  background: #92C83E;
 }
 
 .status-indicator.status-offline {
-  background: #9ca3af;
+  background: #686868;
 }
 
 .user-name {
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .empty-state {
   padding: 12px 16px 12px 32px;
   color: rgba(0, 0, 0, 0.5);
-  font-size: 13px;
+  font-size: 0.9rem;
   font-style: italic;
 }
 
@@ -281,7 +314,7 @@
 }
 
 .modal h3 {
-  font-size: 24px;
+  font-size: 1.5rem;
 }
 
 .modal p {
