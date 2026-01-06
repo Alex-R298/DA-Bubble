@@ -4,11 +4,12 @@ import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
+import { HeaderLoginComponent } from '../header-login/header-login.component';
 
 @Component({
   selector: 'app-choose-avatar',
   standalone: true,
-  imports: [CommonModule, RouterModule, SvgImagesComponent],
+  imports: [CommonModule, RouterModule, SvgImagesComponent, HeaderLoginComponent],
   templateUrl: './choose-avatar.component.html',
   styleUrl: './choose-avatar.component.css'
 })
@@ -42,10 +43,6 @@ export class ChooseAvatarComponent implements OnInit {
 
   selectAvatar(index: number): void {
     this.selectedAvatar = index;
-  }
-
-  goBack(): void {
-    this.router.navigate(['/signup']);
   }
 
   async onContinue(): Promise<void> {
