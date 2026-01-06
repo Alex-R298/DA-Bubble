@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -36,6 +36,8 @@ export class SidebarComponent implements OnInit {
   selectedUserId: string | null = null;
 
   isCollapsed = false;
+
+  @Output() collapsedChange = new EventEmitter<boolean>();
   channelsExpanded = true;
   directMessagesExpanded = true;
 
@@ -78,7 +80,10 @@ export class SidebarComponent implements OnInit {
     // this.authService.userProfile$.subscribe(user => this.currentUser = user);
   }
 
-  toggleSidebar(): void { this.isCollapsed = !this.isCollapsed; }
+  toggleSidebar(): void {
+    this.isCollapsed = !this.isCollapsed;
+    this.collapsedChange.emit(this.isCollapsed);
+  }
   toggleChannels(): void { this.channelsExpanded = !this.channelsExpanded; }
   toggleDirectMessages(): void { this.directMessagesExpanded = !this.directMessagesExpanded; }
 

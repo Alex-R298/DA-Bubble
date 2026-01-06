@@ -98,7 +98,7 @@
 
 .sidebar-header h2 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.3rem;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -146,7 +146,7 @@
 .section-title {
   flex: 1;
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: rgba(0, 0, 0, 0.8);
   transition: color 0.2s;
 }
@@ -186,7 +186,7 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 400;
   color: black;
   border-radius: 20px;
@@ -322,14 +322,14 @@
 }
 
 .modal p {
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 1.2rem;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: black;
 }
 
@@ -342,7 +342,7 @@
   left: 24px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #686868;
   pointer-events: none;
@@ -374,7 +374,7 @@
   border: none;
   padding: 12px 25px;
   border-radius: 25px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s;

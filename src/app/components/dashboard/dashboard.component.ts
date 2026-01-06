@@ -24,6 +24,8 @@ export class DashboardComponent implements OnInit {
   currentUserName: string = '';
   selectedMessage: Message | null = null;
 
+  isSidebarCollapsed = false;
+
   constructor() {
     this.loadCurrentUserName();
   }
@@ -47,10 +49,14 @@ export class DashboardComponent implements OnInit {
     if (currentUser) {
       const userData = await this.userService.getUserById(currentUser.uid);
       this.currentUserName = userData?.name || 'Unbekannt';
-      }
+    }
   }
 
   closeThread(): void {
     this.threadStateService.closeThread();
+  }
+
+  onSidebarCollapsedChange(isCollapsed: boolean): void {
+    this.isSidebarCollapsed = isCollapsed;
   }
 }

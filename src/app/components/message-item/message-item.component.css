@@ -61,9 +61,18 @@
 }
 
 .sender-name {
-    font-weight: 600;
-    font-size: 18px;
+    font-weight: 700;
+    font-size: 1rem;
     color: #000000;
+    transition: color 0.125s;
+}
+
+.sender-name.clickable {
+    cursor: pointer;
+}
+
+.sender-name.clickable:hover {
+    color: #444DF2;
 }
 
 .message-time {
@@ -191,6 +200,7 @@
 .message-item.own-message .thread-reply-btn {
     text-align: right;
 }
+
 .thread-reply-btn {
     color: #797EF3;
     font-size: 14px;

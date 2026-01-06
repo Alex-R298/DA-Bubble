@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { doc, setDoc, collection, addDoc, onSnapshot, getDoc } from 'firebase/firestore';
+import { doc, collection, addDoc, onSnapshot, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
 import { Observable } from 'rxjs';
 
@@ -41,7 +41,7 @@ export class ChannelService {
   getAllChannels(): Observable<Channel[]> {
     return new Observable<Channel[]>(observer => {
       const channelsRef = collection(this.firebaseService.db, 'channels');
-      
+
       const unsubscribe = onSnapshot(channelsRef, (snapshot) => {
         const channels = snapshot.docs.map(doc => {
           const data = doc.data();
@@ -56,7 +56,7 @@ export class ChannelService {
         });
         observer.next(channels);
       });
-      
+
       return () => unsubscribe();
     });
   }
@@ -64,7 +64,7 @@ export class ChannelService {
   async getChannelById(channelId: string): Promise<Channel | null> {
     const channelDoc = doc(this.firebaseService.db, 'channels', channelId);
     const snapshot = await getDoc(channelDoc);
-    
+
     if (snapshot.exists()) {
       const data = snapshot.data();
       return {
@@ -76,7 +76,34 @@ export class ChannelService {
         members: data['members']
       };
     }
-    
+
     return null;
+  }
+
+  async updateChannel(channelId: string, updates: Partial<Pick<Channel, 'name' | 'description'>>): Promise<void> {
+    const safeUpdates: any = {};
+    if (typeof updates.name === 'string') safeUpdates.name = updates.name.trim();
+    if (typeof updates.description === 'string') safeUpdates.description = updates.description.trim();
+    if (!Object.keys(safeUpdates).length) return;
+
+    const channelDoc = doc(this.firebaseService.db, 'channels', channelId);
+    await updateDoc(channelDoc, safeUpdates);
+  }
+
+  async addMembers(channelId: string, memberUids: string[]): Promise<void> {
+    const unique = Array.from(new Set(memberUids.filter(Boolean)));
+    if (!unique.length) return;
+    const channelDoc = doc(this.firebaseService.db, 'channels', channelId);
+    await updateDoc(channelDoc, {
+      members: arrayUnion(...unique)
+    });
+  }
+
+  async removeMember(channelId: string, memberUid: string): Promise<void> {
+    if (!memberUid) return;
+    const channelDoc = doc(this.firebaseService.db, 'channels', channelId);
+    await updateDoc(channelDoc, {
+      members: arrayRemove(memberUid)
+    });
   }
 }

@@ -63,6 +63,73 @@
   padding: 6px 10px;
 }
 
+.channel-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.channel-members-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-channel-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+.btn-channel-info:hover {
+  background: #f5f5f5;
+}
+
+.btn-channel-info h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+
+.btn-channel-info .btn-icon {
+  font-size: 14px;
+  color: #666;
+}
+
+.member-avatars {
+  display: flex;
+  align-items: center;
+}
+
+.member-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-left: -6px;
+  border: 2px solid white;
+}
+
+.btn-add-members {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+.btn-add-members:hover {
+  background: #f5f5f5;
+}
+
 .channel-info .channel-icon {
   color: black;
   font-size: 20px;

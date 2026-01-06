@@ -3,22 +3,22 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
 import { InputFieldComponent } from '../input-field/input-field.component';
-import { ChannelMembersListComponent } from '../channel-members-list/channel-members-list.component';
 import { UserProfileModalComponent, UserProfileModalUser } from '../user-profile-modal/user-profile-modal.component';
 import { MessageItemComponent } from '../message-item/message-item.component';
 import { ChannelService } from '../../services/channel.service';
 import { Message, MessageService } from '../../services/message.service';
 import { AuthService } from '../../services/auth.service';
 import { ThreadStateService } from '../../services/thread-state.service';
-import { UserService } from '../../services/user.service';
+import { UserService, User } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { DirectMessageService } from '../../services/direct-message.service';
 import { NewMessageStateService } from '../../services/new-message-state.service';
+import { ChannelHeaderModalsComponent, ChannelHeaderModalType } from '../channel-header-modals/channel-header-modals.component';
 
 @Component({
   selector: 'app-chat-window',
   standalone: true,
-  imports: [CommonModule, InputFieldComponent, ChannelMembersListComponent, UserProfileModalComponent, MessageItemComponent],
+  imports: [CommonModule, InputFieldComponent, ChannelHeaderModalsComponent, UserProfileModalComponent, MessageItemComponent],
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.css']
 })
@@ -42,7 +42,9 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   currentUserId: string = '';
   isNewMessageMode = false;
   newMessageRecipient = '';
-  showMembersList = false;
+  channelMemberUsers: User[] = [];
+  isChannelHeaderModalOpen = false;
+  channelHeaderModalType: ChannelHeaderModalType = null;
   selectedMessage: Message | null = null;
   showUserProfileModal = false;
   selectedProfileUser: UserProfileModalUser | null = null;
@@ -58,12 +60,12 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   ngOnInit(): void {
     const currentUser = this.authService.getCurrentUser();
     this.currentUserId = currentUser?.uid || '';
-    
+
     this.subscriptions.push(
       this.newMessageStateService.isNewMessageActive$.subscribe(isActive => {
         this.isNewMessageMode = isActive;
         if (isActive) {
-          this.showMembersList = false;
+          this.closeChannelHeaderModal();
           this.newMessageRecipient = '';
           this.messages = [];
         }
@@ -90,6 +92,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
           this.newMessageStateService.closeNewMessage();
           this.currentChannel = await this.channelService.getChannelById(channelId);
           this.currentDMUser = null;
+          await this.loadChannelMemberUsers();
 
           if (this.messagesSubscription) {
             this.messagesSubscription.unsubscribe();
@@ -107,6 +110,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
           this.newMessageStateService.closeNewMessage();
           this.currentChannel = null;
           this.currentDMUser = await this.userService.getUserById(userId);
+          this.channelMemberUsers = [];
+          this.closeChannelHeaderModal();
 
           const currentUserId = this.authService.getCurrentUser()?.uid;
           if (currentUserId && this.currentDMUser) {
@@ -129,10 +134,21 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
           this.currentChannel = null;
           this.currentDMUser = null;
           this.messages = [];
-          this.showMembersList = false;
+          this.channelMemberUsers = [];
+          this.closeChannelHeaderModal();
         }
       })
     );
+  }
+
+  private async loadChannelMemberUsers(): Promise<void> {
+    const memberIds: string[] = this.currentChannel?.members ?? [];
+    if (!Array.isArray(memberIds) || memberIds.length === 0) {
+      this.channelMemberUsers = [];
+      return;
+    }
+    const users = await Promise.all(memberIds.map(uid => this.userService.getUserById(uid)));
+    this.channelMemberUsers = users.filter((u): u is User => !!u);
   }
 
   private createConversationId(userId1: string, userId2: string): string {
@@ -160,8 +176,32 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     }
   }
 
-  toggleMembersList(): void {
-    this.showMembersList = !this.showMembersList;
+  openChannelHeaderModal(type: ChannelHeaderModalType): void {
+    if (!this.currentChannel) return;
+    this.channelHeaderModalType = type;
+    this.isChannelHeaderModalOpen = true;
+  }
+
+  closeChannelHeaderModal(): void {
+    this.isChannelHeaderModalOpen = false;
+    this.channelHeaderModalType = null;
+    // Refresh current channel data after modal actions (edit name/desc, add members)
+    const channelId = this.currentChannel?.id;
+    if (channelId) {
+      this.channelService.getChannelById(channelId).then(ch => {
+        if (!ch) return;
+        this.currentChannel = ch;
+        this.loadChannelMemberUsers();
+      });
+    }
+  }
+
+  onChannelLeft(): void {
+    this.router.navigate(['/dashboard']);
+  }
+
+  get channelMemberPreview(): User[] {
+    return this.channelMemberUsers.slice(0, 3);
   }
 
   openUserProfile(user: any): void {
@@ -169,6 +209,13 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.setSelectedProfileUser(user);
     this.showUserProfileModal = true;
     this.enrichOwnProfile();
+  }
+
+  async openSenderProfile(senderUid: string): Promise<void> {
+    if (!senderUid) return;
+    const user = await this.userService.getUserById(senderUid);
+    if (!user) return;
+    this.openUserProfile(user);
   }
 
   private setSelectedProfileUser(user: any): void {

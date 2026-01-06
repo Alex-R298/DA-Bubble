@@ -1,0 +1,129 @@
+<ng-container *ngIf="isVisible">
+  <div class="modal-overlay" (click)="onOverlayClick()">
+    <div class="modal" (click)="onModalClick($event)">
+      <!-- Channel Info Modal -->
+      <ng-container *ngIf="activeType === 'channel-info'">
+        <div class="modal-header">
+          <div class="title-row">
+            <div class="title-left">
+              <span class="hash">#</span>
+              <span class="title">{{ channel?.name }}</span>
+            </div>
+            <button type="button" class="btn-close" (click)="close()">×</button>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div class="section">
+            <div class="section-head">
+              <span class="label">Channel-Name</span>
+              <button type="button" class="btn-edit" (click)="isEditingName ? saveName() : startEditName()">
+                {{ isEditingName ? 'Speichern' : 'Bearbeiten' }}
+              </button>
+            </div>
+            <div class="value">
+              <span class="hash">#</span>
+              <input *ngIf="isEditingName" class="inline-input" [(ngModel)]="draftName" />
+              <span *ngIf="!isEditingName">{{ channel?.name }}</span>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <span class="label">Beschreibung</span>
+              <button type="button" class="btn-edit" (click)="isEditingDescription ? saveDescription() : startEditDescription()">
+                {{ isEditingDescription ? 'Speichern' : 'Bearbeiten' }}
+              </button>
+            </div>
+            <div class="value">
+              <textarea *ngIf="isEditingDescription" class="inline-textarea" [(ngModel)]="draftDescription"></textarea>
+              <span *ngIf="!isEditingDescription">{{ channel?.description }}</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="created-by">
+            <span class="label">Erstellt von</span>
+            <span class="value">{{ createdByName }}</span>
+          </div>
+
+          <button type="button" class="btn-danger" (click)="leaveChannel()">Channel verlassen</button>
+        </div>
+      </ng-container>
+
+      <!-- Members Modal -->
+      <ng-container *ngIf="activeType === 'members'">
+        <div class="modal-header">
+          <div class="title-row">
+            <span class="title">Mitglieder</span>
+            <button type="button" class="btn-close" (click)="close()">×</button>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div class="members-list">
+            <div class="member" *ngFor="let user of memberUsers">
+              <img class="avatar" [src]="user.profileImageUrl || 'assets/avatars/avatar-1.png'" [alt]="user.name" />
+              <span class="name">{{ getMemberLabel(user) }}</span>
+            </div>
+          </div>
+
+          <button type="button" class="btn-add-members" (click)="openAddMembers()">Mitglieder hinzufügen</button>
+        </div>
+      </ng-container>
+
+      <!-- Add Members Modal -->
+      <ng-container *ngIf="activeType === 'add-members'">
+        <div class="modal-header">
+          <div class="title-row">
+            <span class="title">Leute hinzufügen</span>
+            <button type="button" class="btn-close" (click)="close()">×</button>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div class="channel-name">
+            <span class="hash">#</span>
+            <span>{{ channel?.name }}</span>
+          </div>
+
+          <div class="chip-input">
+            <div class="chips">
+              <div class="chip" *ngFor="let u of selectedUsers">
+                <img class="chip-avatar" [src]="u.profileImageUrl || 'assets/avatars/avatar-1.png'" [alt]="u.name" />
+                <span class="chip-name">{{ u.name }}</span>
+                <button type="button" class="chip-remove" (click)="removeSelectedUser(u.uid)">×</button>
+              </div>
+
+              <input
+                class="member-input"
+                type="text"
+                [(ngModel)]="addMemberQuery"
+                placeholder="Name oder E-Mail"
+              />
+            </div>
+
+            <div class="suggestions" *ngIf="filteredSelectableUsers.length">
+              <button
+                type="button"
+                class="suggestion"
+                *ngFor="let user of filteredSelectableUsers"
+                (click)="addUserToSelection(user)"
+              >
+                <img class="avatar" [src]="user.profileImageUrl || 'assets/avatars/avatar-1.png'" [alt]="user.name" />
+                <span class="name">{{ user.name }}</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn-primary" [disabled]="!canConfirmAddMembers" (click)="confirmAddMembers()">
+              Hinzufügen
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-container>

@@ -13,14 +13,29 @@
 
     <ng-template #normalHeader>
     <ng-container *ngIf="currentChannel; else dmOrChoose">
-      <div class="channel-info">
-        <span class="channel-icon">#</span>
-        <h3>{{ currentChannel.name }}</h3>
+      <div class="channel-header-row">
+        <button type="button" class="btn-channel-info" (click)="openChannelHeaderModal('channel-info')">
+          <span class="channel-icon">#</span>
+          <h3>{{ currentChannel.name }}</h3>
+          <span class="btn-icon">(img)</span>
+        </button>
+
+        <div class="channel-members-actions">
+          <button type="button" class="btn-members" (click)="openChannelHeaderModal('members')">
+            <div class="member-avatars">
+              <img
+                *ngFor="let u of channelMemberPreview"
+                class="member-avatar"
+                [src]="u.profileImageUrl || 'assets/avatars/avatar-1.png'"
+                [alt]="u.name"
+              />
+            </div>
+            <span class="members-count">{{ currentChannel.members?.length }}</span>
+          </button>
+
+          <button type="button" class="btn-add-members" (click)="openChannelHeaderModal('add-members')">(img)</button>
+        </div>
       </div>
-      <button class="btn-members" (click)="toggleMembersList()">
-        <span class="members-count">{{ currentChannel.members?.length }}</span>
-        <span>Mitglieder</span>
-      </button>
     </ng-container>
 
     <ng-template #dmOrChoose>
@@ -48,9 +63,13 @@
     </ng-template>
   </div>
 
-  <ng-container *ngIf="showMembersList && currentChannel">
-    <app-channel-members-list [channel]="currentChannel"></app-channel-members-list>
-  </ng-container>
+  <app-channel-header-modals
+    [isOpen]="isChannelHeaderModalOpen"
+    [type]="channelHeaderModalType"
+    [channel]="currentChannel"
+    (closed)="closeChannelHeaderModal()"
+    (channelLeft)="onChannelLeft()"
+  ></app-channel-header-modals>
 
   <div class="messages-container" #messagesContainer>
     <ng-container *ngIf="!messages || messages.length === 0; else messagesList">
@@ -98,6 +117,8 @@
           [currentUserId]="currentUserId"
           [showThreadButton]="true"
           (threadClicked)="openThread(message)"
+          [senderClickable]="true"
+          (senderClicked)="openSenderProfile($event)"
           class="chat-message">
         </app-message-item>
       </ng-container>

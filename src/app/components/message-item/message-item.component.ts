@@ -24,11 +24,17 @@ export class MessageItemComponent {
   /** Controls whether to show thread reply button (default: false) */
   @Input() showThreadButton: boolean = false;
 
+  /** If true, clicking the sender name emits the sender's uid */
+  @Input() senderClickable: boolean = false;
+
   /** Emits when a reaction should be toggled (wire to your service later) */
   @Output() reactionToggled = new EventEmitter<{ messageId: string | undefined; emoji: string }>();
 
   /** Emits when thread button is clicked */
   @Output() threadClicked = new EventEmitter<void>();
+
+  /** Emits when sender name is clicked (sender uid) */
+  @Output() senderClicked = new EventEmitter<string>();
 
   showReactionPicker = false;
   availableReactions: string[] = ['😀', '😂', '😍', '🤔', '👍', '👎', '❤️', '🎉', '😢', '😱', '🙏', '🔥'];
@@ -114,5 +120,13 @@ export class MessageItemComponent {
   addReaction(emoji: string): void {
     this.toggleReaction(emoji);
     this.showReactionPicker = false;
+  }
+
+  onSenderNameClick(event: MouseEvent): void {
+    if (!this.senderClickable) return;
+    event.stopPropagation();
+    const senderId = this.message?.senderId;
+    if (!senderId) return;
+    this.senderClicked.emit(senderId);
   }
 }

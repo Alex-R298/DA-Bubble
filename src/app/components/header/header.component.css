@@ -182,7 +182,7 @@
   border: 1px solid #444DF2;
   background: transparent;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #444DF2;
   padding: 12px 20px;
@@ -201,7 +201,7 @@
   border: none;
   padding: 12px 25px;
   border-radius: 25px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
   transition: background 0.2s;
@@ -254,7 +254,7 @@
   background: transparent;
   font-family: inherit;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #444DF2;
   transition: font-weight 0.125s ease-in-out;
