@@ -1,6 +1,7 @@
 <div class="thread">
   <div class="thread-header">
     <h4>Thread</h4>
+    <span class="channel" *ngIf="currentChannel"> # {{ currentChannel.name }}</span>
     <button class="close-button" (click)="closeThread()">×</button>
   </div>
   
@@ -8,20 +9,26 @@
     <app-message-item 
       *ngIf="parentMessage" 
       [message]="parentMessage"
+      [currentUserId]="currentUserId"
+      [showReactions]="false"
       class="original-message">
     </app-message-item>
     
-    <div *ngIf="parentMessage" class="thread-divider">Antworten:</div>
+    <div *ngIf="parentMessage" class="thread-divider">
+      <ng-container *ngIf="threadMessages.length > 0">
+              {{ threadMessages.length }}
+              {{ threadMessages.length === 1 ? 'Antwort' : 'Antworten' }}
+            </ng-container>
+            
+    </div>
     
     <app-message-item 
       *ngFor="let message of threadMessages" 
       [message]="message"
-      class="reply-message">
+      [currentUserId]="currentUserId">
     </app-message-item>
     
-    <div *ngIf="threadMessages.length === 0 && parentMessage" class="empty-state">
-      <p>No replies yet.</p>
-    </div>
+    <p *ngIf="threadMessages.length === 0">No replies yet.</p>
   </div>
   
   <div class="thread-input">

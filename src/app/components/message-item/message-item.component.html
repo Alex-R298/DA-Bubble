@@ -1,7 +1,12 @@
 <ng-container *ngIf="message">
 	<div class="message-item" [class.own-message]="isOwnMessage">
 		<div class="message-avatar">
-			<img [src]="getAvatarSrc()" [alt]="getSenderName()" />
+			<app-svg-images 
+				iconName="person_filled" 
+				width="70" 
+				height="70"
+				className="avatar-icon">
+			</app-svg-images>
 		</div>
 
 		<div class="message-content">
@@ -15,7 +20,7 @@
 				<p>{{ getContent() }}</p>
 			</div>
 
-			<div class="message-reactions">
+			<div class="message-reactions" *ngIf="showReactions">
 				<button
 					type="button"
 					class="reaction-badge"
@@ -41,6 +46,14 @@
 					</div>
 				</div>
 			</div>
+
+			<button *ngIf="showThreadButton" class="thread-reply-btn" (click)="threadClicked.emit()">
+				<ng-container *ngIf="message.replies?.length; else noReplies">
+					{{ message.replies.length }}
+					{{ message.replies.length === 1 ? 'Antwort' : 'Antworten' }}
+				</ng-container>
+				<ng-template #noReplies>Antworten</ng-template>
+			</button>
 		</div>
 	</div>
 </ng-container>

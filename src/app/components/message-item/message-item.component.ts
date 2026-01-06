@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { SvgImagesComponent } from '../svg-images/svg-images.component';
 
 @Component({
   selector: 'app-message-item',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SvgImagesComponent],
   templateUrl: './message-item.component.html',
   styleUrls: ['./message-item.component.css']
 })
@@ -17,8 +18,17 @@ export class MessageItemComponent {
   /** Optional override if you already know it's the user's own message */
   @Input() isOwnMessageOverride: boolean | null = null;
 
+  /** Controls whether to show reaction buttons (default: true) */
+  @Input() showReactions: boolean = true;
+
+  /** Controls whether to show thread reply button (default: false) */
+  @Input() showThreadButton: boolean = false;
+
   /** Emits when a reaction should be toggled (wire to your service later) */
   @Output() reactionToggled = new EventEmitter<{ messageId: string | undefined; emoji: string }>();
+
+  /** Emits when thread button is clicked */
+  @Output() threadClicked = new EventEmitter<void>();
 
   showReactionPicker = false;
   availableReactions: string[] = ['😀', '😂', '😍', '🤔', '👍', '👎', '❤️', '🎉', '😢', '😱', '🙏', '🔥'];

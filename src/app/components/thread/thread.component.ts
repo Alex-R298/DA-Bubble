@@ -7,11 +7,12 @@ import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { MessageItemComponent } from '../message-item/message-item.component';
 import { Subscription } from 'rxjs';
+import { ChannelService, Channel } from '../../services/channel.service';
 
 @Component({
   selector: 'app-thread',
   standalone: true,
-  imports: [CommonModule, DatePipe, InputFieldComponent , MessageItemComponent],
+  imports: [CommonModule, InputFieldComponent , MessageItemComponent],
   templateUrl: './thread.component.html',
   styleUrl: './thread.component.css'
 })
@@ -26,12 +27,15 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
   private threadService = inject(ThreadService);
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private channelService = inject(ChannelService);
   private subscription?: Subscription;
-  private currentUserId: string = '';
+  currentUserId: string = '';
   private currentUserName: string = '';
+  currentChannel: Channel | null = null;
 
   async ngOnInit(): Promise<void> {
     await this.loadCurrentUser();
+    await this.loadChannel();
     if (this.parentMessageId) {
       this.loadThreadMessages();
     }
@@ -53,6 +57,15 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
       this.currentUserId = currentUser.uid;
       const userData = await this.userService.getUserById(currentUser.uid);
       this.currentUserName = userData?.name || 'Unbekannt';
+    }
+  }
+
+  private async loadChannel(): Promise<void> {
+    if (this.channelId) {
+      const channel = await this.channelService.getChannelById(this.channelId);
+      if (channel && channel.id) {
+        this.currentChannel = channel;
+      }
     }
   }
 

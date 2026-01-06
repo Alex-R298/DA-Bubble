@@ -59,7 +59,8 @@ getMessagesByChannelId(channelId: string): Observable<Message[]> {
             replies: data['replies'] || []              
           };
         })
-        .filter(message => message.channelId === channelId && !message.parentMessageId);
+        .filter(message => message.channelId === channelId && !message.parentMessageId)
+        .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
       observer.next(messages);
     });
 

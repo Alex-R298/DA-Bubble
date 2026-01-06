@@ -93,20 +93,13 @@
           <span>{{ getMessageDate(message) }}</span>
         </div>
 
-        <div class="message">
-          <div class="message-header">
-            <span class="message-sender">{{ message.senderName }}</span>
-            <span class="message-timestamp">{{ message.timestamp | date:'short' }}</span>
-          </div>
-          <div class="message-text">{{ message.content }}</div>
-          <button (click)="openThread(message)">
-            <ng-container *ngIf="message.replies?.length; else noReplies">
-              {{ message.replies.length }}
-              {{ message.replies.length === 1 ? 'Antwort' : 'Antworten' }}
-            </ng-container>
-            <ng-template #noReplies>Antworten</ng-template>
-          </button>
-        </div>
+        <app-message-item 
+          [message]="message"
+          [currentUserId]="currentUserId"
+          [showThreadButton]="true"
+          (threadClicked)="openThread(message)"
+          class="chat-message">
+        </app-message-item>
       </ng-container>
     </ng-template>
   </div>

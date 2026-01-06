@@ -5,6 +5,7 @@ import { Subscription, combineLatest } from 'rxjs';
 import { InputFieldComponent } from '../input-field/input-field.component';
 import { ChannelMembersListComponent } from '../channel-members-list/channel-members-list.component';
 import { UserProfileModalComponent, UserProfileModalUser } from '../user-profile-modal/user-profile-modal.component';
+import { MessageItemComponent } from '../message-item/message-item.component';
 import { ChannelService } from '../../services/channel.service';
 import { Message, MessageService } from '../../services/message.service';
 import { AuthService } from '../../services/auth.service';
@@ -17,7 +18,7 @@ import { NewMessageStateService } from '../../services/new-message-state.service
 @Component({
   selector: 'app-chat-window',
   standalone: true,
-  imports: [CommonModule, InputFieldComponent, ChannelMembersListComponent, UserProfileModalComponent],
+  imports: [CommonModule, InputFieldComponent, ChannelMembersListComponent, UserProfileModalComponent, MessageItemComponent],
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.css']
 })
@@ -38,6 +39,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   currentChannel: any | null = null;
   currentDMUser: any | null = null;
   messages: any[] = [];
+  currentUserId: string = '';
   isNewMessageMode = false;
   newMessageRecipient = '';
   showMembersList = false;
@@ -54,6 +56,9 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   }
 
   ngOnInit(): void {
+    const currentUser = this.authService.getCurrentUser();
+    this.currentUserId = currentUser?.uid || '';
+    
     this.subscriptions.push(
       this.newMessageStateService.isNewMessageActive$.subscribe(isActive => {
         this.isNewMessageMode = isActive;
