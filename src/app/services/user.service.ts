@@ -86,6 +86,13 @@ export class UserService {
     await updateDoc(userDoc, { name: nextName });
   }
 
+  async updateUserAvatar(uid: string, avatarUrl: string): Promise<void> {
+    const userDoc = doc(this.firebaseService.db, 'users', uid);
+    await updateDoc(userDoc, { 
+      profileImageUrl: avatarUrl 
+    });
+  }
+
   async updateUserStatus(uid: string, status: 'online' | 'offline' | 'away'): Promise<void> {
     const userDoc = doc(this.firebaseService.db, 'users', uid);
     await updateDoc(userDoc, {

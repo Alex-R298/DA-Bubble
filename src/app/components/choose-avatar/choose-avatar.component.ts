@@ -1,6 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-choose-avatar',
@@ -11,6 +13,8 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class ChooseAvatarComponent implements OnInit {
   private router = inject(Router);
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
   
   userName: string = '';
   selectedAvatar: number | null = null;
@@ -43,11 +47,13 @@ export class ChooseAvatarComponent implements OnInit {
     this.router.navigate(['/signup']);
   }
 
-  onContinue(): void {
+  async onContinue(): Promise<void> {
     if (this.selectedAvatar !== null) {
-      // Avatar-Auswahl speichern (kann später in AuthService implementiert werden)
       const selectedAvatarUrl = this.avatars[this.selectedAvatar];
-      console.log('Selected avatar:', selectedAvatarUrl);
+      const currentUser = this.authService.getCurrentUser();
+      if (currentUser) {
+        await this.userService.updateUserAvatar(currentUser.uid, selectedAvatarUrl);
+      }
       
       this.router.navigate(['/dashboard']);
     }

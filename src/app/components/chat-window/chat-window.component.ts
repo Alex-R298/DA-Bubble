@@ -267,13 +267,15 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
 
     const userData = await this.userService.getUserById(currentUser.uid);
     const senderName = userData?.name || currentUser.displayName || 'Unbekannt';
+    const senderProfileImage = userData?.profileImageUrl || '';
 
     if (this.currentChannel) {
       await this.messageService.createMessage(
         this.currentChannel.id!,
         currentUser.uid,
         text.trim(),
-        senderName
+        senderName,
+        senderProfileImage
       );
     } else if (this.currentDMUser) {
       const conversationId = this.createConversationId(currentUser.uid, this.currentDMUser.uid);

@@ -1,12 +1,7 @@
 <ng-container *ngIf="message">
 	<div class="message-item" [class.own-message]="isOwnMessage">
 		<div class="message-avatar">
-			<app-svg-images 
-				iconName="person_filled" 
-				width="70" 
-				height="70"
-				className="avatar-icon">
-			</app-svg-images>
+			<img [src]="message.senderProfileImage || 'assets/avatars/avatar-1.png'" [alt]="message.senderName" />
 		</div>
 
 		<div class="message-content">
