@@ -284,7 +284,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
         conversationId,
         currentUser.uid,
         text.trim(),
-        senderName
+        senderName,
+        senderProfileImage
       );
     }
   }

@@ -1,7 +1,7 @@
 <ng-container *ngIf="message">
 	<div class="message-item" [class.own-message]="isOwnMessage">
 		<div class="message-avatar">
-			<img [src]="message.senderProfileImage || 'assets/avatars/avatar-1.png'" [alt]="message.senderName" />
+			<img [src]="getAvatarSrc()" [alt]="getSenderName()" />
 		</div>
 
 		<div class="message-content">

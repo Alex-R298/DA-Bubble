@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { collection, addDoc, onSnapshot } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
+import { UserService } from './user.service';
 import { Observable } from 'rxjs';
 
 export interface DirectMessage {
@@ -19,13 +20,15 @@ export interface DirectMessage {
 })
 export class DirectMessageService {
   private firebaseService = inject(FirebaseService);
+  private userService = inject(UserService);
 
-  async createDirectMessage(conversationId: string, senderId: string, content: string, senderName: string): Promise<DirectMessage> {
+  async createDirectMessage(conversationId: string, senderId: string, content: string, senderName: string, senderProfileImage?: string): Promise<DirectMessage> {
     const messageData = {
       conversationId: conversationId,
       senderId: senderId,
       content: content,
       senderName: senderName,
+      senderProfileImage: senderProfileImage || '',
       timestamp: new Date()
     };
 
@@ -44,25 +47,41 @@ export class DirectMessageService {
     return new Observable<DirectMessage[]>(observer => {
       const messagesRef = collection(this.firebaseService.db, 'direct-messages'); // ← Separate Collection!
       
-      const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
-        const messages = snapshot.docs
-          .map(doc => {
+      const unsubscribe = onSnapshot(messagesRef, async (snapshot) => {
+        const messages = await Promise.all(
+          snapshot.docs.map(async doc => {
             const data = doc.data();
+            let senderProfileImage = data['senderProfileImage'] || '';
+            if (!senderProfileImage && data['senderId']) {
+              try {
+                const user = await this.userService.getUserById(data['senderId']);
+                if (user && user.profileImageUrl) {
+                  senderProfileImage = user.profileImageUrl;
+                }
+              } catch (error) {
+                console.log('Could not load avatar for DM user:', data['senderId']);
+              }
+            }
+            
             return {
               id: doc.id,
               conversationId: data['conversationId'],
               senderId: data['senderId'],
               content: data['content'],
               senderName: data['senderName'],
+              senderProfileImage: senderProfileImage,
               timestamp: data['timestamp'].toDate(),
               parentMessageId: data['parentMessageId'],
               replies: data['replies'] || []
             };
           })
+        );
+        
+        const filteredMessages = messages
           .filter(message => message.conversationId === conversationId && !message.parentMessageId)
           .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
         
-        observer.next(messages);
+        observer.next(filteredMessages);
       });
 
       return () => unsubscribe();
