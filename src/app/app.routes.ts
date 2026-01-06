@@ -9,12 +9,14 @@ import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-poli
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ChatWindowComponent } from './components/chat-window/chat-window.component';
+import { ChooseAvatarComponent } from './components/choose-avatar/choose-avatar.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
+  { path: 'choose-avatar', component: ChooseAvatarComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'intro', component: IntroComponent },

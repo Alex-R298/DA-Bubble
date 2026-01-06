@@ -43,7 +43,9 @@ export class SignupComponent implements OnInit, OnDestroy {
   async onSubmit(): Promise<void> {
     if (this.displayName && this.email && this.password && this.privacyAccepted) {
       await this.authService.register(this.email, this.password, this.displayName);
-      this.router.navigate(['/login']);
+      this.router.navigate(['/choose-avatar'], { 
+        state: { userName: this.displayName } 
+      });
     }
   }
 
