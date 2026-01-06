@@ -15,14 +15,14 @@
     min-height: 0;
     gap: 0;
     align-items: stretch;
-    padding: 16px;
+    padding: 1rem;
     background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
     overflow: visible;
 }
 
 .chat-area,
 .thread-area {
-    margin-left: 16px;
+    margin-left: 1rem;
 }
 
 .chat-layout-container.sidebar-collapsed .chat-area {
@@ -36,7 +36,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-radius: 30px;
+    border-radius: 1.875rem;
 }
 
 .thread-area {
@@ -44,7 +44,7 @@
     min-height: 0;
     height: 100%;
     overflow: hidden;
-    border-radius: 30px;
+    border-radius: 1.875rem;
 }
 
 /* ensure router-loaded components can scroll */
