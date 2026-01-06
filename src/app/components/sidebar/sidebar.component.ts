@@ -10,11 +10,12 @@ import { AuthService } from '../../services/auth.service';
 import { ChannelService } from '../../services/channel.service';
 import { Subscription } from 'rxjs';
 import { NewMessageStateService } from '../../services/new-message-state.service';
+import { SvgImagesComponent } from '../svg-images/svg-images.component';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SvgImagesComponent],
   templateUrl: './sidebar.component.html',
   styleUrls: ['../../shared/styles/shared-ui.css', './sidebar.component.css']
 })

@@ -23,12 +23,13 @@
         <div class="channel-members-actions">
           <button type="button" class="btn-members" (click)="openChannelHeaderModal('members')">
             <div class="member-avatars">
-              <img
+              <app-svg-images
                 *ngFor="let u of channelMemberPreview"
                 class="member-avatar"
-                [src]="u.profileImageUrl || 'assets/avatars/avatar-1.png'"
-                [alt]="u.name"
-              />
+                [iconName]="u.profileImageUrl || 'steffen-hoffmann'"
+                [width]="'32'"
+                [height]="'32'">
+              </app-svg-images>
             </div>
             <span class="members-count">{{ currentChannel.members?.length }}</span>
           </button>
@@ -41,12 +42,13 @@
     <ng-template #dmOrChoose>
       <ng-container *ngIf="currentDMUser; else chooseOne">
         <div class="channel-info dm-info">
-          <img
-            [src]="currentDMUser.profileImageUrl"
-            [alt]="currentDMUser.name"
+          <app-svg-images
             class="dm-avatar dm-profile-trigger"
-            (click)="openUserProfile(currentDMUser)"
-          />
+            [iconName]="currentDMUser.profileImageUrl || 'steffen-hoffmann'"
+            [width]="'50'"
+            [height]="'50'"
+            (click)="openUserProfile(currentDMUser)">
+          </app-svg-images>
           <h3 class="dm-profile-trigger" (click)="openUserProfile(currentDMUser)">{{ currentDMUser.name }}</h3>
           <span class="dm-status" [class.online]="currentDMUser.status === 'online'">
             {{ currentDMUser.status === 'online' ? 'Online' : 'Offline' }}
@@ -84,12 +86,13 @@
         <ng-template #dmOrNoneSelected>
           <ng-container *ngIf="currentDMUser; else noneSelected">
             <div class="dm-empty-header">
-              <img
-                [src]="currentDMUser.profileImageUrl"
-                [alt]="currentDMUser.name"
+              <app-svg-images
                 class="dm-empty-avatar"
-                (click)="openUserProfile(currentDMUser)"
-              />
+                [iconName]="currentDMUser.profileImageUrl || 'steffen-hoffmann'"
+                [width]="'80'"
+                [height]="'80'"
+                (click)="openUserProfile(currentDMUser)">
+              </app-svg-images>
               <h2 class="empty-title dm-profile-trigger" (click)="openUserProfile(currentDMUser)">{{ currentDMUser.name }}</h2>
             </div>
             <p class="empty-text">

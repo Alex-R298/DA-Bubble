@@ -23,11 +23,12 @@
       <div class="user-info display-ai-center" (click)="toggleUserMenu()">
         <span class="user-name">{{ user?.name || 'User' }}</span>
         <div class="user-avatar-wrapper">
-          <img
-            [src]="user?.profileImageUrl || 'assets/avatars/avatar-1.png'"
-            alt="Profilbild"
+          <app-svg-images
             class="user-avatar"
-          />
+            [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
+            [width]="'40'"
+            [height]="'40'">
+          </app-svg-images>
           <span class="status-indicator" [ngClass]="getStatusClass(user)"></span>
         </div>
         <span class="dropdown-arrow">{{ showUserMenu ? '▲' : '▼' }}</span>
@@ -52,11 +53,12 @@
         </div>
 
         <div class="profile-avatar-section ui-avatar-center">
-          <img
+          <app-svg-images
             class="profile-avatar ui-avatar"
-            [src]="user?.profileImageUrl || 'assets/avatars/avatar-1.png'"
-            alt="Profilbild"
-          />
+            [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
+            [width]="'80'"
+            [height]="'80'">
+          </app-svg-images>
         </div>
 
         <div class="profile-name-row display-flex-column">
@@ -88,11 +90,12 @@
         </div>
 
         <div class="profile-avatar-section ui-avatar-center">
-          <img
+          <app-svg-images
             class="profile-avatar ui-avatar"
-            [src]="user?.profileImageUrl || 'assets/avatars/avatar-1.png'"
-            alt="Profilbild"
-          />
+            [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
+            [width]="'80'"
+            [height]="'80'">
+          </app-svg-images>
         </div>
 
         <div class="edit-field display-flex-column">

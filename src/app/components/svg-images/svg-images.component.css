@@ -1,0 +1,5 @@
+/* Avatar SVGs rund machen */
+svg {
+  border-radius: 50%;
+  display: block;
+}

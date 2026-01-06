@@ -143,13 +143,6 @@
   color: #333;
 }
 
-.channel-info.dm-info .dm-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
 .dm-profile-trigger {
   cursor: pointer;
 }

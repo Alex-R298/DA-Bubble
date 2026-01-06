@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
+import { SvgImagesComponent } from '../svg-images/svg-images.component';
 
 @Component({
   selector: 'app-message-item',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SvgImagesComponent],
   templateUrl: './message-item.component.html',
   styleUrls: ['./message-item.component.css']
 })

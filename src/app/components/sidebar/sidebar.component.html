@@ -65,7 +65,7 @@
                   [class.active]="selectedUserId === user.uid"
                   (mousedown)="startDirectMessage(user)">
                 <div class="user-avatar">
-                  <img [src]="user.profileImageUrl || 'assets/avatars/avatar-1.png'" [alt]="user.name" />
+                  <app-svg-images [iconName]="user.profileImageUrl || 'steffen-hoffmann'" [width]="'50'" [height]="'50'"></app-svg-images>
                   <span class="status-indicator" [ngClass]="getStatusClass(user)"></span>
                 </div>
                 <span class="user-name">{{ user.name }}</span>

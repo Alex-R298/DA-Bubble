@@ -14,11 +14,12 @@ import { Router } from '@angular/router';
 import { DirectMessageService } from '../../services/direct-message.service';
 import { NewMessageStateService } from '../../services/new-message-state.service';
 import { ChannelHeaderModalsComponent, ChannelHeaderModalType } from '../channel-header-modals/channel-header-modals.component';
+import { SvgImagesComponent } from '../svg-images/svg-images.component';
 
 @Component({
   selector: 'app-chat-window',
   standalone: true,
-  imports: [CommonModule, InputFieldComponent, ChannelHeaderModalsComponent, UserProfileModalComponent, MessageItemComponent],
+  imports: [CommonModule, InputFieldComponent, ChannelHeaderModalsComponent, UserProfileModalComponent, MessageItemComponent, SvgImagesComponent],
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.css']
 })
