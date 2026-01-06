@@ -7,7 +7,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-choose-avatar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, SvgImagesComponent],
   templateUrl: './choose-avatar.component.html',
   styleUrl: './choose-avatar.component.css'
 })
@@ -20,12 +20,12 @@ export class ChooseAvatarComponent implements OnInit {
   selectedAvatar: number | null = null;
   
   avatars: string[] = [
-    'assets/avatars/avatar-1.svg',
-    'assets/avatars/avatar-2.svg',
-    'assets/avatars/avatar-3.svg',
-    'assets/avatars/avatar-4.svg',
-    'assets/avatars/avatar-5.svg',
-    'assets/avatars/avatar-6.svg'
+    'steffen-hoffmann',
+    'sofia-mueller',
+    'noah-braun',
+    'frederik-beck',
+    'elise-roth',
+    'elias-neumann'
   ];
 
   ngOnInit(): void {
