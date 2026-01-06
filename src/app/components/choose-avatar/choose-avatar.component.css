@@ -128,6 +128,29 @@
   object-fit: cover;
 }
 
+.avatar-option app-svg-images {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-option app-svg-images svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.selected-avatar-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.selected-avatar-svg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .continue-button {
   background-color: #444DF2;
   color: #FFFFFF;

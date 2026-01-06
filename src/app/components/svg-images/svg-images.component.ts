@@ -28,6 +28,13 @@ export class SvgImagesComponent {
         return '0 0 16 16';
       case 'dabubble':
         return '0 0 243 70';
+      case 'steffen-hoffmann':
+      case 'sofia-mueller':
+      case 'noah-braun':
+      case 'frederik-beck':
+      case 'elise-roth':
+      case 'elias-neumann':
+        return '0 0 500 500';
       default:
         return '0 0 24 24';
     }
@@ -55,6 +62,30 @@ export class SvgImagesComponent {
 
   isDABubbleIcon(): boolean {
     return this.iconName === 'dabubble';
+  }
+
+  isSteffenHoffmannIcon(): boolean {
+    return this.iconName === 'steffen-hoffmann';
+  }
+
+  isSofiaMuellerIcon(): boolean {
+    return this.iconName === 'sofia-mueller';
+  }
+
+  isNoahBraunIcon(): boolean {
+    return this.iconName === 'noah-braun';
+  }
+
+  isFrederikBeckIcon(): boolean {
+    return this.iconName === 'frederik-beck';
+  }
+
+  isEliseRothIcon(): boolean {
+    return this.iconName === 'elise-roth';
+  }
+
+  isEliasNeumannIcon(): boolean {
+    return this.iconName === 'elias-neumann';
   }
 }
 

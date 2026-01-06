@@ -1,11 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { SvgImagesComponent } from '../svg-images/svg-images.component';
 
 @Component({
   selector: 'app-choose-avatar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, SvgImagesComponent],
   templateUrl: './choose-avatar.component.html',
   styleUrl: './choose-avatar.component.css'
 })
@@ -16,12 +17,12 @@ export class ChooseAvatarComponent implements OnInit {
   selectedAvatar: number | null = null;
   
   avatars: string[] = [
-    'assets/avatars/avatar-1.svg',
-    'assets/avatars/avatar-2.svg',
-    'assets/avatars/avatar-3.svg',
-    'assets/avatars/avatar-4.svg',
-    'assets/avatars/avatar-5.svg',
-    'assets/avatars/avatar-6.svg'
+    'steffen-hoffmann',
+    'sofia-mueller',
+    'noah-braun',
+    'frederik-beck',
+    'elise-roth',
+    'elias-neumann'
   ];
 
   ngOnInit(): void {
@@ -46,8 +47,8 @@ export class ChooseAvatarComponent implements OnInit {
   onContinue(): void {
     if (this.selectedAvatar !== null) {
       // Avatar-Auswahl speichern (kann später in AuthService implementiert werden)
-      const selectedAvatarUrl = this.avatars[this.selectedAvatar];
-      console.log('Selected avatar:', selectedAvatarUrl);
+      const selectedAvatarName = this.avatars[this.selectedAvatar];
+      console.log('Selected avatar:', selectedAvatarName);
       
       this.router.navigate(['/dashboard']);
     }
