@@ -2,13 +2,18 @@
   min-height: 100vh;
   height: 100vh;
   background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  position: relative;
+  overflow-y: auto;
+}
+
+.card-wrapper {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 2rem;
-  position: relative;
-  overflow-y: auto;
+  grid-row: 1;
 }
 
 .choose-avatar-card {
@@ -21,13 +26,11 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
               0 2px 8px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   animation: slideUp 0.6s ease-out;
   z-index: 1;
-  margin: auto;
 }
 
 @keyframes slideUp {
@@ -235,10 +238,11 @@
 }
 
 .footer-links {
-  position: absolute;
-  bottom: 2rem;
   display: flex;
+  justify-content: center;
   gap: 2.5rem;
+  padding: 2rem;
+  grid-row: 2;
 }
 
 .footer-link {
@@ -272,8 +276,8 @@
 }
 
 @media (max-width: 768px) {
-  .choose-avatar-container {
-    padding: 1.5rem;
+  .card-wrapper {
+    padding: 1rem;
   }
 
   .choose-avatar-card {
