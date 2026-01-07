@@ -1,38 +1,56 @@
 .choose-avatar-container {
-  min-height: 100vh;
-  height: 100vh;
-  background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
-  display: grid;
-  grid-template-rows: 1fr auto;
-  position: relative;
-  overflow-y: auto;
-}
-
-.card-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
   padding: 2rem;
-  grid-row: 1;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+}
+
+.decorative-curve {
+  position: absolute;
+  bottom: -10%;
+  left: -5%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 8s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(30px, -30px) scale(1.05);
+  }
 }
 
 .choose-avatar-card {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: 24px;
   padding: 3rem 2.5rem;
-  width: 37.5rem;
-  max-width: 37.5rem;
+  border-radius: 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
               0 2px 8px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  width: 37.5rem;
+  max-width: 37.5rem;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   animation: slideUp 0.6s ease-out;
-  z-index: 1;
-  position: relative;
 }
 
 @keyframes slideUp {
@@ -46,27 +64,38 @@
   }
 }
 
-.title {
-  font-size: 2.75rem;
-  font-weight: 800;
+.choose-avatar-title {
+  margin: 0 0 0.75rem 0;
   background: linear-gradient(135deg, #444DF2 0%, #797EF3 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 1.5rem;
-  margin-top: 0;
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1.2;
   text-align: center;
   letter-spacing: -0.02em;
-  line-height: 1.2;
+}
+
+.choose-avatar-subtitle {
+  margin: 0 0 2rem 0;
+  color: #4a5568;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .avatar-preview {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .avatar-circle {
-  width: 9rem;
-  height: 9rem;
+  width: 11rem;
+  height: 11rem;
   border-radius: 50%;
   background: linear-gradient(135deg, #6F7CEB 0%, #797EF3 100%);
   display: flex;
@@ -82,25 +111,23 @@
   box-shadow: 0 12px 32px rgba(68, 77, 242, 0.3);
 }
 
-.selected-avatar-img {
+.selected-avatar-svg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 
-.user-name {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 0.5rem;
-  text-align: center;
+.selected-avatar-svg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-.subtitle {
+.avatar-instruction {
+  margin: 0 0 1.5rem 0;
+  color: #4a5568;
   font-size: 1rem;
   font-weight: 500;
-  color: #4a5568;
-  margin-bottom: 1.75rem;
+  line-height: 1.6;
   text-align: center;
 }
 
@@ -115,59 +142,37 @@
 }
 
 .avatar-option {
-  width: 5rem;
-  height: 5rem;
+  width: 5.5rem;
+  height: 5.5rem;
   border-radius: 50%;
   cursor: pointer;
-  border: 3px solid transparent;
+  border: 2px solid transparent;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f7fafc 0%, #ECEEFE 100%);
+  background: #f7fafc;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   position: relative;
 }
 
-.avatar-option::after {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  padding: 3px;
-  background: linear-gradient(135deg, #444DF2, #797EF3);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
 .avatar-option:hover {
-  transform: scale(1.08);
-  box-shadow: 0 4px 16px rgba(68, 77, 242, 0.2);
-}
-
-.avatar-option:hover::after {
-  opacity: 0.5;
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(68, 77, 242, 0.25);
+  border-color: rgba(68, 77, 242, 0.3);
 }
 
 .avatar-option.selected {
   border-color: #444DF2;
+  border-width: 3px;
   box-shadow: 0 0 0 3px #FFFFFF, 0 0 0 6px #444DF2;
   transform: scale(1.05);
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0ff 100%);
+  background: #ffffff;
 }
 
-.avatar-option.selected::after {
-  opacity: 0;
-}
-
-.avatar-option img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.avatar-option.selected:hover {
+  transform: scale(1.08);
 }
 
 .avatar-option app-svg-images {
@@ -182,34 +187,25 @@
   display: block;
 }
 
-.selected-avatar-svg {
+.primary-button {
   width: 100%;
-  height: 100%;
-}
-
-.selected-avatar-svg svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.continue-button {
+  padding: 1.125rem;
   background: linear-gradient(135deg, #444DF2 0%, #797EF3 100%);
-  color: #FFFFFF;
+  color: #ffffff;
   border: none;
   border-radius: 16px;
-  padding: 1.125rem 3rem;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 10rem;
+  box-sizing: border-box;
+  margin-top: 0.5rem;
   box-shadow: 0 4px 14px rgba(68, 77, 242, 0.4);
   position: relative;
   overflow: hidden;
 }
 
-.continue-button::before {
+.primary-button::before {
   content: '';
   position: absolute;
   top: 0;
@@ -220,104 +216,50 @@
   transition: left 0.5s ease;
 }
 
-.continue-button:hover:not(:disabled)::before {
+.primary-button:hover:not(:disabled)::before {
   left: 100%;
 }
 
-.continue-button:hover:not(:disabled) {
+.primary-button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(68, 77, 242, 0.5);
 }
 
-.continue-button:active:not(:disabled) {
+.primary-button:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.continue-button:disabled {
-  background: #cbd5e0;
+.primary-button:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
-  opacity: 0.6;
-  box-shadow: none;
-}
-
-.footer-links {
-  display: flex;
-  justify-content: center;
-  gap: 2.5rem;
-  padding: 2rem;
-  grid-row: 2;
-}
-
-.footer-link {
-  color: #444DF2;
-  text-decoration: none;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
-  position: relative;
-}
-
-.footer-link::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(68, 77, 242, 0.08);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 0.5rem;
-}
-
-.footer-link:hover {
-  color: #797EF3;
-  transform: translateY(-1px);
-}
-
-.footer-link:hover::before {
-  opacity: 1;
+  transform: none;
 }
 
 @media (max-width: 768px) {
-  .card-wrapper {
+  .choose-avatar-container {
     padding: 1.5rem;
   }
 
   .choose-avatar-card {
-    padding: 2rem 1.5rem;
     width: 100%;
-    max-width: 100%;
+    padding: 2rem 1.5rem;
   }
 
-  .title {
+  .choose-avatar-title {
     font-size: 2.25rem;
-    margin-top: 0;
+  }
+
+  .choose-avatar-subtitle {
+    font-size: 1.25rem;
   }
 
   .avatar-circle {
-    width: 7.5rem;
-    height: 7.5rem;
+    width: 9rem;
+    height: 9rem;
   }
 
-  .user-name {
-    font-size: 1.5rem;
-  }
-
-  .subtitle {
+  .avatar-instruction {
     font-size: 0.9375rem;
-  }
-
-  .avatar-circle {
-    width: 8rem;
-    height: 8rem;
-  }
-
-  .user-name {
-    font-size: 1.5rem;
-  }
-
-  .subtitle {
-    font-size: 1rem;
   }
 
   .avatars-grid {
@@ -331,18 +273,13 @@
     height: 4.5rem;
   }
 
-  .continue-button {
-    padding: 0.875rem 2.5rem;
+  .primary-button {
     font-size: 1rem;
+    padding: 1rem;
   }
 
-  .footer-links {
-    bottom: 1rem;
-    gap: 1.5rem;
-  }
-
-  .footer-link {
-    font-size: 0.9375rem;
+  .decorative-curve {
+    width: 300px;
+    height: 300px;
   }
 }
-

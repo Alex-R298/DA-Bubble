@@ -1,10 +1,10 @@
 <div class="choose-avatar-container">
   <app-header-login></app-header-login>
-  
-  <div class="card-wrapper">
-    <div class="choose-avatar-card">
-    <h1 class="title">Wähle deinen Avatar</h1>
-
+  <div class="decorative-curve"></div>
+  <div class="choose-avatar-card">
+    <h1 class="choose-avatar-title">Wähle deinen Avatar</h1>
+    <p class="choose-avatar-subtitle">{{ userName }}</p>
+    
     <div class="avatar-preview">
       <div class="avatar-circle">
         <svg *ngIf="selectedAvatar === null" width="88" height="88" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -21,8 +21,7 @@
       </div>
     </div>
 
-    <h2 class="user-name">{{ userName }}</h2>
-    <p class="subtitle">Aus der Liste wählen</p>
+    <p class="avatar-instruction">Aus der Liste wählen</p>
 
     <div class="avatars-grid">
       <div 
@@ -64,16 +63,10 @@
     </div>
 
     <button 
-      class="continue-button" 
+      class="primary-button" 
       [disabled]="selectedAvatar === null"
       (click)="onContinue()">
       Weiter
     </button>
-    </div>
   </div>
-
-  <footer class="footer-links">
-    <a routerLink="/imprint" class="footer-link">Impressum</a>
-    <a routerLink="/privacy-policy" class="footer-link">Datenschutz</a>
-  </footer>
 </div>
