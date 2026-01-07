@@ -15,9 +15,9 @@
     <ng-container *ngIf="currentChannel; else dmOrChoose">
       <div class="channel-header-row">
         <button type="button" class="btn-channel-info" (click)="openChannelHeaderModal('channel-info')">
-          <span class="channel-icon">#</span>
+          <span class="channel-icon"></span>
           <h3>{{ currentChannel.name }}</h3>
-          <span class="btn-icon">(img)</span>
+          <!-- <span class="btn-icon">(img)</span> -->
         </button>
 
         <div class="channel-members-actions">
@@ -43,7 +43,7 @@
       <ng-container *ngIf="currentDMUser; else chooseOne">
         <div class="channel-info dm-info">
           <app-svg-images
-            class="dm-avatar dm-profile-trigger"
+            class="dm-profile-trigger"
             [iconName]="currentDMUser.profileImageUrl || 'steffen-hoffmann'"
             [width]="'50'"
             [height]="'50'"
