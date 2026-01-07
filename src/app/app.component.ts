@@ -31,7 +31,6 @@ import { filter, Subscription } from 'rxjs';
     }
     .app-main {
       flex: 1;
-      display: flex;
       min-height: 0;
       overflow: hidden;
     }

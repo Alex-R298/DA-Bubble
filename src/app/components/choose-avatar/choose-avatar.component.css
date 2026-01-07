@@ -19,13 +19,14 @@
 .choose-avatar-card {
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
-  border-radius: 1.875rem;
-  padding: 3rem 3.5rem;
-  max-width: 40rem;
-  width: 100%;
+  border-radius: 1.5rem;
+  padding: 3rem 2.5rem;
+  width: 37.5rem;
+  max-width: 37.5rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
               0 2px 8px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -45,25 +46,25 @@
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   font-weight: 800;
   background: linear-gradient(135deg, #444DF2 0%, #797EF3 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   margin-top: 0;
   text-align: center;
   letter-spacing: -0.02em;
 }
 
 .avatar-preview {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .avatar-circle {
-  width: 10rem;
-  height: 10rem;
+  width: 9rem;
+  height: 9rem;
   border-radius: 50%;
   background: linear-gradient(135deg, #6F7CEB 0%, #797EF3 100%);
   display: flex;
@@ -86,7 +87,7 @@
 }
 
 .user-name {
-  font-size: 1.875rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 0.5rem;
@@ -94,26 +95,26 @@
 }
 
 .subtitle {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 500;
   color: #4a5568;
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
   text-align: center;
 }
 
 .avatars-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 2.5rem;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
   width: 100%;
-  max-width: 28rem;
+  max-width: 26rem;
   justify-items: center;
 }
 
 .avatar-option {
-  width: 5.5rem;
-  height: 5.5rem;
+  width: 5rem;
+  height: 5rem;
   border-radius: 50%;
   cursor: pointer;
   border: 3px solid transparent;
@@ -281,13 +282,27 @@
   }
 
   .choose-avatar-card {
-    padding: 2.5rem 1.5rem;
+    padding: 2rem 1.5rem;
     width: 100%;
+    max-width: 100%;
   }
 
   .title {
-    font-size: 1.875rem;
+    font-size: 1.75rem;
     margin-top: 0;
+  }
+
+  .avatar-circle {
+    width: 7.5rem;
+    height: 7.5rem;
+  }
+
+  .user-name {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9375rem;
   }
 
   .avatar-circle {
