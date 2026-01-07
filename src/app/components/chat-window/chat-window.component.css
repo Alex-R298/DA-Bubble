@@ -79,7 +79,7 @@
 .btn-channel-info {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -93,7 +93,7 @@
 
 .btn-channel-info h3 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   font-weight: 700;
   color: #000000;
 }

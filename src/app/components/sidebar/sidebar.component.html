@@ -8,11 +8,11 @@
     <div class="sidebar-header display-ai-center">
       <ng-container *ngIf="!isCollapsed">
         <div class="header-left display-ai-center">
-          (img)
+           <app-svg-images [iconName]="'workspace'" [width]="'60'" [height]="'60'"></app-svg-images>
           <h2>Devspace</h2>
         </div>
         <button class="btn-new-chat display-center-center" (click)="openNewMessage()">
-          <span class="icon">(img)</span>
+           <app-svg-images [iconName]="'edit_square'" [width]="'22'" [height]="'23'"></app-svg-images>
         </button>
       </ng-container>
     </div>
@@ -22,8 +22,9 @@
         <div class="sidebar-section">
           <div class="section-header display-ai-center" (click)="toggleChannels()">
             <span class="expand-icon">{{ channelsExpanded ? '▼' : '▶' }}</span>
-            <span class="section-title">(img) Channels</span>
-            <button class="btn-add" (click)="openNewChannelModal(); $event.stopPropagation()" title="Channel hinzufügen">+</button>
+            <app-svg-images [iconName]="'workspaces'" [width]="'20'" [height]="'20'"></app-svg-images>
+            <span class="section-title">Channels</span>
+            <button class="btn-add" (click)="openNewChannelModal(); $event.stopPropagation()" title="Channel hinzufügen"><app-svg-images [iconName]="'add'" [width]="'14'" [height]="'14'"></app-svg-images></button>
           </div>
 
           <ng-container *ngIf="channelsExpanded">
@@ -32,7 +33,7 @@
                   *ngFor="let channel of channels"
                   [class.active]="selectedChannelId === channel.id"
                   (click)="selectChannel(channel)">
-                <span class="channel-icon">#</span>
+                <app-svg-images [iconName]="'tag'" [width]="'17'" [height]="'16'"></app-svg-images>
                 <span class="channel-name">{{ channel.name }}</span>
               </li>
             </ul>
@@ -46,7 +47,7 @@
               (click)="openNewChannelModal(); $event.stopPropagation()"
               title="Channel hinzufügen"
             >
-              <span class="btn-add-channel-icon" aria-hidden="true">(img)</span>
+              <span class="btn-add-channel-icon" aria-hidden="true"><app-svg-images [iconName]="'add_circle'" [width]="'20'" [height]="'20'"></app-svg-images></span>
               <span>Channel hinzufügen</span>
             </button>
           </ng-container>
@@ -55,7 +56,8 @@
         <div class="sidebar-section">
           <div class="section-header display-ai-center" (click)="toggleDirectMessages()">
             <span class="expand-icon">{{ directMessagesExpanded ? '▼' : '▶' }}</span>
-            <span class="section-title">(img) Direktnachrichten</span>
+            <app-svg-images [iconName]="'account_circle'" [width]="'20'" [height]="'20'"></app-svg-images>
+            <span class="section-title">Direktnachrichten</span>
           </div>
 
           <ng-container *ngIf="directMessagesExpanded">

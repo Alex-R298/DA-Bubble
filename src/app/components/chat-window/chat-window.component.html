@@ -15,9 +15,10 @@
     <ng-container *ngIf="currentChannel; else dmOrChoose">
       <div class="channel-header-row">
         <button type="button" class="btn-channel-info" (click)="openChannelHeaderModal('channel-info')">
-          <span class="channel-icon"></span>
+          <app-svg-images [iconName]="'tag'" [width]="'22'" [height]="'23'"></app-svg-images>
           <h3>{{ currentChannel.name }}</h3>
           <!-- <span class="btn-icon">(img)</span> -->
+           <app-svg-images [iconName]="'keyboard_arrow_down'" [width]="'14'" [height]="'9'"></app-svg-images>
         </button>
 
         <div class="channel-members-actions">
