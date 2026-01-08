@@ -96,6 +96,7 @@
   font-size: 1.7rem;
   font-weight: 700;
   color: #000000;
+  font-family: 'Nunito', sans-serif;
 }
 
 .btn-channel-info .btn-icon {
@@ -201,7 +202,6 @@
   padding: 1rem 3.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
 .empty-chat {
@@ -262,7 +262,7 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: #ddd;
+  background: #ADB0D9;
 }
 
 .thread-reply-button {
@@ -285,10 +285,10 @@
 
 .date-separator span {
   padding: 0.25rem 0.75rem;
-  border: 1px solid #888;
+  border: 1px solid  #ADB0D9;
   border-radius: 1.875rem;
   color: black;
-  font-size: 1rem;
+  font-size: 1.3rem;
   font-weight: 500;
 }
 

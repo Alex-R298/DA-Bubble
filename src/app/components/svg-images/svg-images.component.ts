@@ -60,6 +60,22 @@ export class SvgImagesComponent {
         return '0 0 22 16';
       case 'tag':
         return '0 0 22 23';
+      case 'show_menu':
+      case 'close_menu':
+        return '0 0 32 32';
+      case 'send':
+        return '0 0 22 19';
+      case 'search':
+        return '0 0 26 26';
+      case 'smiley':
+      case 'alternate_email':
+      case 'green_mack':
+      case 'nice':
+        return '0 0 20 20';
+      case 'comment':
+        return '0 0 20 19';
+      case 'more_vert':
+        return '0 0 4 16';
       default:
         return '0 0 24 24';
     }
@@ -174,6 +190,46 @@ export class SvgImagesComponent {
 
   isTagIcon(): boolean {
     return this.iconName === 'tag';
+  }
+
+  isShowMenuIcon(): boolean {
+    return this.iconName === 'show_menu';
+  }
+
+  isCloseMenuIcon(): boolean {
+    return this.iconName === 'close_menu';
+  }
+
+  isSendIcon(): boolean {
+    return this.iconName === 'send';
+  }
+
+  isSearchIcon(): boolean {
+    return this.iconName === 'search';
+  }
+
+  isSmileyIcon(): boolean {
+    return this.iconName === 'smiley';
+  }
+
+  isAlternateEmailIcon(): boolean {
+    return this.iconName === 'alternate_email';
+  }
+
+  isCommentIcon(): boolean {
+    return this.iconName === 'comment';
+  }
+
+  isGreenMackIcon(): boolean {
+    return this.iconName === 'green_mack';
+  }
+
+  isNiceIcon(): boolean {
+    return this.iconName === 'nice';
+  }
+
+  isMoreVertIcon(): boolean {
+    return this.iconName === 'more_vert';
   }
 }
 

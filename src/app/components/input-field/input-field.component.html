@@ -14,7 +14,7 @@
     <textarea
       [(ngModel)]="message"
       (keydown)="onKeyPress($event)"
-      [placeholder]="channelName ? ('Nachricht an #' + channelName) : 'Nachricht eingeben...'"
+      [placeholder]="getTitle()"
       class="input-field"
       rows="1"
       [disabled]="isSending"
@@ -23,10 +23,10 @@
     <div class="actions-bar">
       <div class="actions-left">
         <button type="button" class="action-btn" (click)="toggleEmojiPicker()" title="Emoji">
-          (smiley img)
+          <app-svg-images [iconName]="'smiley'" [width]="'20'" [height]="'20'"></app-svg-images>
         </button>
         <button type="button" class="action-btn" title="Person erwähnen" (click)="insertMention()">
-          (&#64; img)
+          <app-svg-images [iconName]="'alternate_email'" [width]="'20'" [height]="'20'"></app-svg-images>
         </button>
       </div>
 
@@ -34,11 +34,10 @@
         type="button"
         class="btn-send"
         (click)="sendMessage()"
-        [disabled]="!message.trim() || isSending"
         title="Nachricht senden"
       >
         <ng-container *ngIf="isSending; else sendIcon"><span class="loading">⏳</span></ng-container>
-        <ng-template #sendIcon><span>➤</span></ng-template>
+        <ng-template #sendIcon><app-svg-images [iconName]="'send'" [width]="'22'" [height]="'19'"></app-svg-images></ng-template>
       </button>
     </div>
   </div>

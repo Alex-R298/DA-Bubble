@@ -129,7 +129,11 @@
   </div>
 
   <div class="input-container">
-    <app-input-field (messageSent)="onMessageSent($event)"></app-input-field>
+    <app-input-field 
+      [channelName]="currentChannel?.name" 
+      [recipientName]="currentDMUser?.name"
+      (messageSent)="onMessageSent($event)">
+    </app-input-field>
   </div>
 
   <app-user-profile-modal

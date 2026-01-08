@@ -31,7 +31,7 @@
 				</button>
 
 				<div class="reaction-picker-wrapper" *ngIf="!isOwnMessage">
-					<button type="button" class="btn-add-reaction" (click)="toggleReactionPicker()">➕</button>
+					<!-- <button type="button" class="btn-add-reaction" (click)="toggleReactionPicker()">➕</button> -->
 
 					<div class="reaction-picker" *ngIf="showReactionPicker">
 						<button
@@ -54,5 +54,26 @@
 				<ng-template #noReplies>Antworten</ng-template>
 			</button>
 		</div>
+
+		
+		<div class="hover-reaction-bar" [class.own-message-bar]="isOwnMessage" [class.thread-bar]="!showThreadButton">
+			<ng-container *ngIf="showThreadButton">
+				<button>
+					<app-svg-images [iconName]="'green_mack'" [width]="'20'" [height]="'20'"></app-svg-images>
+				</button>
+				<button>
+					<app-svg-images [iconName]="'nice'" [width]="'20'" [height]="'20'"></app-svg-images>
+				</button>
+			</ng-container>
+			<button>
+				<app-svg-images [iconName]="'add_reaction'" [width]="'24'" [height]="'24'"></app-svg-images>
+			</button>
+			<button *ngIf="showThreadButton">
+				<app-svg-images [iconName]="'comment'" [width]="'24'" [height]="'24'"></app-svg-images>
+			</button>
+			<button *ngIf="isOwnMessage">
+				<app-svg-images [iconName]="'more_vert'" [width]="'4'" [height]="'16'"></app-svg-images>
+			</button>
+		</div>
 	</div>
-</ng-container>
+</ng-container>	
