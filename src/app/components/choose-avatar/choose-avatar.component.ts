@@ -3,13 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
-import { SvgImagesComponent } from '../svg-images/svg-images.component';
-import { HeaderLoginComponent } from '../header-login/header-login.component';
+import { SvgImagesComponent } from '../svg-images/svg-images.component';import { HeaderLoginComponent } from '../header-login/header-login.component';
 
 @Component({
   selector: 'app-choose-avatar',
   standalone: true,
-  imports: [CommonModule, RouterModule, SvgImagesComponent, HeaderLoginComponent],
+  imports: [CommonModule, RouterModule, SvgImagesComponent],
   templateUrl: './choose-avatar.component.html',
   styleUrl: './choose-avatar.component.css'
 })

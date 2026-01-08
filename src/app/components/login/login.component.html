@@ -63,5 +63,13 @@
       </div>
     </form>
   </div>
+  
+  <app-overlay 
+    [isVisible]="showOverlay"
+    [type]="overlayType"
+    [title]="overlayTitle"
+    [message]="overlayMessage"
+    (close)="onOverlayClose()">
+  </app-overlay>
 </div>
 
