@@ -1,0 +1,102 @@
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
+  z-index: 10000;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.splash-screen.animating .logo-container {
+  animation: splashAnimation 2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.splash-screen:not(.animating) .logo-container {
+  top: 20px;
+  left: 20px;
+  transform: translate(0, 0) scale(0.3) rotate(360deg);
+  opacity: 0.9;
+}
+
+.splash-screen:not(.animating) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.logo-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 187px;
+  height: 184px;
+  will-change: transform, top, left, opacity;
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.15));
+  animation: logoGlow 2s ease-in-out forwards;
+}
+
+@keyframes splashAnimation {
+  0% {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  25% {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.3) rotate(0deg);
+    opacity: 1;
+  }
+  40% {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  70% {
+    top: 30px;
+    left: 30px;
+    transform: translate(0, 0) scale(0.4) rotate(180deg);
+    opacity: 0.95;
+  }
+  85% {
+    top: 22px;
+    left: 22px;
+    transform: translate(0, 0) scale(0.33) rotate(270deg);
+    opacity: 0.92;
+  }
+  100% {
+    top: 20px;
+    left: 20px;
+    transform: translate(0, 0) scale(0.3) rotate(360deg);
+    opacity: 0.9;
+  }
+}
+
+@keyframes logoGlow {
+  0% {
+    filter: drop-shadow(0 0 0px rgba(146, 200, 62, 0)) brightness(0.7);
+  }
+  30% {
+    filter: drop-shadow(0 0 20px rgba(146, 200, 62, 0.6)) brightness(1.2);
+  }
+  50% {
+    filter: drop-shadow(0 0 15px rgba(146, 200, 62, 0.4)) brightness(1);
+  }
+  100% {
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1)) brightness(1);
+  }
+}

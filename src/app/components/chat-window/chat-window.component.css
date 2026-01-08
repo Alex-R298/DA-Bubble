@@ -88,7 +88,7 @@
 }
 
 .btn-channel-info:hover {
-  background: #f5f5f5;
+  transform: scale(1.05);
 }
 
 .btn-channel-info h3 {
@@ -120,7 +120,7 @@
 
 .btn-add-members {
   border: none;
-  background: transparent;
+  background: #ECEEFE;
   cursor: pointer;
   width: 2.25rem;
   height: 2.25rem;
@@ -128,7 +128,8 @@
 }
 
 .btn-add-members:hover {
-  background: #f5f5f5;
+  transform: scale(1.05);
+  /* SVG wird vom scale erhöht, nicht der Button */
 }
 
 .channel-info .channel-icon {
@@ -191,8 +192,14 @@
   font-weight: 600;
 }
 
-.btn-members:hover {
-  background: #eee;
+.btn-members:hover,
+.members-count:hover {
+  color: #535AF1;
+  background: #ECEEFE;
+}
+
+.btn-members:hover .members-count {
+  color: #535AF1;
 }
 
 .messages-container {
