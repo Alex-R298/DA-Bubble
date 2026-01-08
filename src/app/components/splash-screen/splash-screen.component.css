@@ -17,6 +17,13 @@
   animation: splashAnimation 2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
+.splash-screen:not(.animating) .logo-container {
+  top: 20px;
+  left: 20px;
+  transform: translate(0, 0) scale(0.3) rotate(360deg);
+  opacity: 0.9;
+}
+
 .splash-screen:not(.animating) {
   opacity: 0;
   pointer-events: none;
