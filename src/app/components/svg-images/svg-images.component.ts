@@ -27,7 +27,7 @@ export class SvgImagesComponent {
       case 'person_filled':
         return '0 0 16 16';
       case 'person':
-        return '0 0 91 91';
+        return '0 0 16 16';
       case 'dabubble':
         return '0 0 243 70';
       case 'steffen-hoffmann':
