@@ -15,11 +15,12 @@ import { DirectMessageService } from '../../services/direct-message.service';
 import { NewMessageStateService } from '../../services/new-message-state.service';
 import { ChannelHeaderModalsComponent, ChannelHeaderModalType } from '../channel-header-modals/channel-header-modals.component';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-chat-window',
   standalone: true,
-  imports: [CommonModule, InputFieldComponent, ChannelHeaderModalsComponent, UserProfileModalComponent, MessageItemComponent, SvgImagesComponent],
+  imports: [CommonModule, InputFieldComponent, ChannelHeaderModalsComponent, UserProfileModalComponent, MessageItemComponent, SvgImagesComponent, TranslateModule],
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.css']
 })
@@ -33,6 +34,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   private router = inject(Router);
   private directMessageService = inject(DirectMessageService);
   private newMessageStateService = inject(NewMessageStateService);
+  private translateService = inject(TranslateService);
   private messagesSubscription?: Subscription;
 
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;

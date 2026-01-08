@@ -1,7 +1,7 @@
 <div class="choose-avatar-container">
   <div class="decorative-curve"></div>
   <div class="choose-avatar-card">
-    <h1 class="choose-avatar-title">Wähle deinen Avatar</h1>
+    <h1 class="choose-avatar-title">{{ 'CHOOSE_AVATAR.TITLE' | translate }}</h1>
     <p class="choose-avatar-subtitle">{{ userName }}</p>
     
     <div class="avatar-preview">
@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    <p class="avatar-instruction">Aus der Liste wählen</p>
+    <p class="avatar-instruction">{{ 'CHOOSE_AVATAR.SELECT_FROM_LIST' | translate }}</p>
 
     <div class="avatars-grid">
       <div 
@@ -68,7 +68,7 @@
       class="primary-button" 
       [disabled]="selectedAvatar === null"
       (click)="onContinue()">
-      Weiter
+      {{ 'CHOOSE_AVATAR.CONTINUE' | translate }}
     </button>
   </div>
 </div>

@@ -2,8 +2,8 @@
   <app-header-login></app-header-login>
   <div class="decorative-curve"></div>
   <div class="login-card">
-    <h1 class="login-title">Anmeldung</h1>
-    <p class="login-subtitle">Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
+    <h1 class="login-title">{{ 'LOGIN.TITLE' | translate }}</h1>
+    <p class="login-subtitle">{{ 'LOGIN.SUBTITLE' | translate }}</p>
     
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form">
       <div class="input-group">
@@ -16,7 +16,7 @@
           name="email"
           [(ngModel)]="email"
           required
-          placeholder="beispielname@email.com"
+          [placeholder]="'LOGIN.EMAIL_PLACEHOLDER' | translate"
           class="form-input"
         />
       </div>
@@ -31,15 +31,15 @@
           name="password"
           [(ngModel)]="password"
           required
-          placeholder="Passwort"
+          [placeholder]="'LOGIN.PASSWORD_PLACEHOLDER' | translate"
           class="form-input"
         />
       </div>
       
-      <a routerLink="/forgot-password" class="forgot-password-link">Passwort vergessen?</a>
+      <a routerLink="/forgot-password" class="forgot-password-link">{{ 'LOGIN.FORGOT_PASSWORD' | translate }}</a>
       
       <div class="divider">
-        <span>ODER</span>
+        <span>{{ 'LOGIN.OR' | translate }}</span>
       </div>
       
       <button type="button" (click)="onGoogleLogin()" class="google-login-button">
@@ -49,16 +49,16 @@
           [height]="'20'" 
           [className]="'google-icon'">
         </app-svg-images>
-        <span>Anmelden mit Google</span>
+        <span>{{ 'LOGIN.GOOGLE_LOGIN' | translate }}</span>
       </button>
       
       <div class="button-group">
         <button type="submit" [disabled]="!loginForm.valid" class="primary-login-button">
-          Anmelden
+          {{ 'LOGIN.LOGIN_BUTTON' | translate }}
         </button>
         
         <button type="button" routerLink="/dashboard" class="guest-login-button">
-          Gäste-Login
+          {{ 'LOGIN.GUEST_LOGIN' | translate }}
         </button>
       </div>
     </form>
@@ -72,4 +72,3 @@
     (close)="onOverlayClose()">
   </app-overlay>
 </div>
-

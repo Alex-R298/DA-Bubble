@@ -1,13 +1,13 @@
 <div class="chat-window">
   <div class="chat-header" [class.new-message-mode]="isNewMessageMode">
     <ng-container *ngIf="isNewMessageMode; else normalHeader">
-      <h3>Neue Nachricht</h3>
+      <h3>{{ 'CHAT.NEW_MESSAGE' | translate }}</h3>
       <input
         class="new-message-recipient"
         type="text"
         [value]="newMessageRecipient"
         (input)="newMessageRecipient = ($any($event.target).value)"
-        placeholder="An: #channel, @jemand oder E-Mail-Adresse"
+        [placeholder]="'CHAT.RECIPIENT_PLACEHOLDER' | translate"
       />
     </ng-container>
 
@@ -17,7 +17,6 @@
         <button type="button" class="btn-channel-info" (click)="openChannelHeaderModal('channel-info')">
           <app-svg-images [iconName]="'tag'" [width]="'22'" [height]="'23'"></app-svg-images>
           <h3>{{ currentChannel.name }}</h3>
-          <!-- <span class="btn-icon">(img)</span> -->
            <app-svg-images [iconName]="'keyboard_arrow_down'" [width]="'14'" [height]="'9'"></app-svg-images>
         </button>
 
@@ -52,7 +51,7 @@
           </app-svg-images>
           <h3 class="dm-profile-trigger" (click)="openUserProfile(currentDMUser)">{{ currentDMUser.name }}</h3>
           <span class="dm-status" [class.online]="currentDMUser.status === 'online'">
-            {{ currentDMUser.status === 'online' ? 'Online' : 'Offline' }}
+            {{ currentDMUser.status === 'online' ? ('CHAT.ONLINE' | translate) : ('CHAT.OFFLINE' | translate) }}
           </span>
         </div>
       </ng-container>
@@ -60,7 +59,7 @@
 
     <ng-template #chooseOne>
       <div class="channel-info">
-        <h3>Wähle einen Channel</h3>
+        <h3>{{ 'CHAT.SELECT_CHANNEL' | translate }}</h3>
       </div>
     </ng-template>
     </ng-template>
@@ -80,7 +79,7 @@
         <ng-container *ngIf="currentChannel; else dmOrNoneSelected">
           <h2 class="empty-title">(img) {{ currentChannel.name }}</h2>
           <p class="empty-text">
-            {{ getChannelCreatedHint(currentChannel) }} Das ist der Anfang des Channels
+            {{ getChannelCreatedHint(currentChannel) }} {{ 'CHAT.CHANNEL_START' | translate }}
             <span class="empty-channel-tag">#{{ currentChannel.name }}</span>.
           </p>
         </ng-container>
@@ -97,14 +96,14 @@
               <h2 class="empty-title dm-profile-trigger" (click)="openUserProfile(currentDMUser)">{{ currentDMUser.name }}</h2>
             </div>
             <p class="empty-text">
-              Diese Unterhaltung findet nur zwischen
+              {{ 'CHAT.CONVERSATION_BETWEEN' | translate }}
               <span class="dm-mention dm-profile-trigger" (click)="openUserProfile(currentDMUser)">&#64;{{ currentDMUser.name }}</span>
-              und dir statt.
+              {{ 'CHAT.CONVERSATION_BETWEEN_END' | translate }}
             </p>
           </ng-container>
           <ng-template #noneSelected>
-            <h2 class="empty-title">Wähle einen Channel</h2>
-            <p class="empty-text">Wähle links einen Channel aus, um Nachrichten zu sehen.</p>
+            <h2 class="empty-title">{{ 'CHAT.SELECT_CHANNEL' | translate }}</h2>
+            <p class="empty-text">{{ 'CHAT.SELECT_CHANNEL_TEXT' | translate }}</p>
           </ng-template>
         </ng-template>
       </div>

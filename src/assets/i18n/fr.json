@@ -1,0 +1,112 @@
+{
+  "HEADER_LOGIN": {
+    "NEW_TO_DABUBBLE": "Nouveau sur DABubble ?",
+    "CREATE_ACCOUNT": "Créer un compte"
+  },
+  "LOGIN": {
+    "TITLE": "Connexion",
+    "SUBTITLE": "Nous vous recommandons d'utiliser l'adresse e-mail que vous utilisez au travail.",
+    "EMAIL_PLACEHOLDER": "exemple@email.com",
+    "PASSWORD_PLACEHOLDER": "Mot de passe",
+    "FORGOT_PASSWORD": "Mot de passe oublié ?",
+    "OR": "OU",
+    "GOOGLE_LOGIN": "Se connecter avec Google",
+    "LOGIN_BUTTON": "Se connecter",
+    "GUEST_LOGIN": "Connexion invité"
+  },
+  "SIGNUP": {
+    "TITLE": "Créer un compte",
+    "SUBTITLE": "Avec votre nom et votre adresse e-mail, vous avez votre nouveau compte DABubble.",
+    "NAME_PLACEHOLDER": "Prénom et nom",
+    "EMAIL_PLACEHOLDER": "exemple@email.com",
+    "PASSWORD_PLACEHOLDER": "Mot de passe",
+    "PRIVACY_AGREEMENT": "J'accepte la",
+    "PRIVACY_POLICY": "Politique de confidentialité",
+    "PRIVACY_AGREEMENT_END": ".",
+    "CONTINUE": "Continuer"
+  },
+  "FORGOT_PASSWORD": {
+    "TITLE": "Réinitialiser le mot de passe",
+    "SUBTITLE": "Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+    "EMAIL_PLACEHOLDER": "exemple@email.com",
+    "SEND_LINK": "Envoyer le lien",
+    "BACK_TO_LOGIN": "Retour à la connexion",
+    "EMAIL_SENT": "E-mail envoyé !",
+    "EMAIL_SENT_TEXT": "Nous vous avons envoyé un lien pour réinitialiser votre mot de passe à",
+    "EMAIL_SENT_TEXT_2": ".",
+    "CHECK_SPAM": "Veuillez également vérifier votre dossier spam.",
+    "TESTING_INFO": "À des fins de test :",
+    "COPY": "Copier",
+    "TESTING_NOTE": "Cliquez sur le lien ou copiez-le dans votre presse-papiers"
+  },
+  "RESET_PASSWORD": {
+    "TITLE": "Réinitialiser le mot de passe",
+    "NEW_PASSWORD": "Nouveau mot de passe",
+    "CONFIRM_PASSWORD": "Confirmer le nouveau mot de passe",
+    "PASSWORDS_NOT_MATCH": "Les mots de passe ne correspondent pas",
+    "CHANGE_PASSWORD": "Changer le mot de passe",
+    "SUCCESS_TITLE": "Mot de passe changé avec succès !",
+    "SUCCESS_TEXT": "Votre mot de passe a été réinitialisé avec succès.",
+    "REDIRECT_TEXT": "Vous serez automatiquement redirigé vers la page de connexion."
+  },
+  "CHOOSE_AVATAR": {
+    "TITLE": "Choisissez votre avatar",
+    "SELECT_FROM_LIST": "Sélectionner dans la liste",
+    "CONTINUE": "Continuer"
+  },
+  "FOOTER": {
+    "IMPRINT": "Mentions légales",
+    "PRIVACY_POLICY": "Politique de confidentialité"
+  },
+  "HEADER": {
+    "SEARCH_PLACEHOLDER": "Rechercher dans Devspace",
+    "USER": "Utilisateur",
+    "PROFILE": "Profil",
+    "LOGOUT": "Déconnexion",
+    "EDIT": "Modifier",
+    "EMAIL_ADDRESS": "Adresse e-mail",
+    "EDIT_PROFILE": "Modifier votre profil",
+    "FULL_NAME": "Nom complet",
+    "CANCEL": "Annuler",
+    "SAVE": "Enregistrer"
+  },
+  "SIDEBAR": {
+    "OPEN_MENU": "Ouvrir le menu de l'espace de travail",
+    "CLOSE_MENU": "Fermer le menu de l'espace de travail",
+    "CHANNELS": "Canaux",
+    "ADD_CHANNEL": "Ajouter un canal",
+    "NO_CHANNELS": "Aucun canal",
+    "DIRECT_MESSAGES": "Messages directs",
+    "NO_CONTACTS": "Aucun contact",
+    "CREATE_CHANNEL": "Créer un canal",
+    "CHANNEL_DESCRIPTION_TITLE": "Les canaux sont destinés à la communication d'équipe. Ils fonctionnent mieux lorsqu'ils sont organisés par thème #marketing par exemple.",
+    "CHANNEL_NAME": "Nom du canal",
+    "CHANNEL_NAME_PLACEHOLDER": "ex. Projets de collaboration",
+    "DESCRIPTION": "Description",
+    "DESCRIPTION_PLACEHOLDER": "Votre texte ici",
+    "OPTIONAL": "optionnel",
+    "CREATE": "Créer"
+  },
+  "CHAT": {
+    "NEW_MESSAGE": "Nouveau message",
+    "RECIPIENT_PLACEHOLDER": "À : #canal, @quelqu'un ou adresse e-mail",
+    "SELECT_CHANNEL": "Sélectionnez un canal",
+    "SELECT_CHANNEL_TEXT": "Sélectionnez un canal à gauche pour voir les messages.",
+    "CHANNEL_START": "C'est le début du canal",
+    "CONVERSATION_BETWEEN": "Cette conversation est uniquement entre",
+    "CONVERSATION_BETWEEN_END": "et vous.",
+    "ONLINE": "En ligne",
+    "OFFLINE": "Hors ligne"
+  },
+  "STATUS": {
+    "ONLINE": "Actif",
+    "OFFLINE": "Absent"
+  },
+  "LANGUAGE": {
+    "SELECT": "Langue",
+    "GERMAN": "Deutsch",
+    "ENGLISH": "English",
+    "SPANISH": "Español",
+    "FRENCH": "Français"
+  }
+}

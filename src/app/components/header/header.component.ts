@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { UserService, User } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, SvgImagesComponent],
+  imports: [CommonModule, FormsModule, SvgImagesComponent, TranslateModule],
   templateUrl: './header.component.html',
   styleUrls: ['../../shared/styles/shared-ui.css', './header.component.css']
 })
@@ -17,6 +18,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private userService = inject(UserService);
   private authService = inject(AuthService);
+  private translateService = inject(TranslateService);
 
   user: {
     name?: string;
@@ -65,8 +67,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   getStatusText(user: { status?: 'online' | 'offline' | 'away' } | null): string {
-    if (user?.status === 'online') return 'Aktiv';
-    if (user?.status === 'away') return 'Abwesend';
+    if (user?.status === 'online') return this.translateService.instant('STATUS.ONLINE');
+    if (user?.status === 'away') return this.translateService.instant('STATUS.OFFLINE');
     return 'Offline';
   }
 

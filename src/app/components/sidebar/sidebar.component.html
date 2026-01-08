@@ -1,7 +1,7 @@
 <div class="sidebar-wrapper display-ai-center">
   <button class="btn-toggle display-center-center display-flex-column" (click)="toggleSidebar()">
-    <span class="toggle-icon">{{ isCollapsed ? '▶' : '◀' }}</span>
-    <span class="toggle-text">{{ isCollapsed ? 'Workspace-Menü öffnen' : 'Workspace-Menü schließen' }}</span>
+    <span class="toggle-icon">{{ isCollapsed ? '&#9654;' : '&#9664;' }}</span>
+    <span class="toggle-text">{{ isCollapsed ? ('SIDEBAR.OPEN_MENU' | translate) : ('SIDEBAR.CLOSE_MENU' | translate) }}</span>
   </button>
 
   <aside class="sidebar display-flex-column" [class.collapsed]="isCollapsed">
@@ -21,10 +21,10 @@
       <div class="sidebar-content">
         <div class="sidebar-section">
           <div class="section-header display-ai-center" (click)="toggleChannels()">
-            <span class="expand-icon">{{ channelsExpanded ? '▼' : '▶' }}</span>
+            <span class="expand-icon">{{ channelsExpanded ? '&#9660;' : '&#9654;' }}</span>
             <app-svg-images [iconName]="'workspaces'" [width]="'20'" [height]="'20'"></app-svg-images>
-            <span class="section-title">Channels</span>
-            <button class="btn-add" (click)="openNewChannelModal(); $event.stopPropagation()" title="Channel hinzufügen"><app-svg-images [iconName]="'add'" [width]="'14'" [height]="'14'"></app-svg-images></button>
+            <span class="section-title">{{ 'SIDEBAR.CHANNELS' | translate }}</span>
+            <button class="btn-add" (click)="openNewChannelModal(); $event.stopPropagation()" [title]="'SIDEBAR.ADD_CHANNEL' | translate"><app-svg-images [iconName]="'add'" [width]="'14'" [height]="'14'"></app-svg-images></button>
           </div>
 
           <ng-container *ngIf="channelsExpanded">
@@ -38,26 +38,26 @@
               </li>
             </ul>
             <ng-template #noChannels>
-              <div class="empty-state"> Keine Channels </div>
+              <div class="empty-state">{{ 'SIDEBAR.NO_CHANNELS' | translate }}</div>
             </ng-template>
 
             <button
               type="button"
               class="btn-add-channel display-ai-center"
               (click)="openNewChannelModal(); $event.stopPropagation()"
-              title="Channel hinzufügen"
+              [title]="'SIDEBAR.ADD_CHANNEL' | translate"
             >
               <span class="btn-add-channel-icon" aria-hidden="true"><app-svg-images [iconName]="'add_circle'" [width]="'20'" [height]="'20'"></app-svg-images></span>
-              <span>Channel hinzufügen</span>
+              <span>{{ 'SIDEBAR.ADD_CHANNEL' | translate }}</span>
             </button>
           </ng-container>
         </div>
 
         <div class="sidebar-section">
           <div class="section-header display-ai-center" (click)="toggleDirectMessages()">
-            <span class="expand-icon">{{ directMessagesExpanded ? '▼' : '▶' }}</span>
+            <span class="expand-icon">{{ directMessagesExpanded ? '&#9660;' : '&#9654;' }}</span>
             <app-svg-images [iconName]="'account_circle'" [width]="'20'" [height]="'20'"></app-svg-images>
-            <span class="section-title">Direktnachrichten</span>
+            <span class="section-title">{{ 'SIDEBAR.DIRECT_MESSAGES' | translate }}</span>
           </div>
 
           <ng-container *ngIf="directMessagesExpanded">
@@ -74,7 +74,7 @@
               </li>
             </ul>
             <ng-template #noUsers>
-              <div class="empty-state">Keine Kontakte</div>
+              <div class="empty-state">{{ 'SIDEBAR.NO_CONTACTS' | translate }}</div>
             </ng-template>
           </ng-container>
         </div>
@@ -86,30 +86,29 @@
     <div class="modal-overlay display-center-center" (click)="closeNewChannelModal()">
       <div class="modal ui-panel ui-panel--modal" (click)="$event.stopPropagation()">
         <div class="modal-header ui-panel-header">
-        <h3>Channel erstellen</h3>
+        <h3>{{ 'SIDEBAR.CREATE_CHANNEL' | translate }}</h3>
         <button class="btn-close" (click)="closeNewChannelModal()">x (img)</button>
         </div>
 
-        <p>Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein  #marketing zum Beispiel.</p>
+        <p>{{ 'SIDEBAR.CHANNEL_DESCRIPTION_TITLE' | translate }}</p>
 
         <div class="form-group">
-          <label for="channelName">Channel-Name</label>
+          <label for="channelName">{{ 'SIDEBAR.CHANNEL_NAME' | translate }}</label>
            <div class="input-with-prefix">
              <span class="input-prefix" aria-hidden="true">#</span>
-             <input type="text" id="channelName" [(ngModel)]="newChannelName" placeholder="z.B. Kooperationsprojekte" />
+             <input type="text" id="channelName" [(ngModel)]="newChannelName" [placeholder]="'SIDEBAR.CHANNEL_NAME_PLACEHOLDER' | translate" />
            </div>
         </div>
 
         <div class="form-group">
-            <label for="channelDescription">Beschreibung <span class="optional-text">(optional)</span></label>
-          <input id="channelDescription" [(ngModel)]="newChannelDescription" placeholder="Dein Text hier" rows="3">
+            <label for="channelDescription">{{ 'SIDEBAR.DESCRIPTION' | translate }} <span class="optional-text">({{ 'SIDEBAR.OPTIONAL' | translate }})</span></label>
+          <input id="channelDescription" [(ngModel)]="newChannelDescription" [placeholder]="'SIDEBAR.DESCRIPTION_PLACEHOLDER' | translate" rows="3">
         </div>
 
         <div class="modal-actions ui-actions">
-          <button class="btn-primary" (click)="createChannel()" [disabled]="!newChannelName.trim()">Erstellen</button>
+          <button class="btn-primary" (click)="createChannel()" [disabled]="!newChannelName.trim()">{{ 'SIDEBAR.CREATE' | translate }}</button>
         </div>
       </div>
     </div>
   </ng-container>
 </div>
-

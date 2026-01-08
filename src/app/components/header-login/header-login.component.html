@@ -3,8 +3,26 @@
     <app-svg-images iconName="dabubble" [width]="'10rem'" [height]="'2.9rem'"></app-svg-images>
   </div>
   <div class="header-right">
-    <span class="header-text">Neu bei DABubble?</span>
-    <a routerLink="/signup" class="signup-link">Konto erstellen</a>
+    <div class="language-selector">
+      <button class="language-button" (click)="toggleLanguageDropdown()">
+        <span class="language-flag">{{ currentLanguageOption.flag }}</span>
+        <span class="language-code">{{ currentLanguageOption.code | uppercase }}</span>
+        <span class="dropdown-arrow">{{ showLanguageDropdown ? '&#9650;' : '&#9660;' }}</span>
+      </button>
+      <div class="language-dropdown" *ngIf="showLanguageDropdown">
+        <button 
+          *ngFor="let lang of languages" 
+          class="language-option"
+          [class.active]="lang.code === currentLanguage"
+          (click)="selectLanguage(lang.code)">
+          <span class="language-flag">{{ lang.flag }}</span>
+          <span class="language-name">{{ lang.name }}</span>
+        </button>
+      </div>
+    </div>
+    <span class="header-text">{{ 'HEADER_LOGIN.NEW_TO_DABUBBLE' | translate }}</span>
+    <a routerLink="/signup" class="signup-link">{{ 'HEADER_LOGIN.CREATE_ACCOUNT' | translate }}</a>
   </div>
 </header>
 
+<div class="language-overlay" *ngIf="showLanguageDropdown" (click)="closeDropdown()"></div>

@@ -6,11 +6,12 @@ import { AuthService } from '../../services/auth.service';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { HeaderLoginComponent } from '../header-login/header-login.component';
 import { OverlayComponent } from '../overlay/overlay.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SvgImagesComponent, HeaderLoginComponent, OverlayComponent],
+  imports: [CommonModule, FormsModule, RouterModule, SvgImagesComponent, HeaderLoginComponent, OverlayComponent, TranslateModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })

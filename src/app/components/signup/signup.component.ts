@@ -7,11 +7,12 @@ import { PrivacyStateService } from '../../services/privacy-state.service';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { OverlayComponent } from '../overlay/overlay.component';
 import { Subscription } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SvgImagesComponent, OverlayComponent],
+  imports: [CommonModule, FormsModule, RouterModule, SvgImagesComponent, OverlayComponent, TranslateModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
