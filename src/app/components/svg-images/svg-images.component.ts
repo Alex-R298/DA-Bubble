@@ -30,6 +30,8 @@ export class SvgImagesComponent {
         return '0 0 16 16';
       case 'dabubble':
         return '0 0 243 70';
+      case 'logo':
+        return '0 0 187 184';
       case 'steffen-hoffmann':
       case 'sofia-mueller':
       case 'noah-braun':
@@ -89,6 +91,10 @@ export class SvgImagesComponent {
 
   isDABubbleIcon(): boolean {
     return this.iconName === 'dabubble';
+  }
+
+  isLogoIcon(): boolean {
+    return this.iconName === 'logo';
   }
 
   isSteffenHoffmannIcon(): boolean {
