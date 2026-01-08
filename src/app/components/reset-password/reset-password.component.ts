@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SvgImagesComponent],
+  imports: [CommonModule, FormsModule, RouterModule, SvgImagesComponent, TranslateModule],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
 })

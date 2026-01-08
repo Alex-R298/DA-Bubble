@@ -4,13 +4,13 @@
   </button>
   <div class="decorative-curve"></div>
   <div class="signup-card">
-    <h1 class="signup-title">Konto erstellen</h1>
-    <p class="signup-subtitle">Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.</p>
+    <h1 class="signup-title">{{ 'SIGNUP.TITLE' | translate }}</h1>
+    <p class="signup-subtitle">{{ 'SIGNUP.SUBTITLE' | translate }}</p>
     
     <form (ngSubmit)="onSubmit()" #signupForm="ngForm" class="signup-form">
       <div class="input-group">
         <div class="input-icon">
-          <app-svg-images iconName="person_filled" [width]="'16'" [height]="'16'"></app-svg-images>
+          <app-svg-images iconName="person" [width]="'20'" [height]="'20'"></app-svg-images>
         </div>
         <input
           type="text"
@@ -18,7 +18,7 @@
           name="displayName"
           [(ngModel)]="displayName"
           required
-          placeholder="Name und Nachname"
+          [placeholder]="'SIGNUP.NAME_PLACEHOLDER' | translate"
           class="form-input"
         />
       </div>
@@ -33,7 +33,7 @@
           name="email"
           [(ngModel)]="email"
           required
-          placeholder="beispielname@email.com"
+          [placeholder]="'SIGNUP.EMAIL_PLACEHOLDER' | translate"
           class="form-input"
         />
       </div>
@@ -48,7 +48,7 @@
           name="password"
           [(ngModel)]="password"
           required
-          placeholder="Passwort"
+          [placeholder]="'SIGNUP.PASSWORD_PLACEHOLDER' | translate"
           class="form-input"
         />
       </div>
@@ -74,13 +74,21 @@
           </svg>
         </div>
         <label for="privacy" class="checkbox-label">
-          Ich stimme der <a routerLink="/privacy-policy" (click)="onPrivacyLinkClick()" class="privacy-link">Datenschutzerklärung</a> zu.
+          {{ 'SIGNUP.PRIVACY_AGREEMENT' | translate }} <a routerLink="/privacy-policy" (click)="onPrivacyLinkClick()" class="privacy-link">{{ 'SIGNUP.PRIVACY_POLICY' | translate }}</a> {{ 'SIGNUP.PRIVACY_AGREEMENT_END' | translate }}
         </label>
       </div>
       
       <button type="submit" [disabled]="!signupForm.valid || !privacyAccepted" class="primary-button">
-        Weiter
+        {{ 'SIGNUP.CONTINUE' | translate }}
       </button>
     </form>
   </div>
+  
+  <app-overlay 
+    [isVisible]="showOverlay"
+    [type]="overlayType"
+    [title]="overlayTitle"
+    [message]="overlayMessage"
+    (close)="onOverlayClose()">
+  </app-overlay>
 </div>

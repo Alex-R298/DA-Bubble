@@ -24,20 +24,20 @@
 }
 
 .avatar-small {
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   font-size: 0.75rem;
 }
 
 .avatar-medium {
-  width: 48px;
-  height: 48px;
+  width: 3rem;
+  height: 3rem;
   font-size: 1rem;
 }
 
 .avatar-large {
-  width: 64px;
-  height: 64px;
+  width: 4rem;
+  height: 4rem;
   font-size: 1.25rem;
 }
 

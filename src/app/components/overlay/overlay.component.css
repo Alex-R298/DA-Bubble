@@ -1,0 +1,124 @@
+.overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.overlay-content {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 2.5rem;
+  max-width: 28rem;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: slideUp 0.3s ease-out;
+  text-align: center;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.overlay-content.error {
+  border-top: 4px solid #EF4444;
+}
+
+.overlay-content.success {
+  border-top: 4px solid #10B981;
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B7280;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+}
+
+.close-button:hover {
+  background: #F3F4F6;
+  color: #111827;
+}
+
+.close-button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.overlay-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.overlay-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.75rem 0;
+}
+
+.overlay-content.error .overlay-title {
+  color: #DC2626;
+}
+
+.overlay-content.success .overlay-title {
+  color: #059669;
+}
+
+.overlay-message {
+  font-size: 1rem;
+  color: #6B7280;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .overlay-content {
+    padding: 2rem 1.5rem;
+    max-width: 95%;
+  }
+
+  .overlay-title {
+    font-size: 1.25rem;
+  }
+
+  .overlay-message {
+    font-size: 0.9375rem;
+  }
+}
+

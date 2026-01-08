@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SvgImagesComponent],
+  imports: [CommonModule, FormsModule, RouterModule, SvgImagesComponent, TranslateModule],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.css'
 })

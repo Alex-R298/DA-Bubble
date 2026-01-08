@@ -31,6 +31,7 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
   private subscription?: Subscription;
   currentUserId: string = '';
   private currentUserName: string = '';
+  private currentUserProfileImage: string = '';
   currentChannel: Channel | null = null;
 
   async ngOnInit(): Promise<void> {
@@ -57,6 +58,7 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
       this.currentUserId = currentUser.uid;
       const userData = await this.userService.getUserById(currentUser.uid);
       this.currentUserName = userData?.name || 'Unbekannt';
+      this.currentUserProfileImage = userData?.profileImageUrl || '';
     }
   }
 
@@ -84,7 +86,8 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
       this.channelId,
       this.currentUserId,
       this.currentUserName,
-      content.trim()
+      content.trim(),
+      this.currentUserProfileImage
     );
   }
 

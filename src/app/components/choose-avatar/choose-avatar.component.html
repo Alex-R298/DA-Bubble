@@ -1,46 +1,74 @@
 <div class="choose-avatar-container">
+  <div class="decorative-curve"></div>
   <div class="choose-avatar-card">
-    <button class="back-button" (click)="goBack()">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M6.875 14.8885L0.275 8.28846C0.175 8.18846 0.104 8.08013 0.0619998 7.96346C0.0206665 7.84679 0 7.72179 0 7.58846C0 7.45513 0.0206665 7.33013 0.0619998 7.21346C0.104 7.09679 0.175 6.98846 0.275 6.88846L6.875 0.288461C7.05833 0.105128 7.28733 0.00912821 7.562 0.00046154C7.83733 -0.00753846 8.075 0.0884612 8.275 0.288461C8.475 0.471795 8.57933 0.700795 8.588 0.975461C8.596 1.25079 8.5 1.48846 8.3 1.68846L3.4 6.58846H14.575C14.8583 6.58846 15.096 6.68413 15.288 6.87546C15.4793 7.06746 15.575 7.30513 15.575 7.58846C15.575 7.87179 15.4793 8.10913 15.288 8.30046C15.096 8.49246 14.8583 8.58846 14.575 8.58846H3.4L8.3 13.4885C8.48333 13.6718 8.57933 13.9051 8.588 14.1885C8.596 14.4718 8.5 14.7051 8.3 14.8885C8.11667 15.0885 7.88333 15.1885 7.6 15.1885C7.31667 15.1885 7.075 15.0885 6.875 14.8885Z" fill="black"/>
-      </svg>
-    </button>
-
-    <h1 class="title">Wähle deinen Avatar</h1>
-
+    <h1 class="choose-avatar-title">{{ 'CHOOSE_AVATAR.TITLE' | translate }}</h1>
+    <p class="choose-avatar-subtitle">{{ userName }}</p>
+    
     <div class="avatar-preview">
       <div class="avatar-circle">
-        <svg *ngIf="selectedAvatar === null" width="88" height="88" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="44" cy="44" r="44" fill="#6F7CEB"/>
-          <path d="M44 44C38.95 44 34.7917 42.2542 31.525 38.7625C28.2583 35.2708 26.625 31.075 26.625 26.175C26.625 21.275 28.2583 17.0792 31.525 13.5875C34.7917 10.0958 38.95 8.35 44 8.35C49.05 8.35 53.2083 10.0958 56.475 13.5875C59.7417 17.0792 61.375 21.275 61.375 26.175C61.375 31.075 59.7417 35.2708 56.475 38.7625C53.2083 42.2542 49.05 44 44 44ZM77 79.65H11C9.5375 79.65 8.29583 79.1292 7.275 78.0875C6.25417 77.0458 5.74375 75.7792 5.74375 74.2875V69.7875C5.74375 67.9292 6.2725 66.2125 7.33 64.6375C8.3875 63.0625 9.78125 61.85 11.5125 61C15.425 58.85 19.4208 57.2017 23.5 56.055C27.5792 54.9083 31.75 54.335 36.0125 54.335C36.4625 54.335 36.8942 54.3533 37.3075 54.39C37.7208 54.4267 38.1525 54.4817 38.6025 54.555C37.7025 55.8217 36.9842 57.2017 36.4475 58.695C35.9108 60.1883 35.6058 61.7633 35.5325 63.42C35.4592 65.0767 35.5692 66.6517 35.8625 68.145C36.1558 69.6383 36.5508 71.125 37.0475 72.605H50.9525C51.4492 71.125 51.8442 69.6383 52.1375 68.145C52.4308 66.6517 52.5408 65.0767 52.4675 63.42C52.3942 61.7633 52.0892 60.1883 51.5525 58.695C51.0158 57.2017 50.2975 55.8217 49.3975 54.555C49.8475 54.4817 50.2792 54.4267 50.6925 54.39C51.1058 54.3533 51.5375 54.335 51.9875 54.335C56.25 54.335 60.4208 54.9083 64.5 56.055C68.5792 57.2017 72.575 58.85 76.4875 61C78.2188 61.85 79.6125 63.0625 80.67 64.6375C81.7275 66.2125 82.2562 67.9292 82.2562 69.7875V74.2875C82.2562 75.7792 81.7458 77.0458 80.725 78.0875C79.7042 79.1292 78.4625 79.65 77 79.65Z" fill="white"/>
-        </svg>
-        <img *ngIf="selectedAvatar !== null" [src]="avatars[selectedAvatar]" alt="Selected Avatar" class="selected-avatar-img">
+        <app-svg-images 
+          *ngIf="selectedAvatar === null" 
+          iconName="person_filled" 
+          [width]="'88'" 
+          [height]="'88'"
+          className="selected-avatar-svg">
+        </app-svg-images>
+        <app-svg-images 
+          *ngIf="selectedAvatar !== null" 
+          [iconName]="avatars[selectedAvatar]" 
+          [width]="'176'" 
+          [height]="'176'"
+          className="selected-avatar-svg">
+        </app-svg-images>
       </div>
     </div>
 
-    <h2 class="user-name">{{ userName }}</h2>
-    <p class="subtitle">Aus der Liste wählen</p>
+    <p class="avatar-instruction">{{ 'CHOOSE_AVATAR.SELECT_FROM_LIST' | translate }}</p>
 
     <div class="avatars-grid">
       <div 
-        *ngFor="let avatar of avatars; let i = index" 
         class="avatar-option"
-        [class.selected]="selectedAvatar === i"
-        (click)="selectAvatar(i)">
-        <img [src]="avatar" alt="Avatar {{ i + 1 }}">
+        [class.selected]="selectedAvatar === 0"
+        (click)="selectAvatar(0)">
+        <app-svg-images iconName="steffen-hoffmann" [width]="'72'" [height]="'72'"></app-svg-images>
+      </div>
+      <div 
+        class="avatar-option"
+        [class.selected]="selectedAvatar === 1"
+        (click)="selectAvatar(1)">
+        <app-svg-images iconName="sofia-mueller" [width]="'72'" [height]="'72'"></app-svg-images>
+      </div>
+      <div 
+        class="avatar-option"
+        [class.selected]="selectedAvatar === 2"
+        (click)="selectAvatar(2)">
+        <app-svg-images iconName="noah-braun" [width]="'72'" [height]="'72'"></app-svg-images>
+      </div>
+      <div 
+        class="avatar-option"
+        [class.selected]="selectedAvatar === 3"
+        (click)="selectAvatar(3)">
+        <app-svg-images iconName="frederik-beck" [width]="'72'" [height]="'72'"></app-svg-images>
+      </div>
+      <div 
+        class="avatar-option"
+        [class.selected]="selectedAvatar === 4"
+        (click)="selectAvatar(4)">
+        <app-svg-images iconName="elise-roth" [width]="'72'" [height]="'72'"></app-svg-images>
+      </div>
+      <div 
+        class="avatar-option"
+        [class.selected]="selectedAvatar === 5"
+        (click)="selectAvatar(5)">
+        <app-svg-images iconName="elias-neumann" [width]="'72'" [height]="'72'"></app-svg-images>
       </div>
     </div>
 
     <button 
-      class="continue-button" 
+      class="primary-button" 
       [disabled]="selectedAvatar === null"
       (click)="onContinue()">
-      Weiter
+      {{ 'CHOOSE_AVATAR.CONTINUE' | translate }}
     </button>
   </div>
-
-  <footer class="footer-links">
-    <a routerLink="/imprint" class="footer-link">Impressum</a>
-    <a routerLink="/privacy-policy" class="footer-link">Datenschutz</a>
-  </footer>
 </div>

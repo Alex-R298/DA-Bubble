@@ -1,191 +1,261 @@
 .choose-avatar-container {
-  min-height: 100vh;
-  background-color: #ECEEFE;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
   padding: 2rem;
+  box-sizing: border-box;
+  overflow: hidden;
   position: relative;
+}
+
+.decorative-curve {
+  position: absolute;
+  bottom: -10%;
+  left: -5%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 8s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(30px, -30px) scale(1.05);
+  }
 }
 
 .choose-avatar-card {
-  background: #FFFFFF;
-  border-radius: 30px;
-  padding: 3rem 4rem;
-  max-width: 600px;
-  width: 100%;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 3rem 2.5rem;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+              0 2px 8px rgba(0, 0, 0, 0.05);
+  width: 37.5rem;
+  max-width: 37.5rem;
+  box-sizing: border-box;
   position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-.back-button {
-  position: absolute;
-  top: 2.5rem;
-  left: 2.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  animation: slideUp 0.6s ease-out;
 }
 
-.back-button:hover {
-  transform: translateX(-4px);
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.back-button svg {
-  width: 1.5rem;
-  height: 1.5rem;
+.choose-avatar-title {
+  margin: 0 0 0.75rem 0;
+  background: linear-gradient(135deg, #444DF2 0%, #797EF3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+  letter-spacing: -0.02em;
 }
 
-.title {
-  font-size: 2.875rem;
+.choose-avatar-subtitle {
+  margin: 0 0 2rem 0;
+  color: #4a5568;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #444DF2;
-  margin-bottom: 2rem;
+  line-height: 1.4;
   text-align: center;
 }
 
 .avatar-preview {
   margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .avatar-circle {
   width: 11rem;
   height: 11rem;
   border-radius: 50%;
-  background: #6F7CEB;
+  background: linear-gradient(135deg, #6F7CEB 0%, #797EF3 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  box-shadow: 0 8px 24px rgba(68, 77, 242, 0.25);
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.selected-avatar-img {
+.avatar-circle:hover {
+  transform: scale(1.03);
+  box-shadow: 0 12px 32px rgba(68, 77, 242, 0.3);
+}
+
+.selected-avatar-svg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.user-name {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #000000;
-  margin-bottom: 0.5rem;
-  text-align: center;
+.selected-avatar-svg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  margin: auto;
 }
 
-.subtitle {
-  font-size: 1.25rem;
-  font-weight: 400;
-  color: #000000;
-  margin-bottom: 2rem;
+.avatar-instruction {
+  margin: 0 0 1.5rem 0;
+  color: #4a5568;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.6;
   text-align: center;
 }
 
 .avatars-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 1rem;
-  margin-bottom: 2.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
   width: 100%;
+  max-width: 26rem;
+  justify-items: center;
 }
 
 .avatar-option {
-  width: 4.5rem;
-  height: 4.5rem;
+  width: 5.5rem;
+  height: 5.5rem;
   border-radius: 50%;
   cursor: pointer;
-  border: 3px solid transparent;
+  border: 2px solid transparent;
   overflow: hidden;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ECEEFE;
+  background: #f7fafc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
 }
 
 .avatar-option:hover {
-  transform: scale(1.05);
-  border-color: #444DF2;
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(68, 77, 242, 0.25);
+  border-color: rgba(68, 77, 242, 0.3);
 }
 
 .avatar-option.selected {
   border-color: #444DF2;
-  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 5px #444DF2;
+  border-width: 3px;
+  box-shadow: 0 0 0 3px #FFFFFF, 0 0 0 6px #444DF2;
+  transform: scale(1.05);
+  background: #ffffff;
 }
 
-.avatar-option img {
+.avatar-option.selected:hover {
+  transform: scale(1.08);
+}
+
+.avatar-option app-svg-images {
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 
-.continue-button {
-  background-color: #444DF2;
-  color: #FFFFFF;
+.avatar-option app-svg-images svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.primary-button {
+  width: 100%;
+  padding: 1.125rem;
+  background: linear-gradient(135deg, #444DF2 0%, #797EF3 100%);
+  color: #ffffff;
   border: none;
-  border-radius: 25px;
-  padding: 0.875rem 2rem;
-  font-size: 1.125rem;
+  border-radius: 16px;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 8rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 14px rgba(68, 77, 242, 0.4);
+  position: relative;
+  overflow: hidden;
 }
 
-.continue-button:hover:not(:disabled) {
-  background-color: #3A3FCE;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(68, 77, 242, 0.3);
-}
-
-.continue-button:disabled {
-  background-color: #B0B3E8;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.footer-links {
+.primary-button::before {
+  content: '';
   position: absolute;
-  bottom: 2rem;
-  display: flex;
-  gap: 2rem;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
 }
 
-.footer-link {
-  color: #797EF3;
-  text-decoration: none;
-  font-size: 1.125rem;
-  font-weight: 400;
-  transition: color 0.2s ease;
+.primary-button:hover:not(:disabled)::before {
+  left: 100%;
 }
 
-.footer-link:hover {
-  color: #444DF2;
-  text-decoration: underline;
+.primary-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(68, 77, 242, 0.5);
+}
+
+.primary-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.primary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 @media (max-width: 768px) {
+  .choose-avatar-container {
+    padding: 1.5rem;
+  }
+
   .choose-avatar-card {
+    width: 100%;
     padding: 2rem 1.5rem;
   }
 
-  .title {
-    font-size: 2rem;
-    margin-top: 2rem;
+  .choose-avatar-title {
+    font-size: 2.25rem;
   }
 
-  .back-button {
-    top: 1.5rem;
-    left: 1.5rem;
+  .choose-avatar-subtitle {
+    font-size: 1.25rem;
   }
 
   .avatar-circle {
@@ -193,31 +263,28 @@
     height: 9rem;
   }
 
-  .user-name {
-    font-size: 1.5rem;
-  }
-
-  .subtitle {
-    font-size: 1rem;
+  .avatar-instruction {
+    font-size: 0.9375rem;
   }
 
   .avatars-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
+    gap: 1rem;
+    max-width: 100%;
   }
 
   .avatar-option {
-    width: 4rem;
-    height: 4rem;
+    width: 4.5rem;
+    height: 4.5rem;
   }
 
-  .footer-links {
-    bottom: 1rem;
-    gap: 1rem;
-  }
-
-  .footer-link {
+  .primary-button {
     font-size: 1rem;
+    padding: 1rem;
+  }
+
+  .decorative-curve {
+    width: 300px;
+    height: 300px;
   }
 }
-

@@ -14,11 +14,13 @@ import { Router } from '@angular/router';
 import { DirectMessageService } from '../../services/direct-message.service';
 import { NewMessageStateService } from '../../services/new-message-state.service';
 import { ChannelHeaderModalsComponent, ChannelHeaderModalType } from '../channel-header-modals/channel-header-modals.component';
+import { SvgImagesComponent } from '../svg-images/svg-images.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-chat-window',
   standalone: true,
-  imports: [CommonModule, InputFieldComponent, ChannelHeaderModalsComponent, UserProfileModalComponent, MessageItemComponent],
+  imports: [CommonModule, InputFieldComponent, ChannelHeaderModalsComponent, UserProfileModalComponent, MessageItemComponent, SvgImagesComponent, TranslateModule],
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.css']
 })
@@ -32,6 +34,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   private router = inject(Router);
   private directMessageService = inject(DirectMessageService);
   private newMessageStateService = inject(NewMessageStateService);
+  private translateService = inject(TranslateService);
   private messagesSubscription?: Subscription;
 
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;
@@ -267,13 +270,15 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
 
     const userData = await this.userService.getUserById(currentUser.uid);
     const senderName = userData?.name || currentUser.displayName || 'Unbekannt';
+    const senderProfileImage = userData?.profileImageUrl || '';
 
     if (this.currentChannel) {
       await this.messageService.createMessage(
         this.currentChannel.id!,
         currentUser.uid,
         text.trim(),
-        senderName
+        senderName,
+        senderProfileImage
       );
     } else if (this.currentDMUser) {
       const conversationId = this.createConversationId(currentUser.uid, this.currentDMUser.uid);
@@ -282,7 +287,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
         conversationId,
         currentUser.uid,
         text.trim(),
-        senderName
+        senderName,
+        senderProfileImage
       );
     }
   }

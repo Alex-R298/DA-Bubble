@@ -1,0 +1,112 @@
+{
+  "HEADER_LOGIN": {
+    "NEW_TO_DABUBBLE": "Neu bei DABubble?",
+    "CREATE_ACCOUNT": "Konto erstellen"
+  },
+  "LOGIN": {
+    "TITLE": "Anmeldung",
+    "SUBTITLE": "Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.",
+    "EMAIL_PLACEHOLDER": "beispielname@email.com",
+    "PASSWORD_PLACEHOLDER": "Passwort",
+    "FORGOT_PASSWORD": "Passwort vergessen?",
+    "OR": "ODER",
+    "GOOGLE_LOGIN": "Anmelden mit Google",
+    "LOGIN_BUTTON": "Anmelden",
+    "GUEST_LOGIN": "Gäste-Login"
+  },
+  "SIGNUP": {
+    "TITLE": "Konto erstellen",
+    "SUBTITLE": "Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.",
+    "NAME_PLACEHOLDER": "Name und Nachname",
+    "EMAIL_PLACEHOLDER": "beispielname@email.com",
+    "PASSWORD_PLACEHOLDER": "Passwort",
+    "PRIVACY_AGREEMENT": "Ich stimme der",
+    "PRIVACY_POLICY": "Datenschutzerklärung",
+    "PRIVACY_AGREEMENT_END": "zu.",
+    "CONTINUE": "Weiter"
+  },
+  "FORGOT_PASSWORD": {
+    "TITLE": "Passwort zurücksetzen",
+    "SUBTITLE": "Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurücksetzen deines Passworts.",
+    "EMAIL_PLACEHOLDER": "beispielname@email.com",
+    "SEND_LINK": "Link senden",
+    "BACK_TO_LOGIN": "Zurück zur Anmeldung",
+    "EMAIL_SENT": "E-Mail gesendet!",
+    "EMAIL_SENT_TEXT": "Wir haben dir einen Link zum Zurücksetzen deines Passworts an",
+    "EMAIL_SENT_TEXT_2": "gesendet.",
+    "CHECK_SPAM": "Bitte überprüfe auch deinen Spam-Ordner.",
+    "TESTING_INFO": "Für Testzwecke:",
+    "COPY": "Kopieren",
+    "TESTING_NOTE": "Klicke auf den Link oder kopiere ihn in die Zwischenablage"
+  },
+  "RESET_PASSWORD": {
+    "TITLE": "Passwort zurücksetzen",
+    "NEW_PASSWORD": "Neues Passwort",
+    "CONFIRM_PASSWORD": "Neues Kennwort bestätigen",
+    "PASSWORDS_NOT_MATCH": "Die Passwörter stimmen nicht überein",
+    "CHANGE_PASSWORD": "Passwort ändern",
+    "SUCCESS_TITLE": "Passwort erfolgreich geändert!",
+    "SUCCESS_TEXT": "Ihr Passwort wurde erfolgreich zurückgesetzt.",
+    "REDIRECT_TEXT": "Sie werden automatisch zur Anmeldeseite weitergeleitet."
+  },
+  "CHOOSE_AVATAR": {
+    "TITLE": "Wähle deinen Avatar",
+    "SELECT_FROM_LIST": "Aus der Liste wählen",
+    "CONTINUE": "Weiter"
+  },
+  "FOOTER": {
+    "IMPRINT": "Impressum",
+    "PRIVACY_POLICY": "Datenschutz"
+  },
+  "HEADER": {
+    "SEARCH_PLACEHOLDER": "Devspace durchsuchen",
+    "USER": "User",
+    "PROFILE": "Profil",
+    "LOGOUT": "Log out",
+    "EDIT": "Bearbeiten",
+    "EMAIL_ADDRESS": "E-Mail-Adresse",
+    "EDIT_PROFILE": "Dein Profil bearbeiten",
+    "FULL_NAME": "Vollständiger Name",
+    "CANCEL": "Abbrechen",
+    "SAVE": "Speichern"
+  },
+  "SIDEBAR": {
+    "OPEN_MENU": "Workspace-Menü öffnen",
+    "CLOSE_MENU": "Workspace-Menü schließen",
+    "CHANNELS": "Channels",
+    "ADD_CHANNEL": "Channel hinzufügen",
+    "NO_CHANNELS": "Keine Channels",
+    "DIRECT_MESSAGES": "Direktnachrichten",
+    "NO_CONTACTS": "Keine Kontakte",
+    "CREATE_CHANNEL": "Channel erstellen",
+    "CHANNEL_DESCRIPTION_TITLE": "Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein  #marketing zum Beispiel.",
+    "CHANNEL_NAME": "Channel-Name",
+    "CHANNEL_NAME_PLACEHOLDER": "z.B. Kooperationsprojekte",
+    "DESCRIPTION": "Beschreibung",
+    "DESCRIPTION_PLACEHOLDER": "Dein Text hier",
+    "OPTIONAL": "optional",
+    "CREATE": "Erstellen"
+  },
+  "CHAT": {
+    "NEW_MESSAGE": "Neue Nachricht",
+    "RECIPIENT_PLACEHOLDER": "An: #channel, @jemand oder E-Mail-Adresse",
+    "SELECT_CHANNEL": "Wähle einen Channel",
+    "SELECT_CHANNEL_TEXT": "Wähle links einen Channel aus, um Nachrichten zu sehen.",
+    "CHANNEL_START": "Das ist der Anfang des Channels",
+    "CONVERSATION_BETWEEN": "Diese Unterhaltung findet nur zwischen",
+    "CONVERSATION_BETWEEN_END": "und dir statt.",
+    "ONLINE": "Online",
+    "OFFLINE": "Offline"
+  },
+  "STATUS": {
+    "ONLINE": "Aktiv",
+    "OFFLINE": "Abwesend"
+  },
+  "LANGUAGE": {
+    "SELECT": "Sprache",
+    "GERMAN": "Deutsch",
+    "ENGLISH": "English",
+    "SPANISH": "Español",
+    "FRENCH": "Français"
+  }
+}

@@ -10,10 +10,11 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ChatWindowComponent } from './components/chat-window/chat-window.component';
 import { ChooseAvatarComponent } from './components/choose-avatar/choose-avatar.component';
+import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: LoginComponent },
+  { path: '', component: SplashScreenComponent, data: { hideHeaderFooter: true } },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'choose-avatar', component: ChooseAvatarComponent },

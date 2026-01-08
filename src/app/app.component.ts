@@ -31,7 +31,6 @@ import { filter, Subscription } from 'rxjs';
     }
     .app-main {
       flex: 1;
-      display: flex;
       min-height: 0;
       overflow: hidden;
     }
@@ -77,10 +76,10 @@ export class AppComponent implements OnDestroy {
     this.useAuthGradient = this.matchesAnyPath(path, authGradientOn);
 
     // Login/Register pages (in this project: login + signup + root login)
-    const hideHeaderOn = ['/', '/login', '/signup', '/forgot-password', '/reset-password', '/imprint', '/privacy-policy'];
+    const hideHeaderOn = ['/', '/login', '/signup', '/forgot-password', '/reset-password', '/choose-avatar', '/imprint', '/privacy-policy'];
 
     // Footer should also be hidden on the dashboard view
-    const hideFooterOn = ['/dashboard', '/reset-password', '/imprint', '/privacy-policy'];
+    const hideFooterOn = ['/dashboard', '/reset-password', '/choose-avatar', '/imprint', '/privacy-policy'];
 
     this.showHeader = !this.matchesAnyPath(path, hideHeaderOn);
     this.showFooter = !this.matchesAnyPath(path, hideFooterOn);

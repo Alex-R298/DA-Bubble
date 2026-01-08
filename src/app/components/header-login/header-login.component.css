@@ -29,7 +29,7 @@
 }
 
 .header-text {
-  font-size: 1.125rem;
+  font-size: 1.126rem;
   font-weight: 400;
   color: #000000;
 }
@@ -54,6 +54,109 @@
   box-shadow: 0 4px 12px rgba(68, 77, 242, 0.3);
 }
 
+/* Language Selector Styles */
+.language-selector {
+  position: relative;
+}
+
+.language-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #333333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.language-button:hover {
+  border-color: #444DF2;
+  box-shadow: 0 2px 8px rgba(68, 77, 242, 0.15);
+}
+
+.language-flag {
+  font-size: 1.125rem;
+}
+
+.language-code {
+  font-weight: 600;
+}
+
+.dropdown-arrow {
+  font-size: 0.625rem;
+  color: #666666;
+  transition: transform 0.2s ease;
+}
+
+.language-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem;
+  z-index: 1000;
+  min-width: 160px;
+  animation: dropdownFade 0.2s ease;
+}
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  font-size: 0.875rem;
+  color: #333333;
+  text-align: left;
+}
+
+.language-option:hover {
+  background-color: #F5F5F5;
+}
+
+.language-option.active {
+  background-color: #ECEEFE;
+  color: #444DF2;
+  font-weight: 600;
+}
+
+.language-name {
+  flex: 1;
+}
+
+.language-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+}
+
 @media (max-width: 768px) {
   .header-login {
     padding: 1.5rem 1.5rem;
@@ -71,5 +174,17 @@
   .header-left app-svg-images {
     height: 2.25rem;
   }
-}
 
+  .language-button {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .language-code {
+    display: none;
+  }
+
+  .language-dropdown {
+    right: 0;
+    min-width: 140px;
+  }
+}

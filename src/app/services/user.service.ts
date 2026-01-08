@@ -18,6 +18,8 @@ export interface User {
 })
 export class UserService {
   private firebaseService = inject(FirebaseService);
+  private userCache = new Map<string, { user: User; timestamp: number }>();
+  private readonly CACHE_DURATION = 10000; // 10 Sekunden Cache
 
   async createUserProfile(uid: string, email: string, name: string) {
     const userDoc = doc(this.firebaseService.db, 'users', uid);
@@ -59,13 +61,19 @@ export class UserService {
     });
   }
 
-  async getUserById(uid: string): Promise<User | null> {
+  async getUserById(uid: string, bypassCache: boolean = false): Promise<User | null> {
+    if (!bypassCache) {
+      const cached = this.userCache.get(uid);
+      if (cached && (Date.now() - cached.timestamp < this.CACHE_DURATION)) {
+        return cached.user;
+      }
+    }
     const userDoc = doc(this.firebaseService.db, 'users', uid);
     const docSnap = await getDoc(userDoc);
 
     if (docSnap.exists()) {
       const data = docSnap.data();
-      return {
+      const user: User = {
         uid: data['uid'],
         email: data['email'],
         name: data['name'],
@@ -73,9 +81,17 @@ export class UserService {
         status: data['status'],
         createdAt: data['createdAt'].toDate()
       };
+      
+      this.userCache.set(uid, { user, timestamp: Date.now() });
+      
+      return user;
     }
 
     return null;
+  }
+
+  clearUserCache(): void {
+    this.userCache.clear();
   }
 
   async updateUserProfile(uid: string, name: string): Promise<void> {
@@ -84,6 +100,13 @@ export class UserService {
 
     const userDoc = doc(this.firebaseService.db, 'users', uid);
     await updateDoc(userDoc, { name: nextName });
+  }
+
+  async updateUserAvatar(uid: string, avatarUrl: string): Promise<void> {
+    const userDoc = doc(this.firebaseService.db, 'users', uid);
+    await updateDoc(userDoc, { 
+      profileImageUrl: avatarUrl 
+    });
   }
 
   async updateUserStatus(uid: string, status: 'online' | 'offline' | 'away'): Promise<void> {

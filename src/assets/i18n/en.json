@@ -1,0 +1,112 @@
+{
+  "HEADER_LOGIN": {
+    "NEW_TO_DABUBBLE": "New to DABubble?",
+    "CREATE_ACCOUNT": "Create account"
+  },
+  "LOGIN": {
+    "TITLE": "Login",
+    "SUBTITLE": "We recommend using the email address you use at work.",
+    "EMAIL_PLACEHOLDER": "example@email.com",
+    "PASSWORD_PLACEHOLDER": "Password",
+    "FORGOT_PASSWORD": "Forgot password?",
+    "OR": "OR",
+    "GOOGLE_LOGIN": "Sign in with Google",
+    "LOGIN_BUTTON": "Login",
+    "GUEST_LOGIN": "Guest Login"
+  },
+  "SIGNUP": {
+    "TITLE": "Create account",
+    "SUBTITLE": "With your name and email address, you have your new DABubble account.",
+    "NAME_PLACEHOLDER": "First and last name",
+    "EMAIL_PLACEHOLDER": "example@email.com",
+    "PASSWORD_PLACEHOLDER": "Password",
+    "PRIVACY_AGREEMENT": "I agree to the",
+    "PRIVACY_POLICY": "Privacy Policy",
+    "PRIVACY_AGREEMENT_END": ".",
+    "CONTINUE": "Continue"
+  },
+  "FORGOT_PASSWORD": {
+    "TITLE": "Reset password",
+    "SUBTITLE": "Enter your email address and we'll send you a link to reset your password.",
+    "EMAIL_PLACEHOLDER": "example@email.com",
+    "SEND_LINK": "Send link",
+    "BACK_TO_LOGIN": "Back to login",
+    "EMAIL_SENT": "Email sent!",
+    "EMAIL_SENT_TEXT": "We've sent you a link to reset your password to",
+    "EMAIL_SENT_TEXT_2": ".",
+    "CHECK_SPAM": "Please also check your spam folder.",
+    "TESTING_INFO": "For testing purposes:",
+    "COPY": "Copy",
+    "TESTING_NOTE": "Click the link or copy it to your clipboard"
+  },
+  "RESET_PASSWORD": {
+    "TITLE": "Reset password",
+    "NEW_PASSWORD": "New password",
+    "CONFIRM_PASSWORD": "Confirm new password",
+    "PASSWORDS_NOT_MATCH": "Passwords do not match",
+    "CHANGE_PASSWORD": "Change password",
+    "SUCCESS_TITLE": "Password changed successfully!",
+    "SUCCESS_TEXT": "Your password has been successfully reset.",
+    "REDIRECT_TEXT": "You will be automatically redirected to the login page."
+  },
+  "CHOOSE_AVATAR": {
+    "TITLE": "Choose your avatar",
+    "SELECT_FROM_LIST": "Select from list",
+    "CONTINUE": "Continue"
+  },
+  "FOOTER": {
+    "IMPRINT": "Imprint",
+    "PRIVACY_POLICY": "Privacy Policy"
+  },
+  "HEADER": {
+    "SEARCH_PLACEHOLDER": "Search Devspace",
+    "USER": "User",
+    "PROFILE": "Profile",
+    "LOGOUT": "Log out",
+    "EDIT": "Edit",
+    "EMAIL_ADDRESS": "Email address",
+    "EDIT_PROFILE": "Edit your profile",
+    "FULL_NAME": "Full name",
+    "CANCEL": "Cancel",
+    "SAVE": "Save"
+  },
+  "SIDEBAR": {
+    "OPEN_MENU": "Open workspace menu",
+    "CLOSE_MENU": "Close workspace menu",
+    "CHANNELS": "Channels",
+    "ADD_CHANNEL": "Add channel",
+    "NO_CHANNELS": "No channels",
+    "DIRECT_MESSAGES": "Direct messages",
+    "NO_CONTACTS": "No contacts",
+    "CREATE_CHANNEL": "Create channel",
+    "CHANNEL_DESCRIPTION_TITLE": "Channels are for team communication. They work best when organized by topic #marketing for example.",
+    "CHANNEL_NAME": "Channel name",
+    "CHANNEL_NAME_PLACEHOLDER": "e.g. Collaboration projects",
+    "DESCRIPTION": "Description",
+    "DESCRIPTION_PLACEHOLDER": "Your text here",
+    "OPTIONAL": "optional",
+    "CREATE": "Create"
+  },
+  "CHAT": {
+    "NEW_MESSAGE": "New message",
+    "RECIPIENT_PLACEHOLDER": "To: #channel, @someone or email address",
+    "SELECT_CHANNEL": "Select a channel",
+    "SELECT_CHANNEL_TEXT": "Select a channel on the left to see messages.",
+    "CHANNEL_START": "This is the beginning of the channel",
+    "CONVERSATION_BETWEEN": "This conversation is only between",
+    "CONVERSATION_BETWEEN_END": "and you.",
+    "ONLINE": "Online",
+    "OFFLINE": "Offline"
+  },
+  "STATUS": {
+    "ONLINE": "Active",
+    "OFFLINE": "Away"
+  },
+  "LANGUAGE": {
+    "SELECT": "Language",
+    "GERMAN": "Deutsch",
+    "ENGLISH": "English",
+    "SPANISH": "Español",
+    "FRENCH": "Français"
+  }
+}

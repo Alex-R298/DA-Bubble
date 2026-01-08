@@ -1,0 +1,112 @@
+{
+  "HEADER_LOGIN": {
+    "NEW_TO_DABUBBLE": "¿Nuevo en DABubble?",
+    "CREATE_ACCOUNT": "Crear cuenta"
+  },
+  "LOGIN": {
+    "TITLE": "Iniciar sesión",
+    "SUBTITLE": "Te recomendamos usar la dirección de correo electrónico que usas en el trabajo.",
+    "EMAIL_PLACEHOLDER": "ejemplo@email.com",
+    "PASSWORD_PLACEHOLDER": "Contraseña",
+    "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?",
+    "OR": "O",
+    "GOOGLE_LOGIN": "Iniciar sesión con Google",
+    "LOGIN_BUTTON": "Iniciar sesión",
+    "GUEST_LOGIN": "Iniciar como invitado"
+  },
+  "SIGNUP": {
+    "TITLE": "Crear cuenta",
+    "SUBTITLE": "Con tu nombre y correo electrónico tendrás tu nueva cuenta de DABubble.",
+    "NAME_PLACEHOLDER": "Nombre y apellido",
+    "EMAIL_PLACEHOLDER": "ejemplo@email.com",
+    "PASSWORD_PLACEHOLDER": "Contraseña",
+    "PRIVACY_AGREEMENT": "Acepto la",
+    "PRIVACY_POLICY": "Política de privacidad",
+    "PRIVACY_AGREEMENT_END": ".",
+    "CONTINUE": "Continuar"
+  },
+  "FORGOT_PASSWORD": {
+    "TITLE": "Restablecer contraseña",
+    "SUBTITLE": "Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
+    "EMAIL_PLACEHOLDER": "ejemplo@email.com",
+    "SEND_LINK": "Enviar enlace",
+    "BACK_TO_LOGIN": "Volver al inicio de sesión",
+    "EMAIL_SENT": "¡Correo enviado!",
+    "EMAIL_SENT_TEXT": "Te hemos enviado un enlace para restablecer tu contraseña a",
+    "EMAIL_SENT_TEXT_2": ".",
+    "CHECK_SPAM": "Por favor revisa también tu carpeta de spam.",
+    "TESTING_INFO": "Para pruebas:",
+    "COPY": "Copiar",
+    "TESTING_NOTE": "Haz clic en el enlace o cópialo al portapapeles"
+  },
+  "RESET_PASSWORD": {
+    "TITLE": "Restablecer contraseña",
+    "NEW_PASSWORD": "Nueva contraseña",
+    "CONFIRM_PASSWORD": "Confirmar nueva contraseña",
+    "PASSWORDS_NOT_MATCH": "Las contraseñas no coinciden",
+    "CHANGE_PASSWORD": "Cambiar contraseña",
+    "SUCCESS_TITLE": "¡Contraseña cambiada exitosamente!",
+    "SUCCESS_TEXT": "Tu contraseña ha sido restablecida exitosamente.",
+    "REDIRECT_TEXT": "Serás redirigido automáticamente a la página de inicio de sesión."
+  },
+  "CHOOSE_AVATAR": {
+    "TITLE": "Elige tu avatar",
+    "SELECT_FROM_LIST": "Seleccionar de la lista",
+    "CONTINUE": "Continuar"
+  },
+  "FOOTER": {
+    "IMPRINT": "Aviso legal",
+    "PRIVACY_POLICY": "Política de privacidad"
+  },
+  "HEADER": {
+    "SEARCH_PLACEHOLDER": "Buscar en Devspace",
+    "USER": "Usuario",
+    "PROFILE": "Perfil",
+    "LOGOUT": "Cerrar sesión",
+    "EDIT": "Editar",
+    "EMAIL_ADDRESS": "Correo electrónico",
+    "EDIT_PROFILE": "Editar tu perfil",
+    "FULL_NAME": "Nombre completo",
+    "CANCEL": "Cancelar",
+    "SAVE": "Guardar"
+  },
+  "SIDEBAR": {
+    "OPEN_MENU": "Abrir menú del espacio de trabajo",
+    "CLOSE_MENU": "Cerrar menú del espacio de trabajo",
+    "CHANNELS": "Canales",
+    "ADD_CHANNEL": "Añadir canal",
+    "NO_CHANNELS": "Sin canales",
+    "DIRECT_MESSAGES": "Mensajes directos",
+    "NO_CONTACTS": "Sin contactos",
+    "CREATE_CHANNEL": "Crear canal",
+    "CHANNEL_DESCRIPTION_TITLE": "Los canales son para la comunicación del equipo. Funcionan mejor cuando están organizados por tema #marketing por ejemplo.",
+    "CHANNEL_NAME": "Nombre del canal",
+    "CHANNEL_NAME_PLACEHOLDER": "ej. Proyectos de colaboración",
+    "DESCRIPTION": "Descripción",
+    "DESCRIPTION_PLACEHOLDER": "Tu texto aquí",
+    "OPTIONAL": "opcional",
+    "CREATE": "Crear"
+  },
+  "CHAT": {
+    "NEW_MESSAGE": "Nuevo mensaje",
+    "RECIPIENT_PLACEHOLDER": "Para: #canal, @alguien o correo electrónico",
+    "SELECT_CHANNEL": "Selecciona un canal",
+    "SELECT_CHANNEL_TEXT": "Selecciona un canal a la izquierda para ver mensajes.",
+    "CHANNEL_START": "Este es el comienzo del canal",
+    "CONVERSATION_BETWEEN": "Esta conversación es solo entre",
+    "CONVERSATION_BETWEEN_END": "y tú.",
+    "ONLINE": "En línea",
+    "OFFLINE": "Desconectado"
+  },
+  "STATUS": {
+    "ONLINE": "Activo",
+    "OFFLINE": "Ausente"
+  },
+  "LANGUAGE": {
+    "SELECT": "Idioma",
+    "GERMAN": "Deutsch",
+    "ENGLISH": "English",
+    "SPANISH": "Español",
+    "FRENCH": "Français"
+  }
+}
