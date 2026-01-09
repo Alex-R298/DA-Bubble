@@ -142,6 +142,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.closeEditProfileView();
   }
 
+  openSettings(): void {
+    this.closeMenus();
+    this.router.navigate(['/settings']);
+  }
+
   async onLogout(): Promise<void> {
   this.closeMenus();
   await this.authService.logout();

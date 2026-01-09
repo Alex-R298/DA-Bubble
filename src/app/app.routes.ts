@@ -11,6 +11,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ChatWindowComponent } from './components/chat-window/chat-window.component';
 import { ChooseAvatarComponent } from './components/choose-avatar/choose-avatar.component';
 import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
+import { SettingsComponent } from './components/settings/settings.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -33,6 +34,7 @@ export const routes: Routes = [
       { path: 'chat/user/:userId', component: ChatWindowComponent }
     ]
   },
+  { path: 'settings', component: SettingsComponent, canActivate: [authGuard] },
   { path: '**', component: PageNotFoundComponent, data: { hideHeaderFooter: true } }
 ];
 
