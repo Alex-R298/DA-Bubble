@@ -1,5 +1,5 @@
 .profile-modal {
-    --ui-panel-width: min(500px, 90vw);
+    --ui-panel-width: min(400px, 90vw);
     --ui-panel-padding: clamp(24px, 3vw, 45px) clamp(20px, 3vw, 40px);
     --ui-panel-gap: clamp(20px, 3vw, 38px);
     position: fixed;
@@ -7,6 +7,14 @@
     top: 50%;
     transform: translate(-50%, -50%);
     z-index: 1010;
+}
+
+.ui-avatar {
+    display: inline-block;
+    width: var(--ui-avatar-size, clamp(6.875rem, 20vw, 12.5rem));
+    height: var(--ui-avatar-size, clamp(6.875rem, 20vw, 12.5rem));
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .profile-view-header {
@@ -119,7 +127,6 @@
 }
 
 .profile-actions {
-    margin-top: 40px;
     display: flex;
     justify-content: center;
 }

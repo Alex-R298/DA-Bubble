@@ -146,7 +146,7 @@
   position: absolute;
   top: calc(100% + 0.5rem);
   right: 1rem;
-  --ui-panel-width: min(31.25rem, 90vw);
+  --ui-panel-width: min(28.125rem, 90vw);
   --ui-panel-padding: clamp(1.5rem, 3vw, 2.8125rem) clamp(1.25rem, 3vw, 2.5rem);
   --ui-panel-gap: clamp(1.25rem, 3vw, 2.375rem);
   z-index: 1020;
@@ -156,7 +156,7 @@
   position: absolute;
   top: calc(100% + 0.5rem);
   right: 1rem;
-  --ui-panel-width: min(31.25rem, 90vw);
+  --ui-panel-width: min(28.125rem, 90vw);
   --ui-panel-padding: clamp(1.5rem, 3vw, 2.8125rem) clamp(1.25rem, 3vw, 2.5rem);
   --ui-panel-gap: clamp(1.125rem, 2.5vw, 2rem);
   z-index: 1030;

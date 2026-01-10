@@ -8,11 +8,12 @@
         </div>
 
         <div class="profile-avatar-section ui-avatar-center">
-          <img
+          <app-svg-images
             class="profile-avatar ui-avatar"
-            [src]="user.profileImageUrl || 'assets/avatars/avatar-1.png'"
-            alt="Profilbild"
-          />
+            [iconName]="user.profileImageUrl || 'steffen-hoffmann'"
+            [width]="'100%'"
+            [height]="'100%'">
+          </app-svg-images>
         </div>
 
         <div class="profile-name-row">

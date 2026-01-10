@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
+import { SvgImagesComponent } from '../svg-images/svg-images.component';
 
 export type UserProfileModalUser = {
     uid: string;
@@ -15,7 +16,7 @@ export type UserProfileModalUser = {
 @Component({
     selector: 'app-user-profile-modal',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, SvgImagesComponent],
     templateUrl: './user-profile-modal.component.html',
     styleUrls: ['../../shared/styles/shared-ui.css', './user-profile-modal.component.css']
 })
