@@ -6,6 +6,12 @@
     align-items: center;
     justify-content: center;
     z-index: 999;
+    /* used for global overlay (channel-info) */
+}
+
+/* dim overlay for inline dropdowns (members/add-members) - lower z-index so modal (absolute) can sit above */
+.modal-overlay.dim {
+    z-index: 1000;
 }
 
 .modal {
@@ -15,6 +21,8 @@
     background: white;
     border-radius: 30px;
     padding: 24px;
+    z-index: 1002;
+    /* ensure modals appear above inline dim overlay */
 }
 
 .modal-header {
@@ -253,4 +261,42 @@
 .btn-primary:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* Anchor for absolute positioned modals so they appear below the buttons */
+.channel-members-actions {
+    position: relative;
+}
+
+/* Modals placed under the members / add-members buttons (rendered without overlay) */
+.modal.members,
+.modal.add-members {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    z-index: 1002;
+    background: #ffffff;
+    border-radius: 1.875rem 0 1.875rem 1.875rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    transition: transform 180ms ease, opacity 180ms ease;
+    transform-origin: top right;
+    min-width: 12rem;
+}
+
+/* Small devices: allow side spacing and smaller radius */
+@media (max-width: 430px) {
+
+    .modal.members,
+    .modal.add-members {
+        left: 0.5rem;
+        right: 0.5rem;
+        min-width: auto;
+        border-radius: 1.25rem;
+    }
+}
+
+/* Keep channel-info modal centered via overlay */
+.modal.channel-info {
+    /* when inside overlay the .modal defaults already apply; ensure centering is used only for overlay variant */
 }

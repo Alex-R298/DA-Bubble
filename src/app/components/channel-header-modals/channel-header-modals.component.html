@@ -1,57 +1,68 @@
 <ng-container *ngIf="isVisible">
-  <div class="modal-overlay" (click)="onOverlayClick()">
-    <div class="modal" (click)="onModalClick($event)">
-      <!-- Channel Info Modal -->
-      <ng-container *ngIf="activeType === 'channel-info'">
-        <div class="modal-header">
-          <div class="title-row">
-            <div class="title-left">
-              <span class="hash">#</span>
-              <span class="title">{{ channel?.name }}</span>
-            </div>
-            <button type="button" class="btn-close" (click)="close()">×</button>
-          </div>
-        </div>
-
-        <div class="modal-body">
-          <div class="section">
-            <div class="section-head">
-              <span class="label">Channel-Name</span>
-              <button type="button" class="btn-edit" (click)="isEditingName ? saveName() : startEditName()">
-                {{ isEditingName ? 'Speichern' : 'Bearbeiten' }}
-              </button>
-            </div>
-            <div class="value">
-              <span class="hash">#</span>
-              <input *ngIf="isEditingName" class="inline-input" [(ngModel)]="draftName" />
-              <span *ngIf="!isEditingName">{{ channel?.name }}</span>
+  <ng-container *ngIf="activeType === 'channel-info'; else inlineModal">
+    <div class="modal-overlay" (click)="onOverlayClick()">
+      <div class="modal channel-info" (click)="onModalClick($event)">
+        <!-- channel-info, members and add-members content (re-used inside modal) -->
+        <!-- Channel Info Modal -->
+        <ng-container *ngIf="activeType === 'channel-info'">
+          <div class="modal-header">
+            <div class="title-row">
+              <div class="title-left">
+                <span class="hash">#</span>
+                <span class="title">{{ channel?.name }}</span>
+              </div>
+              <button type="button" class="btn-close" (click)="close()">×</button>
             </div>
           </div>
 
-          <div class="section">
-            <div class="section-head">
-              <span class="label">Beschreibung</span>
-              <button type="button" class="btn-edit" (click)="isEditingDescription ? saveDescription() : startEditDescription()">
-                {{ isEditingDescription ? 'Speichern' : 'Bearbeiten' }}
-              </button>
+          <div class="modal-body">
+            <div class="section">
+              <div class="section-head">
+                <span class="label">Channel-Name</span>
+                <button type="button" class="btn-edit" (click)="isEditingName ? saveName() : startEditName()">
+                  {{ isEditingName ? 'Speichern' : 'Bearbeiten' }}
+                </button>
+              </div>
+              <div class="value">
+                <span class="hash">#</span>
+                <input *ngIf="isEditingName" class="inline-input" [(ngModel)]="draftName" />
+                <span *ngIf="!isEditingName">{{ channel?.name }}</span>
+              </div>
             </div>
-            <div class="value">
-              <textarea *ngIf="isEditingDescription" class="inline-textarea" [(ngModel)]="draftDescription"></textarea>
-              <span *ngIf="!isEditingDescription">{{ channel?.description }}</span>
+
+            <div class="section">
+              <div class="section-head">
+                <span class="label">Beschreibung</span>
+                <button type="button" class="btn-edit" (click)="isEditingDescription ? saveDescription() : startEditDescription()">
+                  {{ isEditingDescription ? 'Speichern' : 'Bearbeiten' }}
+                </button>
+              </div>
+              <div class="value">
+                <textarea *ngIf="isEditingDescription" class="inline-textarea" [(ngModel)]="draftDescription"></textarea>
+                <span *ngIf="!isEditingDescription">{{ channel?.description }}</span>
+              </div>
             </div>
+
+            <div class="divider"></div>
+
+            <div class="created-by">
+              <span class="label">Erstellt von</span>
+              <span class="value">{{ createdByName }}</span>
+            </div>
+
+            <button type="button" class="btn-danger" (click)="leaveChannel()">Channel verlassen</button>
           </div>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
 
-          <div class="divider"></div>
+  <ng-template #inlineModal>
+    <!-- dim background (separate element) for inline dropdown modals -->
+    <div class="modal-overlay dim" (click)="onOverlayClick()"></div>
 
-          <div class="created-by">
-            <span class="label">Erstellt von</span>
-            <span class="value">{{ createdByName }}</span>
-          </div>
-
-          <button type="button" class="btn-danger" (click)="leaveChannel()">Channel verlassen</button>
-        </div>
-      </ng-container>
-
+    <div class="modal" [ngClass]="activeType" (click)="onModalClick($event)">
+      <!-- Members / Add-members rendered without overlay -->
       <!-- Members Modal -->
       <ng-container *ngIf="activeType === 'members'">
         <div class="modal-header">
@@ -125,5 +136,5 @@
         </div>
       </ng-container>
     </div>
-  </div>
+  </ng-template>
 </ng-container>

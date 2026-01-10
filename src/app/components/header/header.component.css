@@ -85,14 +85,14 @@
 
 .user-avatar-wrapper {
   position: relative;
-  width: 4.375rem;
-  height: 4.375rem;
+  width: 5rem;
+  height: 5rem;
   flex: 0 0 auto;
 }
 
 .user-avatar {
-  width: 4.375rem;
-  height: 4.375rem;
+  width: 5rem;
+  height: 5rem;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -101,8 +101,8 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 0.75rem;
-  height: 0.75rem;
+  width: 1.190rem;
+  height: 1.190rem;
   border-radius: 50%;
   border: 2px solid white;
 }
