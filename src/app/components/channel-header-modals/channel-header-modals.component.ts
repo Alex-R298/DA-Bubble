@@ -35,6 +35,7 @@ export class ChannelHeaderModalsComponent implements OnChanges, OnDestroy {
 
     @Output() closed = new EventEmitter<void>();
     @Output() channelLeft = new EventEmitter<void>();
+    @Output() openType = new EventEmitter<ChannelHeaderModalType>();
 
     createdByName = '';
 
@@ -82,9 +83,7 @@ export class ChannelHeaderModalsComponent implements OnChanges, OnDestroy {
     }
 
     openAddMembers(): void {
-        this.activeType = 'add-members';
-        this.resetInlineState();
-        this.loadAddMembersCandidates();
+        this.openType.emit('add-members');
     }
 
     onOverlayClick(): void {

@@ -51,6 +51,7 @@
               [channel]="currentChannel"
               (closed)="closeChannelHeaderModal()"
               (channelLeft)="onChannelLeft()"
+              (openType)="openChannelHeaderModal($event)"
             ></app-channel-header-modals>
           </div>
 

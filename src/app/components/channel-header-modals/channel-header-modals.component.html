@@ -81,7 +81,7 @@
         <div class="members-list">
           <div class="member" *ngFor="let user of memberUsers">
             <app-svg-images
-          class="user-avatar"
+          class="user-avatar member-avatar"
           [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
           [width]="'100%'"
           [height]="'100%'">
@@ -105,7 +105,7 @@
 
       <div class="modal-body">
         <div class="channel-name">
-          <span class="hash">#</span>
+          <app-svg-images class="hash" [iconName]="'tag'" [width]="'100%'" [height]="'100%'"></app-svg-images>
           <span>{{ channel?.name }}</span>
         </div>
 
