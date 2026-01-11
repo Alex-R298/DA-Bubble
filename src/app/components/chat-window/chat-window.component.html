@@ -14,35 +14,57 @@
     <ng-template #normalHeader>
     <ng-container *ngIf="currentChannel; else dmOrChoose">
       <div class="channel-header-row">
-        <button type="button" class="btn-channel-info" (click)="openChannelHeaderModal('channel-info')">
-          <app-svg-images [iconName]="'tag'" [width]="'22'" [height]="'23'"></app-svg-images>
-          <h3>{{ currentChannel.name }}</h3>
-           <app-svg-images [iconName]="'keyboard_arrow_down'" [width]="'14'" [height]="'9'"></app-svg-images>
-        </button>
-
-        <div class="channel-members-actions">
-          <button type="button" class="btn-members" (click)="openChannelHeaderModal('members')">
-            <div class="member-avatars">
-              <app-svg-images
-                *ngFor="let u of channelMemberPreview"
-                class="member-avatar"
-                [iconName]="u.profileImageUrl || 'steffen-hoffmann'"
-                [width]="'32'"
-                [height]="'32'">
-              </app-svg-images>
-            </div>
-            <span class="members-count">{{ currentChannel.members?.length }}</span>
+        <div class="channel-info-anchor">
+          <button type="button" class="btn-channel-info" (click)="openChannelHeaderModal('channel-info')">
+            <app-svg-images [iconName]="'tag'" [width]="'22'" [height]="'23'"></app-svg-images>
+            <h3>{{ currentChannel.name }}</h3>
+             <app-svg-images [iconName]="'keyboard_arrow_down'" [width]="'14'" [height]="'9'"></app-svg-images>
           </button>
 
-          <button type="button" class="btn-add-members" (click)="openChannelHeaderModal('add-members')">(img)</button>
-            <!-- Channel header modals placed here so dropdowns can be positioned relative to this container -->
+          <app-channel-header-modals
+            [isOpen]="isChannelHeaderModalOpen && channelHeaderModalType === 'channel-info'"
+            [type]="'channel-info'"
+            [channel]="currentChannel"
+            (closed)="closeChannelHeaderModal()"
+            (channelLeft)="onChannelLeft()"
+          ></app-channel-header-modals>
+        </div>
+
+        <div class="channel-members-actions">
+          <div class="members-anchor">
+            <button type="button" class="btn-members" (click)="openChannelHeaderModal('members')">
+              <div class="member-avatars">
+                <app-svg-images
+                  *ngFor="let u of channelMemberPreview"
+                  class="member-avatar"
+                  [iconName]="u.profileImageUrl || 'steffen-hoffmann'"
+                  [width]="'32'"
+                  [height]="'32'">
+                </app-svg-images>
+              </div>
+              <span class="members-count">{{ currentChannel.members?.length }}</span>
+            </button>
+
             <app-channel-header-modals
-              [isOpen]="isChannelHeaderModalOpen"
-              [type]="channelHeaderModalType"
+              [isOpen]="isChannelHeaderModalOpen && channelHeaderModalType === 'members'"
+              [type]="'members'"
               [channel]="currentChannel"
               (closed)="closeChannelHeaderModal()"
               (channelLeft)="onChannelLeft()"
             ></app-channel-header-modals>
+          </div>
+
+          <div class="add-members-anchor">
+            <button type="button" class="btn-add-members" (click)="openChannelHeaderModal('add-members')">(img)</button>
+
+            <app-channel-header-modals
+              [isOpen]="isChannelHeaderModalOpen && channelHeaderModalType === 'add-members'"
+              [type]="'add-members'"
+              [channel]="currentChannel"
+              (closed)="closeChannelHeaderModal()"
+              (channelLeft)="onChannelLeft()"
+            ></app-channel-header-modals>
+          </div>
         </div>
       </div>
     </ng-container>

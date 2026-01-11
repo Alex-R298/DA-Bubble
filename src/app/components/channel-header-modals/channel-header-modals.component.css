@@ -20,7 +20,7 @@
     overflow: auto;
     background: white;
     border-radius: 30px;
-    padding: 24px;
+    padding: clamp(1rem, 2.5vw, 2.85rem);
     z-index: 1002;
     /* ensure modals appear above inline dim overlay */
 }
@@ -42,12 +42,13 @@
 }
 
 .title {
-    font-size: 20px;
+    font-size: 1.35rem;
     font-weight: 700;
     color: black;
 }
 
 .hash {
+    width: 1.15rem;
     font-weight: 700;
 }
 
@@ -70,7 +71,7 @@
 .section {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 1.25rem;
 }
 
 .section-head {
@@ -88,26 +89,94 @@
     background: transparent;
     cursor: pointer;
     font-weight: 600;
+    font-size: 1rem;
+    color: #444DF2;
+    font-family: inherit;
+    transition: all 0.125s;
+}
+
+.btn-edit:hover {
+    transform: scale(1.05);
+    font-weight: 700;
 }
 
 .value {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 0.75rem;
 }
 
-.inline-input,
-.inline-textarea {
-    width: 100%;
+.channel-name-value.has-border {
     border: 1px solid #ADB0D9;
     border-radius: 12px;
     padding: 10px 12px;
+}
+
+.channel-name-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.channel-name-group.has-border {
+    border: 1px solid #ADB0D9;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.input-with-prefix {
+    position: relative;
+}
+
+.input-prefix {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0.9rem;
+    pointer-events: none;
+}
+
+.input-with-prefix .inline-input {
+    padding-left: 3.25rem;
+}
+
+/* ensure the input fills the available horizontal space inside the flex container */
+.channel-name-value .input-with-prefix {
+    flex: 1 1 auto;
+    min-width: 0;
+    /* allow shrinking inside flex */
+}
+
+.channel-name-value .inline-input {
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+}
+
+.inline-input {
+    width: 100%;
+    border: 1px solid #ADB0D9;
+    border-radius: 30px;
+    padding: 18px 20px;
     font-size: 1rem;
 }
 
-.inline-textarea {
-    min-height: 90px;
-    resize: vertical;
+.inline-input:focus {
+    outline: none;
+    border-color: #787DF5;
+    box-shadow: 0 0 0 3px rgba(120, 125, 245, 0.15);
+}
+
+.input-prefix {
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    font-weight: 700;
+    color: #686868;
+    pointer-events: none;
 }
 
 .divider {
@@ -121,6 +190,26 @@
     gap: 4px;
 }
 
+.created-by-name {
+    font-size: 1.2rem;
+    font-family: inherit;
+    color: #535AF1;
+}
+
+.description-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+    /* padding applied when bordered */
+}
+
+.description-group.has-border {
+    border: 1px solid #ADB0D9;
+    border-radius: 12px;
+    padding: 12px;
+}
+
 .btn-danger {
     border: none;
     background: transparent;
@@ -128,6 +217,27 @@
     cursor: pointer;
     text-align: left;
     font-weight: 600;
+}
+
+.leave-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-leave {
+    border: none;
+    border-radius: 25px;
+    padding: 12px 25px;
+    background: #444DF2;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 1rem;
+    font-family: inherit;
+    font-weight: 700;
+}
+
+.btn-leave:hover {
+    background: #787DF5;
 }
 
 .members-list {
@@ -268,20 +378,33 @@
     position: relative;
 }
 
-/* Modals placed under the members / add-members buttons (rendered without overlay) */
+/* Modals placed under the members / add-members buttons (rendered without full-screen overlay) */
 .modal.members,
 .modal.add-members {
     position: absolute;
     top: calc(100% + 0.5rem);
-    right: 0;
     z-index: 1002;
     background: #ffffff;
-    border-radius: 1.875rem 0 1.875rem 1.875rem;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     overflow: hidden;
     transition: transform 180ms ease, opacity 180ms ease;
-    transform-origin: top right;
     min-width: 12rem;
+}
+
+/* members dropdown should align to the left edge of its own button */
+.modal.members {
+    right: 0;
+    left: auto;
+    border-radius: 1.875rem 0 1.875rem 1.875rem;
+    transform-origin: top right;
+}
+
+/* add-members dropdown should align to the right edge of its own button */
+.modal.add-members {
+    right: 0;
+    left: auto;
+    border-radius: 1.875rem 0 1.875rem 1.875rem;
+    transform-origin: top right;
 }
 
 /* Small devices: allow side spacing and smaller radius */
@@ -296,7 +419,27 @@
     }
 }
 
-/* Keep channel-info modal centered via overlay */
+/* Channel-info modal: render like inline modals but with custom corner radii */
 .modal.channel-info {
-    /* when inside overlay the .modal defaults already apply; ensure centering is used only for overlay variant */
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    z-index: 1002;
+    background: #ffffff;
+    border-radius: 0 1.875rem 1.875rem 1.875rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    transition: transform 180ms ease, opacity 180ms ease;
+    transform-origin: top left;
+    min-width: 12rem;
+}
+
+/* When channel-info is rendered inside the full-screen overlay, keep it centered
+   (overlay uses flex centering) instead of absolutely positioning it off-screen. */
+.modal-overlay>.modal.channel-info {
+    position: static;
+    z-index: 1002;
+    border-radius: 0 1.875rem 1.875rem 1.875rem;
+    max-width: 520px;
+    width: min(520px, calc(100vw - 32px));
 }

@@ -1,5 +1,5 @@
 <div class="sidebar-wrapper display-ai-center">
-  <button class="btn-toggle display-center-center display-flex-column" (click)="toggleSidebar()">
+    <button class="btn-toggle display-center-center display-flex-column" (click)="toggleSidebar()">
     <span class="toggle-icon">{{ isCollapsed ? '&#9654;' : '&#9664;' }}</span>
     <span class="toggle-text">{{ isCollapsed ? ('SIDEBAR.OPEN_MENU' | translate) : ('SIDEBAR.CLOSE_MENU' | translate) }}</span>
   </button>
@@ -95,7 +95,7 @@
         <div class="form-group">
           <label for="channelName">{{ 'SIDEBAR.CHANNEL_NAME' | translate }}</label>
            <div class="input-with-prefix">
-             <span class="input-prefix" aria-hidden="true">#</span>
+             <app-svg-images class="hash input-prefix" [iconName]="'tag'" [width]="'100%'" [height]="'100%'"></app-svg-images>
              <input type="text" id="channelName" [(ngModel)]="newChannelName" [placeholder]="'SIDEBAR.CHANNEL_NAME_PLACEHOLDER' | translate" />
            </div>
         </div>

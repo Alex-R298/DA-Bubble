@@ -79,6 +79,18 @@
   overflow: visible;
 }
 
+.members-anchor,
+.add-members-anchor {
+  position: relative;
+  display: inline-block;
+}
+
+/* Anchor for channel-info button so the channel-info modal appears below it */
+.channel-info-anchor {
+  position: relative;
+  display: inline-block;
+}
+
 .btn-channel-info {
   display: flex;
   align-items: center;

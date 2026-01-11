@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject, OnChanges, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { ChannelService, Channel } from '../../services/channel.service';
 import { UserService, User } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
@@ -17,7 +18,7 @@ type SelectedUserChip = {
 @Component({
     selector: 'app-channel-header-modals',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, /* svg icons */ SvgImagesComponent],
     templateUrl: './channel-header-modals.component.html',
     styleUrls: ['./channel-header-modals.component.css']
 })
