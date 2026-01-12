@@ -83,7 +83,7 @@
 		
 		<div class="message-item-spacer" *ngIf="isOwnMessage && showEditMessageInput" [class.show-edit-input]="showEditMessageInput">
 			<div class="message-spacer">
-				<textarea type="text" [value]="getContent()"></textarea>
+				<textarea type="text" [(ngModel)]="editedContent"></textarea>
 				<div class="edit-message-actions">
 					<div class="left-actions">
 						<button class="btn-emoji">
@@ -94,7 +94,7 @@
 					<button class="btn-cancel" (click)="hideEditMessageInput()">
 					Abbrechen
 					</button>
-				<button (click)="saveEditMessage()" class="btn-save">
+				<button class="btn-save" (click)="saveEditMessage()">
 					Speichern
 				</button>
 				</div>

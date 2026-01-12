@@ -88,4 +88,13 @@ getMessagesByChannelId(channelId: string): Observable<Message[]> {
     return () => unsubscribe(); 
   });
 }
+
+editMessage(messageId: string, newContent: string): Promise<void> {
+    const messageRef = doc(this.firebaseService.db, 'messages', messageId);
+    return setDoc(messageRef, { 
+      content: newContent, 
+      isEdited: true,
+      editedAt: new Date()
+    }, { merge: true });
+  }
 }

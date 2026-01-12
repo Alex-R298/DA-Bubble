@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
+import { MessageService } from '../../services/message.service';
 
 @Component({
   selector: 'app-message-item',
   standalone: true,
-  imports: [CommonModule, SvgImagesComponent],
+  imports: [CommonModule, SvgImagesComponent, FormsModule],
   templateUrl: './message-item.component.html',
   styleUrls: ['./message-item.component.css']
 })
@@ -39,7 +41,10 @@ export class MessageItemComponent {
   showEditMessage: boolean = false;
   showEditMessageInput: boolean = false;
   showReactionPicker = false;
+  editedContent: string = '';
   availableReactions: string[] = ['😀', '😂', '😍', '🤔', '👍', '👎', '❤️', '🎉', '😢', '😱', '🙏', '🔥'];
+
+  private messageService = inject(MessageService);
 
   get isOwnMessage(): boolean {
     if (this.isOwnMessageOverride !== null) return this.isOwnMessageOverride;
@@ -148,10 +153,19 @@ export class MessageItemComponent {
   openEditMessageInput(): void {
     this.showEditMessageInput = true;
     this.showEditMessage = false;
+    this.editedContent = this.getContent(); // Initialisiere mit aktueller Nachricht
   }
 
-  saveEditMessage(): void {
-    // Placeholder: implement message saving logic later
-    this.showEditMessageInput = false;
+  async saveEditMessage(): Promise<void> {
+    if (!this.message?.id || !this.editedContent.trim()) return;
+    try {
+      await this.messageService.editMessage(this.message.id, this.editedContent);
+      this.message.content = this.editedContent;
+      this.message.isEdited = true;
+      
+      this.showEditMessageInput = false;
+    } catch (error) {
+      console.error('Error editing message:', error);
+    }
   }
 }
