@@ -146,6 +146,12 @@ export class MessageItemComponent {
     this.showEditMessageInput = false;
   }
 
+  onMouseLeave(): void {
+    // Schließe nur das Edit-Menü, aber nicht das Input wenn es aktiv ist
+    this.showEditMessage = false;
+    // showEditMessageInput bleibt aktiv bis Speichern/Abbrechen
+  }
+
   hideEditMessageInput(): void {
     this.showEditMessageInput = false;
   }
