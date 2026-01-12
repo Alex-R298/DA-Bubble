@@ -64,6 +64,10 @@
     max-width: 70%;
 }
 
+.message-content.close-content {
+    opacity: 1;
+}
+
 .message-header {
     display: flex;
     align-items: center;
@@ -290,4 +294,159 @@
 
 .hover-reaction-bar.thread-bar button:nth-child(1):hover app-svg-images {
   filter: brightness(0) saturate(100%) invert(29%) sepia(93%) saturate(1986%) hue-rotate(230deg) brightness(97%) contrast(92%);
+}
+
+.edit-message {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.5rem;
+    background: transparent;
+    border: none;
+    width: 229px;
+    height: 47px;
+    cursor: pointer;
+}
+
+.edit-message:hover {
+    background-color: #ECEEFE;
+    border-radius: 30px;
+    color: #535AF1;
+    font-weight: 700;
+}
+
+.edit-message-container {
+    width: 269px;
+    height: 67px;
+    border-radius: 0px 30px 30px 30px;
+    box-shadow: #00000029 0px 4px 12px;
+    position: absolute;
+    border: 1px solid #ADB0D9;
+    background-color: #FFFFFF;
+    top: 0rem;
+    font-family: 'Nunito', sans-serif;
+    left: 19.5rem;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-10px);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+}
+
+.edit-message-container.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.message-spacer {
+    display: flex;
+    flex-direction: column;
+    border-radius: 1.25rem;
+    padding: 1rem 2rem;
+    border: 1px solid #ADB0D9;
+    height: 10rem;
+    transition: border-color 0.2s;
+    background-color: #FFFFFF;
+        width: 74rem;
+    height: 11rem;
+}
+
+.message-item-spacer {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+    overflow: hidden;
+    max-height: 0;
+}
+
+.message-item-spacer.show-edit-input {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    max-height: 500px;
+}
+.message-spacer textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 1.3rem;
+    font-family: 'Nunito', sans-serif;
+    resize: none;
+}
+
+.edit-message-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+}
+
+.btn-cancel {
+    background: transparent;
+    border: 1px solid #ADB0D9;
+    color: #444DF2;
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    width: 141px;
+    height: 49px;
+    border-radius: 50px;
+}
+
+.btn-save {
+    background-color: #444DF2;
+    border: none;
+    color: #FFFFFF;
+    font-size: 1.2rem;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: background-color 0.2s;
+    width: 141px;
+    height: 49px;
+    border-radius: 50px;
+}
+
+.btn-emoji {
+    background: transparent;
+    border: none;
+    font-size: 1.125rem;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.2s;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-emoji app-svg-images {
+  transition: filter 0.2s ease;
+}
+
+.btn-emoji:hover {
+  background: #ECEEFE;
+}
+
+.btn-emoji:hover app-svg-images {
+  filter: brightness(0) saturate(100%) invert(29%) sepia(93%) saturate(1986%) hue-rotate(230deg) brightness(97%) contrast(92%);
+}
+
+.left-actions {
+  display: flex;
+  align-items: center;
+   justify-content: flex-start;
+}
+
+.right-actions {
+  display: flex;
+  align-items: center;
+   justify-content: flex-end;
+   gap: 2.3rem;
 }

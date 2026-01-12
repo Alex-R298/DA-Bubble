@@ -36,6 +36,8 @@ export class MessageItemComponent {
   /** Emits when sender name is clicked (sender uid) */
   @Output() senderClicked = new EventEmitter<string>();
 
+  showEditMessage: boolean = false;
+  showEditMessageInput: boolean = false;
   showReactionPicker = false;
   availableReactions: string[] = ['😀', '😂', '😍', '🤔', '👍', '👎', '❤️', '🎉', '😢', '😱', '🙏', '🔥'];
 
@@ -128,5 +130,28 @@ export class MessageItemComponent {
     const senderId = this.message?.senderId;
     if (!senderId) return;
     this.senderClicked.emit(senderId);
+  }
+
+  onMoreVertClick(){
+    this.showEditMessage = !this.showEditMessage;
+  }
+
+  hideEditMessage(): void {
+    this.showEditMessage = false;
+    this.showEditMessageInput = false;
+  }
+
+  hideEditMessageInput(): void {
+    this.showEditMessageInput = false;
+  }
+
+  openEditMessageInput(): void {
+    this.showEditMessageInput = true;
+    this.showEditMessage = false;
+  }
+
+  saveEditMessage(): void {
+    // Placeholder: implement message saving logic later
+    this.showEditMessageInput = false;
   }
 }

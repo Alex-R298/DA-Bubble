@@ -1,10 +1,10 @@
 <ng-container *ngIf="message">
-	<div class="message-item" [class.own-message]="isOwnMessage">
+	<div class="message-item" [class.own-message]="isOwnMessage" [class.edit-mode]="showEditMessage || showEditMessageInput" (mouseleave)="hideEditMessage()">
 		<div class="message-avatar">
 			<app-svg-images [iconName]="getAvatarSrc()" [width]="'70'" [height]="'70'"></app-svg-images>
 		</div>
 
-		<div class="message-content">
+		<div class="message-content" *ngIf="!showEditMessageInput">
 			<div class="message-header">
 				<span
 					class="sender-name"
@@ -56,7 +56,7 @@
 		</div>
 
 		
-		<div class="hover-reaction-bar" [class.own-message-bar]="isOwnMessage" [class.thread-bar]="!showThreadButton">
+		<div class="hover-reaction-bar" *ngIf="!showEditMessageInput" [class.own-message-bar]="isOwnMessage" [class.thread-bar]="!showThreadButton">
 			<ng-container *ngIf="showThreadButton">
 				<button>
 					<app-svg-images [iconName]="'green_mack'" [width]="'20'" [height]="'20'"></app-svg-images>
@@ -71,9 +71,36 @@
 			<button *ngIf="showThreadButton">
 				<app-svg-images [iconName]="'comment'" [width]="'24'" [height]="'24'"></app-svg-images>
 			</button>
-			<button *ngIf="isOwnMessage">
+			<button *ngIf="isOwnMessage" (mousedown)="onMoreVertClick()">
 				<app-svg-images [iconName]="'more_vert'" [width]="'4'" [height]="'16'"></app-svg-images>
 			</button>
 		</div>
+		<div class="edit-message-container" *ngIf="isOwnMessage" [class.show]="showEditMessage">
+			<button (click)="openEditMessageInput()" class="edit-message">
+				Nachricht bearbeiten
+			</button>
+		</div>
+		
+		<div class="message-item-spacer" *ngIf="isOwnMessage && showEditMessageInput" [class.show-edit-input]="showEditMessageInput">
+			<div class="message-spacer">
+				<textarea type="text" [value]="getContent()"></textarea>
+				<div class="edit-message-actions">
+					<div class="left-actions">
+						<button class="btn-emoji">
+						<app-svg-images [iconName]="'smiley'" [width]="'20'" [height]="'20'"></app-svg-images>
+					</button>
+					</div>
+					<div class="right-actions">
+					<button class="btn-cancel" (click)="hideEditMessageInput()">
+					Abbrechen
+					</button>
+				<button (click)="saveEditMessage()" class="btn-save">
+					Speichern
+				</button>
+				</div>
+				</div>
+			</div>
+		</div>
 	</div>
-</ng-container>	
+</ng-container>
+
