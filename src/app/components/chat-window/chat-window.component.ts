@@ -22,7 +22,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   standalone: true,
   imports: [CommonModule, InputFieldComponent, ChannelHeaderModalsComponent, UserProfileModalComponent, MessageItemComponent, SvgImagesComponent, TranslateModule],
   templateUrl: './chat-window.component.html',
-  styleUrls: ['./chat-window.component.css']
+  styleUrls: ['../../shared/styles/shared-ui.css', './chat-window.component.css']
 })
 export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked {
   private route = inject(ActivatedRoute);

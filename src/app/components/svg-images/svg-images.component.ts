@@ -58,6 +58,8 @@ export class SvgImagesComponent {
         return '0 0 22 21';
       case 'person_add':
         return '0 0 22 16';
+      case 'add_members':
+        return '0 0 24 24';
       case 'tag':
         return '0 0 22 23';
       case 'show_menu':
@@ -186,6 +188,10 @@ export class SvgImagesComponent {
 
   isPersonAddIcon(): boolean {
     return this.iconName === 'person_add';
+  }
+
+  isAddMembersIcon(): boolean {
+    return this.iconName === 'add_members';
   }
 
   isTagIcon(): boolean {

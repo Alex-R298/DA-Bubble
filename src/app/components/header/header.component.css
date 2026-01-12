@@ -1,5 +1,6 @@
 :host {
   display: block;
+  --header-search-max: 76rem;
 }
 
 .header {
@@ -26,13 +27,18 @@
 .header-right {
   flex: 1;
   max-height: 4.375rem;
-  gap: 1rem;
+  gap: var(--header-gap, 1rem);
+  min-width: 0;
 }
 
 .search-container {
-  flex: 1;
-  min-width: 17.5rem;
+  flex: 1 1 auto;
+  min-width: 0;
   position: relative;
+  max-width: min(var(--header-search-max, 76rem),
+      var(--center-column-width, var(--header-search-max, 76rem)),
+      calc(100% - var(--header-user-area-min, 20rem) - var(--header-gap, 1rem)));
+  width: 100%;
 }
 
 .search-input {
@@ -68,7 +74,8 @@
 
 .user-area {
   flex-shrink: 0;
-  min-width: 20rem;
+  min-width: var(--header-user-area-min, 20rem);
+  margin-left: auto;
   position: relative;
   display: flex;
   justify-content: flex-end;
@@ -85,14 +92,14 @@
 
 .user-avatar-wrapper {
   position: relative;
-  width: 5rem;
-  height: 5rem;
+  width: 3.9rem;
+  height: 3.9rem;
   flex: 0 0 auto;
 }
 
 .user-avatar {
-  width: 5rem;
-  height: 5rem;
+  width: 3.9rem;
+  height: 3.9rem;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -101,8 +108,8 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 1.190rem;
-  height: 1.190rem;
+  width: 0.95rem;
+  height: 0.95rem;
   border-radius: 50%;
   border: 2px solid white;
 }
@@ -120,7 +127,7 @@
 }
 
 .user-name {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: black;
   white-space: nowrap;

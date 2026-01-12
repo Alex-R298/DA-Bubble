@@ -109,7 +109,7 @@
 
 .btn-channel-info h3 {
   margin: 0;
-  font-size: 1.7rem;
+  font-size: clamp(1.2rem, 1.28rem, 1.35rem);
   font-weight: 700;
   color: #000000;
   font-family: 'Nunito', sans-serif;
@@ -125,9 +125,12 @@
   align-items: center;
 }
 
+.group-member-avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
 .member-avatar {
-  width: 1.625rem;
-  height: 1.625rem;
   border-radius: 50%;
   object-fit: cover;
   margin-left: -0.375rem;
@@ -140,12 +143,14 @@
   cursor: pointer;
   width: 2.25rem;
   height: 2.25rem;
-  border-radius: 0.625rem;
+  border-radius: 50%;
+  color: #000000;
+  transition: all 0.125s;
 }
 
 .btn-add-members:hover {
   transform: scale(1.05);
-  /* SVG wird vom scale erhöht, nicht der Button */
+  color: #535AF1;
 }
 
 .channel-info .channel-icon {
@@ -188,30 +193,19 @@
 .btn-members {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  background: #f5f5f5;
+  gap: 0.5rem;
   border: none;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
+  background: transparent;
   cursor: pointer;
-  font-size: 0.875rem;
-  color: #666;
-  transition: background 0.2s;
-}
-
-.btn-members .members-count {
-  background: black;
-  color: white;
-  padding: 0.125rem 0.5rem;
-  border-radius: 0.75rem;
-  font-size: 0.75rem;
+  font-size: 1.1rem;
   font-weight: 600;
+  transition: all 0.125s;
 }
 
 .btn-members:hover,
 .members-count:hover {
   color: #535AF1;
-  background: #ECEEFE;
+  transform: scale(1.05);
 }
 
 .btn-members:hover .members-count {

@@ -112,7 +112,12 @@
         <div class="chip-input">
           <div class="chips">
             <div class="chip" *ngFor="let u of selectedUsers">
-              <img class="chip-avatar" [src]="u.profileImageUrl || 'assets/avatars/avatar-1.png'" [alt]="u.name" />
+              <app-svg-images
+                class="user-avatar add-member-avatar"
+                [iconName]="u?.profileImageUrl || 'steffen-hoffmann'"
+                [width]="'100%'"
+                [height]="'100%'">
+                </app-svg-images>
               <span class="chip-name">{{ u.name }}</span>
               <button type="button" class="chip-remove" (click)="removeSelectedUser(u.uid)">×</button>
             </div>
@@ -132,7 +137,12 @@
               *ngFor="let user of filteredSelectableUsers"
               (click)="addUserToSelection(user)"
             >
-              <img class="avatar" [src]="user.profileImageUrl || 'assets/avatars/avatar-1.png'" [alt]="user.name" />
+              <app-svg-images
+                class="user-avatar add-member-avatar"
+                [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
+                [width]="'100%'"
+                [height]="'100%'">
+              </app-svg-images>
               <span class="name">{{ user.name }}</span>
             </button>
           </div>

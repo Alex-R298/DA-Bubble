@@ -36,10 +36,10 @@
               <div class="member-avatars">
                 <app-svg-images
                   *ngFor="let u of channelMemberPreview"
-                  class="member-avatar"
+                  class="member-avatar group-member-avatar"
                   [iconName]="u.profileImageUrl || 'steffen-hoffmann'"
-                  [width]="'32'"
-                  [height]="'32'">
+                  [width]="'100%'"
+                  [height]="'100%'">
                 </app-svg-images>
               </div>
               <span class="members-count">{{ currentChannel.members?.length }}</span>
@@ -56,7 +56,9 @@
           </div>
 
           <div class="add-members-anchor">
-            <button type="button" class="btn-add-members" (click)="openChannelHeaderModal('add-members')">(img)</button>
+            <button type="button" class="btn-add-members display-center-center" (click)="openChannelHeaderModal('add-members')" aria-label="Add members">
+              <app-svg-images class="add-member-btn" [iconName]="'add_members'" [width]="'24'" [height]="'24'"></app-svg-images>
+            </button>
 
             <app-channel-header-modals
               [isOpen]="isChannelHeaderModalOpen && channelHeaderModalType === 'add-members'"

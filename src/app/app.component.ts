@@ -4,13 +4,14 @@ import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/ro
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { filter, Subscription } from 'rxjs';
+import { ThreadStateService } from './services/thread-state.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, FooterComponent, HeaderComponent, NgIf],
   template: `
-    <div class="app-wrapper" [class.auth-gradient]="useAuthGradient">
+    <div class="app-wrapper" [class.auth-gradient]="useAuthGradient" [class.thread-open]="isThreadOpen">
       <app-header *ngIf="showHeader"></app-header>
       <main class="app-main">
         <router-outlet></router-outlet>
@@ -41,18 +42,30 @@ export class AppComponent implements OnDestroy {
   showFooter = true;
   useAuthGradient = false;
 
-  private routerSub?: Subscription;
+  isThreadOpen = false;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+  private routerSub?: Subscription;
+  private threadSub?: Subscription;
+
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private threadStateService: ThreadStateService
+  ) {
     this.updateVisibility(this.router.url);
 
     this.routerSub = this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(ev => this.updateVisibility(ev.urlAfterRedirects));
+
+    this.threadSub = this.threadStateService.messageId$.subscribe(messageId => {
+      this.isThreadOpen = !!messageId;
+    });
   }
 
   ngOnDestroy(): void {
     this.routerSub?.unsubscribe();
+    this.threadSub?.unsubscribe();
   }
 
   private updateVisibility(url: string): void {

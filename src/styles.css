@@ -42,6 +42,30 @@ body {
   background-color: #ECEEFE;
 }
 
+:root {
+  /* Keep in sync with dashboard layout */
+  --layout-padding: 1rem;
+  /* .chat-layout-container padding */
+  --layout-gap: 1rem;
+  /* .chat-area/.thread-area margin-left */
+  --sidebar-width: 22.5rem;
+  /* sidebar width */
+  --thread-width: 30.3125rem;
+  /* thread width */
+}
+
+/* Default: dashboard without thread open */
+.app-wrapper {
+  --center-column-width: max(0px,
+      calc(100vw - (var(--layout-padding) * 2) - var(--sidebar-width) - var(--layout-gap)));
+}
+
+/* When thread is open, the center column becomes smaller */
+.app-wrapper.thread-open {
+  --center-column-width: max(0px,
+      calc(100vw - (var(--layout-padding) * 2) - var(--sidebar-width) - var(--layout-gap) - var(--thread-width) - var(--layout-gap)));
+}
+
 #root,
 app-root {
   width: 100%;
