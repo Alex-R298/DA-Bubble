@@ -1,0 +1,17 @@
+.settings-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.settings-container h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: black;
+}
+
+.settings-container p {
+  color: #686868;
+  font-size: 1rem;
+}
