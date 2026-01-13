@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, HostListener, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { MessageService } from '../../services/message.service';
@@ -43,8 +43,17 @@ export class MessageItemComponent {
   showReactionPicker = false;
   editedContent: string = '';
   availableReactions: string[] = ['😀', '😂', '😍', '🤔', '👍', '👎', '❤️', '🎉', '😢', '😱', '🙏', '🔥'];
+  activeReactionTooltip: string | null = null;
 
   private messageService = inject(MessageService);
+  private elementRef = inject(ElementRef);
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (this.showReactionPicker && !this.elementRef.nativeElement.contains(event.target)) {
+      this.showReactionPicker = false;
+    }
+  }
 
   get isOwnMessage(): boolean {
     if (this.isOwnMessageOverride !== null) return this.isOwnMessageOverride;
@@ -116,6 +125,114 @@ export class MessageItemComponent {
     return [];
   }
 
+  /**
+   * Extended version with user names for tooltips
+   */
+  getReactionsWithUsers(): { emoji: string; count: number; hasReacted: boolean; userNames: string[] }[] {
+    const reactions = this.message?.reactions;
+    if (!reactions) return [];
+
+    const toReaction = (emoji: string, users: string[] | undefined, userNames: string[] | undefined, count?: number) => {
+      const safeUsers = Array.isArray(users) ? users : [];
+      const safeUserNames = Array.isArray(userNames) ? userNames : [];
+      const safeCount = typeof count === 'number' ? count : safeUsers.length;
+      return {
+        emoji,
+        count: safeCount,
+        hasReacted: this.currentUserId ? safeUsers.includes(this.currentUserId) : false,
+        userNames: safeUserNames
+      };
+    };
+
+    if (Array.isArray(reactions)) {
+      return reactions
+        .map((r: any) => toReaction(r?.emoji, r?.users, r?.userNames, r?.count))
+        .filter((r: any) => r.emoji && r.count > 0);
+    }
+
+    if (typeof reactions === 'object') {
+      return Object.entries(reactions)
+        .map(([emoji, value]: [string, any]) => {
+          if (Array.isArray(value)) return toReaction(emoji, value, []);
+          if (value && typeof value === 'object') return toReaction(emoji, value.users, value.userNames, value.count);
+          return toReaction(emoji, [], []);
+        })
+        .filter(r => r.emoji && r.count > 0);
+    }
+
+    return [];
+  }
+
+  trackByEmoji(index: number, reaction: { emoji: string }): string {
+    return reaction.emoji;
+  }
+
+  showReactionTooltip(reaction: { emoji: string }): void {
+    this.activeReactionTooltip = reaction.emoji;
+  }
+
+  hideReactionTooltip(): void {
+    this.activeReactionTooltip = null;
+  }
+
+  getReactionUserName(reaction: { emoji: string; hasReacted: boolean; userNames: string[] }): string {
+    // Wenn ich reagiert habe und es andere gibt, zeige einen anderen Namen
+    if (reaction.hasReacted && reaction.userNames && reaction.userNames.length > 0) {
+      // Finde einen Namen der nicht meiner ist
+      const otherName = reaction.userNames.find(name => name !== 'Du');
+      if (otherName) {
+        return otherName;
+      }
+      return 'Du';
+    }
+    // Wenn ich nicht reagiert habe, zeige ersten Namen
+    if (reaction.userNames && reaction.userNames.length > 0) {
+      return reaction.userNames[0];
+    }
+    return 'Jemand';
+  }
+
+  showDuSuffix(reaction: { emoji: string; hasReacted: boolean; userNames: string[] }): boolean {
+    // Zeige (du) wenn ich reagiert habe UND ein anderer Name angezeigt wird
+    if (!reaction.hasReacted) return false;
+    if (!reaction.userNames || reaction.userNames.length === 0) return false;
+    const otherName = reaction.userNames.find(name => name !== 'Du');
+    return !!otherName;
+  }
+
+  getReactionTooltipText(reaction: { emoji: string; hasReacted: boolean; userNames: string[] }): string {
+    const names = [...reaction.userNames];
+    
+    // Replace current user's name with "Du" if they reacted
+    if (reaction.hasReacted) {
+      const currentUserIndex = names.findIndex(name => 
+        name === this.message?.senderName || name === 'Du'
+      );
+      if (currentUserIndex === -1) {
+        names.unshift('Du');
+      } else {
+        names[currentUserIndex] = 'Du';
+        // Move "Du" to the front
+        names.splice(currentUserIndex, 1);
+        names.unshift('Du');
+      }
+    }
+    
+    if (names.length === 0) {
+      return reaction.hasReacted ? 'Du hast reagiert' : 'hat reagiert';
+    }
+    
+    if (names.length === 1) {
+      return `${names[0]} hat reagiert`;
+    }
+    
+    if (names.length === 2) {
+      return `${names[0]} und ${names[1]} haben reagiert`;
+    }
+    
+    return `${names.slice(0, -1).join(', ')} und ${names[names.length - 1]} haben reagiert`;
+  }
+
   toggleReaction(emoji: string): void {
     this.reactionToggled.emit({ messageId: this.message?.id, emoji });
   }
@@ -149,6 +266,7 @@ export class MessageItemComponent {
   onMouseLeave(): void {
     // Schließe nur das Edit-Menü, aber nicht das Input wenn es aktiv ist
     this.showEditMessage = false;
+    // Reaction Picker bleibt offen bis Emoji ausgewählt wird
     // showEditMessageInput bleibt aktiv bis Speichern/Abbrechen
   }
 

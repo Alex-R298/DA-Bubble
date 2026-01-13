@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { doc, setDoc, collection, addDoc, onSnapshot, getDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, addDoc, onSnapshot, getDoc, updateDoc, deleteField } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
 import { UserService } from './user.service';
 import { Observable } from 'rxjs';
@@ -73,7 +73,9 @@ getMessagesByChannelId(channelId: string): Observable<Message[]> {
               senderProfileImage: senderProfileImage,
               timestamp: data['timestamp'] ? data['timestamp'].toDate() : new Date(),
               parentMessageId: data['parentMessageId'], 
-              replies: data['replies'] || []              
+              replies: data['replies'] || [],
+              reactions: data['reactions'] || {},
+              isEdited: data['isEdited'] || false
             };
           })
       );
@@ -96,5 +98,42 @@ editMessage(messageId: string, newContent: string): Promise<void> {
       isEdited: true,
       editedAt: new Date()
     }, { merge: true });
+  }
+
+  async toggleReaction(messageId: string, emoji: string, userId: string, userName: string): Promise<void> {
+    const messageRef = doc(this.firebaseService.db, 'messages', messageId);
+    const messageDoc = await getDoc(messageRef);
+    
+    if (!messageDoc.exists()) return;
+    
+    const data = messageDoc.data();
+    const reactions = data['reactions'] || {};
+    
+    if (!reactions[emoji]) {
+      reactions[emoji] = { users: [], userNames: [], count: 0 };
+    }
+    
+    const reaction = reactions[emoji];
+    const userIndex = reaction.users.indexOf(userId);
+    
+    if (userIndex === -1) {
+      // Add reaction
+      reaction.users.push(userId);
+      reaction.userNames.push(userName);
+      reaction.count = reaction.users.length;
+      await updateDoc(messageRef, { [`reactions.${emoji}`]: reaction });
+    } else {
+      // Remove reaction
+      reaction.users.splice(userIndex, 1);
+      reaction.userNames.splice(userIndex, 1);
+      reaction.count = reaction.users.length;
+      
+      if (reaction.count === 0) {
+        // Delete the emoji field completely from Firestore
+        await updateDoc(messageRef, { [`reactions.${emoji}`]: deleteField() });
+      } else {
+        await updateDoc(messageRef, { [`reactions.${emoji}`]: reaction });
+      }
+    }
   }
 }

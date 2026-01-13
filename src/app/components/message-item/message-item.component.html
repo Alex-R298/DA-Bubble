@@ -20,28 +20,38 @@
 			</div>
 
 			<div class="message-reactions" *ngIf="showReactions">
-				<button
-					type="button"
-					class="reaction-badge"
-					*ngFor="let reaction of getReactions()"
-					[class.has-reacted]="reaction.hasReacted"
-					(click)="toggleReaction(reaction.emoji)"
+				<div
+					class="reaction-badge-wrapper"
+					*ngFor="let reaction of getReactionsWithUsers(); trackBy: trackByEmoji"
 				>
-					{{ reaction.emoji }} {{ reaction.count }}
-				</button>
-
-				<div class="reaction-picker-wrapper" *ngIf="!isOwnMessage">
-					<!-- <button type="button" class="btn-add-reaction" (click)="toggleReactionPicker()">➕</button> -->
-
-					<div class="reaction-picker" *ngIf="showReactionPicker">
-						<button
-							type="button"
-							class="reaction-option"
-							*ngFor="let emoji of availableReactions"
-							(click)="addReaction(emoji)"
-						>
-							{{ emoji }}
-						</button>
+					<button
+						type="button"
+						class="reaction-badge"
+						[class.has-reacted]="reaction.hasReacted"
+						(click)="toggleReaction(reaction.emoji)"
+					>
+						<ng-container [ngSwitch]="reaction.emoji">
+							<app-svg-images *ngSwitchCase="'check'" [iconName]="'green_mack'" [width]="'20'" [height]="'20'"></app-svg-images>
+							<app-svg-images *ngSwitchCase="'✅'" [iconName]="'green_mack'" [width]="'20'" [height]="'20'"></app-svg-images>
+							<app-svg-images *ngSwitchCase="'nice'" [iconName]="'nice'" [width]="'20'" [height]="'20'"></app-svg-images>
+							<app-svg-images *ngSwitchCase="'🚀'" [iconName]="'nice'" [width]="'20'" [height]="'20'"></app-svg-images>
+							<span *ngSwitchDefault>{{ reaction.emoji }}</span>
+						</ng-container>
+						{{ reaction.count }}
+					</button>
+					<div class="reaction-tooltip">
+						<ng-container [ngSwitch]="reaction.emoji">
+							<app-svg-images *ngSwitchCase="'check'" [iconName]="'green_mack'" [width]="'40'" [height]="'40'" class="tooltip-emoji-icon"></app-svg-images>
+							<app-svg-images *ngSwitchCase="'✅'" [iconName]="'green_mack'" [width]="'40'" [height]="'40'" class="tooltip-emoji-icon"></app-svg-images>
+							<app-svg-images *ngSwitchCase="'nice'" [iconName]="'nice'" [width]="'40'" [height]="'40'" class="tooltip-emoji-icon"></app-svg-images>
+							<app-svg-images *ngSwitchCase="'🚀'" [iconName]="'nice'" [width]="'40'" [height]="'40'" class="tooltip-emoji-icon"></app-svg-images>
+							<span *ngSwitchDefault class="tooltip-emoji">{{ reaction.emoji }}</span>
+						</ng-container>
+						<span class="tooltip-name-row">
+							<span class="tooltip-name">{{ getReactionUserName(reaction) }}</span>
+							<span class="tooltip-du" *ngIf="showDuSuffix(reaction)">(du)</span>
+						</span>
+						<span class="tooltip-text">hat reagiert</span>
 					</div>
 				</div>
 			</div>
@@ -58,14 +68,14 @@
 		
 		<div class="hover-reaction-bar" *ngIf="!showEditMessageInput" [class.own-message-bar]="isOwnMessage" [class.thread-bar]="!showThreadButton">
 			<ng-container *ngIf="showThreadButton">
-				<button>
+				<button (click)="toggleReaction('check')">
 					<app-svg-images [iconName]="'green_mack'" [width]="'20'" [height]="'20'"></app-svg-images>
 				</button>
-				<button>
+				<button (click)="toggleReaction('nice')">
 					<app-svg-images [iconName]="'nice'" [width]="'20'" [height]="'20'"></app-svg-images>
 				</button>
 			</ng-container>
-			<button>
+			<button (click)="toggleReactionPicker()">
 				<app-svg-images [iconName]="'add_reaction'" [width]="'24'" [height]="'24'"></app-svg-images>
 			</button>
 			<button *ngIf="showThreadButton">
@@ -74,14 +84,24 @@
 			<button *ngIf="isOwnMessage" (mousedown)="onMoreVertClick()">
 				<app-svg-images [iconName]="'more_vert'" [width]="'4'" [height]="'16'"></app-svg-images>
 			</button>
+			<div class="reaction-picker hover-picker" *ngIf="showReactionPicker">
+				<button
+					type="button"
+					class="reaction-option"
+					*ngFor="let emoji of availableReactions"
+					(click)="addReaction(emoji)"
+				>
+					{{ emoji }}
+				</button>
+			</div>
 		</div>
-		<div class="edit-message-container" *ngIf="isOwnMessage" [class.show]="showEditMessage">
+		<div class="edit-message-container" *ngIf="isOwnMessage" [class.show]="showEditMessage" [class.thread-edit]="!showThreadButton">
 			<button (click)="openEditMessageInput()" class="edit-message">
 				Nachricht bearbeiten
 			</button>
 		</div>
 		
-		<div class="message-item-spacer" *ngIf="isOwnMessage && showEditMessageInput" [class.show-edit-input]="showEditMessageInput">
+		<div class="message-item-spacer" *ngIf="isOwnMessage && showEditMessageInput" [class.show-edit-input]="showEditMessageInput" [class.thread-spacer]="!showThreadButton">
 			<div class="message-spacer">
 				<textarea type="text" [(ngModel)]="editedContent"></textarea>
 				<div class="edit-message-actions">

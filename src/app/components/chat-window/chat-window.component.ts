@@ -370,4 +370,22 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
 
     return null;
   }
+
+  async onReactionToggled(event: { messageId: string | undefined; emoji: string }): Promise<void> {
+    if (!event.messageId || !this.currentUserId) return;
+    
+    try {
+      const currentUser = await this.userService.getUserById(this.currentUserId);
+      const userName = currentUser?.name || 'Unbekannt';
+      
+      await this.messageService.toggleReaction(
+        event.messageId,
+        event.emoji,
+        this.currentUserId,
+        userName
+      );
+    } catch (error) {
+      console.error('Error toggling reaction:', error);
+    }
+  }
 }

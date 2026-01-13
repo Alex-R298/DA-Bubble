@@ -5,6 +5,7 @@ import { Message } from '../../models/message.model';
 import { ThreadService } from '../../services/thread.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
+import { MessageService } from '../../services/message.service';
 import { MessageItemComponent } from '../message-item/message-item.component';
 import { Subscription } from 'rxjs';
 import { ChannelService, Channel } from '../../services/channel.service';
@@ -28,6 +29,7 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private channelService = inject(ChannelService);
+  private messageService = inject(MessageService);
   private subscription?: Subscription;
   currentUserId: string = '';
   private currentUserName: string = '';
@@ -93,5 +95,23 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
 
   closeThread(): void {
     this.threadClosed.emit();
+  }
+
+  async onReactionToggled(event: { messageId: string | undefined; emoji: string }): Promise<void> {
+    if (!event.messageId || !this.currentUserId) return;
+    
+    try {
+      const currentUser = await this.userService.getUserById(this.currentUserId);
+      const userName = currentUser?.name || 'Unbekannt';
+      
+      await this.messageService.toggleReaction(
+        event.messageId,
+        event.emoji,
+        this.currentUserId,
+        userName
+      );
+    } catch (error) {
+      console.error('Error toggling reaction:', error);
+    }
   }
 }

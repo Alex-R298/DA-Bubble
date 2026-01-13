@@ -127,26 +127,117 @@
     margin-top: 0.25rem;
 }
 
+.reaction-badge-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
 .reaction-badge {
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    background: #f5f5f5;
-    border: 1px solid #eee;
+    background: white;
+    border: 1px solid #ADB0D9;
     padding: 0.25rem 0.5rem;
-    border-radius: 0.75rem;
+    border-radius: 20px;
     font-size: 0.8125rem;
     cursor: pointer;
     transition: background 0.2s, border-color 0.2s;
+     width: 64px;
+    height: 34px;
+}
+
+.reaction-badge * {
+    pointer-events: none;
 }
 
 .reaction-badge:hover {
     background: #eee;
 }
 
+.reaction-badge:active {
+    animation: pop 0.3s ease-out;
+}
+
 .reaction-badge.has-reacted {
-    background: #ede9fe;
-    border-color: #7c3aed;
+    background: #FFFFFF;
+    border-color: #ADB0D9;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    animation: pop 0.3s ease-out;
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.08);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.reaction-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(0);
+    background: #444DF2;
+    color: #ffffff;
+    padding: 1rem 1.25rem;
+    border-radius: 30px 30px 30px 0;
+    white-space: nowrap;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease 0.1s, visibility 0.15s ease 0.1s;
+    min-width: 150px;
+}
+
+.reaction-badge-wrapper:hover .reaction-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+.tooltip-emoji {
+    font-size: 2rem;
+}
+
+.tooltip-emoji-icon {
+    margin-bottom: 0.25rem;
+}
+
+.tooltip-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.tooltip-name {
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+}
+
+.tooltip-du {
+    font-size: 16px;
+    font-family: 'Nunito', sans-serif;
+}
+
+.tooltip-text {
+    font-size: 16px;
+    font-family: 'Nunito', sans-serif;
 }
 
 .reaction-picker-wrapper {
@@ -179,6 +270,18 @@
     gap: 0.125rem;
     margin-bottom: 0.25rem;
     z-index: 10;
+}
+
+.reaction-picker.hover-picker {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    flex-wrap: wrap;
+    width: 250px;
+    justify-content: center;
+    border-radius: 1rem;
+    padding: 0.5rem;
 }
 
 .reaction-option {
@@ -340,6 +443,11 @@
     transform: translateX(0);
 }
 
+.edit-message-container.thread-edit {
+    left: 10.5rem;
+    right: 0;
+}
+
 .message-spacer {
     display: flex;
     flex-direction: column;
@@ -349,8 +457,12 @@
     height: 10rem;
     transition: border-color 0.2s;
     background-color: #FFFFFF;
-        width: 74rem;
+    width: 74rem;
     height: 11rem;
+}
+
+.thread-spacer .message-spacer {
+    width: 100%;
 }
 
 .message-item-spacer {

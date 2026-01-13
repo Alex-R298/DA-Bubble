@@ -10,7 +10,8 @@
       *ngIf="parentMessage" 
       [message]="parentMessage"
       [currentUserId]="currentUserId"
-      [showReactions]="false"
+      [showReactions]="true"
+      (reactionToggled)="onReactionToggled($event)"
       class="original-message">
     </app-message-item>
     
@@ -25,7 +26,9 @@
     <app-message-item 
       *ngFor="let message of threadMessages" 
       [message]="message"
-      [currentUserId]="currentUserId">
+      [currentUserId]="currentUserId"
+      [showReactions]="true"
+      (reactionToggled)="onReactionToggled($event)">
     </app-message-item>
     
     <p *ngIf="threadMessages.length === 0">No replies yet.</p>

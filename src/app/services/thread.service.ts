@@ -43,7 +43,9 @@ export class ThreadService {
               senderProfileImage: senderProfileImage,
               content: data['content'],
               timestamp: data['timestamp'].toDate(),
-              parentMessageId: data['parentMessageId']
+              parentMessageId: data['parentMessageId'],
+              reactions: data['reactions'] || {},
+              isEdited: data['isEdited'] || false
             } as Message;
           })
         );
