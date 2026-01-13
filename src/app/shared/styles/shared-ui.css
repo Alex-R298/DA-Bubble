@@ -105,3 +105,19 @@
     align-items: center;
     justify-content: space-between;
 }
+
+.border-radius-30px {
+    border-radius: 1.875rem;
+}
+
+.border-radius-50pct {
+    border-radius: 50%;
+}
+
+.gap-15px {
+    gap: 0.9375rem;
+}
+
+.ml-20px {
+    margin-left: 1.435rem;
+}

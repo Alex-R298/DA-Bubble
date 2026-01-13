@@ -243,13 +243,18 @@
 .members-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.93rem;
+}
+
+.name {
+    font-size: 1.29rem;
+    color: black;
 }
 
 .member {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 0.93rem;
 }
 
 .avatar {
@@ -261,11 +266,29 @@
 
 .btn-add-members {
     border: none;
+    border-radius: 30px;
     background: transparent;
+    padding: 0.75rem 1.25rem;
     cursor: pointer;
     text-align: left;
     font-family: inherit;
-    font-size: 1rem;
+    font-size: 1.29rem;
+    margin-left: 1rem;
+    transition: all 0.125s;
+    width: fit-content;
+}
+
+.btn-add-members:hover {
+    background: #ECEEFE;
+    color: #444DF2;
+}
+
+.add-member-btn {
+    width: 2.29rem;
+    height: 2.29rem;
+    border: none;
+    border-radius: 50%;
+    background-color: #ECEEFE;
 }
 
 .add-member-avatar {
@@ -326,8 +349,8 @@
 }
 
 .member-avatar {
-    width: 2.8rem;
-    height: 2.8rem;
+    width: 3.57rem;
+    height: 3.57rem;
 }
 
 .member-input {
