@@ -20,7 +20,7 @@ type SelectedUserChip = {
     standalone: true,
     imports: [CommonModule, FormsModule, /* svg icons */ SvgImagesComponent],
     templateUrl: './channel-header-modals.component.html',
-    styleUrls: ['./channel-header-modals.component.css']
+    styleUrls: ['../../shared/styles/shared-ui.css', './channel-header-modals.component.css']
 })
 export class ChannelHeaderModalsComponent implements OnChanges, OnDestroy {
     private channelService = inject(ChannelService);

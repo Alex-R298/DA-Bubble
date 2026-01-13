@@ -79,7 +79,7 @@
 
       <div class="modal-body">
         <div class="members-list">
-          <div class="member" *ngFor="let user of memberUsers">
+          <div class="member gap-15px ml-20px" *ngFor="let user of memberUsers">
             <app-svg-images
           class="user-avatar member-avatar"
           [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
@@ -90,7 +90,9 @@
           </div>
         </div>
 
-        <button type="button" class="btn-add-members" (click)="openAddMembers()">Mitglieder hinzufügen</button>
+        <button type="button" class="btn-add-members display-flex-row display-ai-center gap-15px" (click)="openAddMembers()">
+          <app-svg-images class="add-member-btn display-center-center" [iconName]="'add_members'" [width]="'24'" [height]="'24'"></app-svg-images>
+          Mitglieder hinzufügen</button>
       </div>
     </ng-container>
 
