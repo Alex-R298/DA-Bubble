@@ -71,7 +71,7 @@ getMessagesByChannelId(channelId: string): Observable<Message[]> {
               content: data['content'],
               senderName: data['senderName'],
               senderProfileImage: senderProfileImage,
-              timestamp: data['timestamp'].toDate(),
+              timestamp: data['timestamp'] ? data['timestamp'].toDate() : new Date(),
               parentMessageId: data['parentMessageId'], 
               replies: data['replies'] || []              
             };
