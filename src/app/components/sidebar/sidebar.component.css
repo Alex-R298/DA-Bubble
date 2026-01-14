@@ -34,19 +34,24 @@
   writing-mode: vertical-rl;
   text-orientation: mixed;
   transform: rotate(180deg);
-  font-size: 1rem;
+  font-size: 1.425rem;
   font-weight: inherit;
   white-space: nowrap;
 }
 
 .btn-toggle .toggle-icon {
-  font-size: 0.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sidebar {
   position: relative;
   width: 22.5rem;
   height: 100%;
+  gap: 1.79rem;
   background: white;
   color: black;
   transition: width 0.3s ease;
@@ -99,7 +104,7 @@
 
 .sidebar-header h2 {
   margin: 0;
-  font-size: 1.3rem;
+  font-size: 1.72rem;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -129,41 +134,46 @@
   gap: 0.5rem;
   padding-left: 0.5rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.125s;
   margin-bottom: 1rem;
 }
 
+
 .section-header:hover {
   background: rgba(255, 255, 255, 0.05);
+  color: #444DF2;
+}
+
+/* Keep hover behaviors separate: hovering the add button should NOT turn the whole header blue */
+.section-header:has(.btn-add:hover) {
+  color: rgba(0, 0, 0, 0.8);
+  background: transparent;
 }
 
 .expand-icon {
-  font-size: 0.625rem;
-  color: rgba(0, 0, 0, 0.6);
   width: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
 }
 
 .section-title {
   flex: 1;
   font-weight: 700;
-  font-size: 1.1rem;
-  color: rgba(0, 0, 0, 0.8);
-  transition: color 0.2s;
-}
-
-.section-title:hover {
-  color: #444DF2;
+  font-size: 1.425rem;
+  color: inherit;
+  transition: color 0.125s;
 }
 
 .btn-add {
   background: transparent;
   border: none;
   border-radius: 50%;
-  color: rgba(0, 0, 0, 0.6);
   height: 1.875rem;
   width: 1.875rem;
   cursor: pointer;
-  transition: color 0.2s, background 0.2s;
+  transition: color 0.125s, background 0.125s;
 }
 
 .btn-add:hover {
@@ -186,7 +196,7 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.29rem;
   font-weight: 400;
   color: black;
   border-radius: 1.25rem;
@@ -231,7 +241,7 @@
 }
 
 .channel-name {
-  font-size: 1.125rem;
+  font-size: 1.3rem;
 }
 
 .user-item {
@@ -315,18 +325,18 @@
 }
 
 .modal h3 {
-  font-size: 1.5rem;
+  font-size: 1.72rem;
 }
 
 .modal p {
-  font-size: 1rem;
+  font-size: 1.29rem;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 1.2rem;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.29rem;
   color: black;
 }
 
@@ -343,7 +353,7 @@
   left: 1.5rem;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1rem;
+  font-size: 1.29rem;
   font-weight: 700;
   color: #686868;
   pointer-events: none;
@@ -358,8 +368,8 @@
   border: none;
   cursor: pointer;
   transition: all 0.125s;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
 }
 

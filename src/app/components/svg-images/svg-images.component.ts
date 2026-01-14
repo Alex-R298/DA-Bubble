@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './svg-images.component.html',
-  styleUrl: './svg-images.component.css'
+  styleUrls: ['./svg-images.component.css']
 })
 export class SvgImagesComponent {
   @Input() iconName: string = '';
@@ -65,6 +65,8 @@ export class SvgImagesComponent {
       case 'show_menu':
       case 'close_menu':
         return '0 0 32 32';
+      case 'close':
+        return '0 0 24 24';
       case 'send':
         return '0 0 22 19';
       case 'search':
@@ -204,6 +206,10 @@ export class SvgImagesComponent {
 
   isCloseMenuIcon(): boolean {
     return this.iconName === 'close_menu';
+  }
+
+  isCloseIcon(): boolean {
+    return this.iconName === 'close';
   }
 
   isSendIcon(): boolean {

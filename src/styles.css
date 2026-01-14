@@ -50,7 +50,7 @@ body {
   /* .chat-area/.thread-area margin-left */
   --sidebar-width: 22.5rem;
   /* sidebar width */
-  --thread-width: 30.3125rem;
+  --thread-width: 34.5rem;
   /* thread width */
 }
 
@@ -72,4 +72,69 @@ app-root {
   height: 100%;
   overflow: hidden;
   display: block;
+}
+
+/* Sidebar: make monochrome SVG icons inherit text color.
+   Scoped by size to avoid recoloring multicolor/bitmap-like icons (e.g. workspace logo, avatars). */
+.sidebar app-svg-images svg[width="14"],
+.sidebar app-svg-images svg[width="10"],
+.sidebar app-svg-images svg[width="17"],
+.sidebar app-svg-images svg[width="20"],
+.sidebar app-svg-images svg[width="22"],
+.sidebar app-svg-images svg[width="23"],
+.sidebar app-svg-images svg[width="24"],
+.sidebar app-svg-images svg[height="6"],
+.sidebar app-svg-images svg[height="14"],
+.sidebar app-svg-images svg[height="16"],
+.sidebar app-svg-images svg[height="20"],
+.sidebar app-svg-images svg[height="22"],
+.sidebar app-svg-images svg[height="23"],
+.sidebar app-svg-images svg[height="24"] {
+  color: inherit;
+}
+
+.sidebar app-svg-images svg[width="14"] [fill]:not([fill="none"]),
+.sidebar app-svg-images svg[width="10"] [fill]:not([fill="none"]),
+.sidebar app-svg-images svg[width="17"] [fill]:not([fill="none"]),
+.sidebar app-svg-images svg[width="20"] [fill]:not([fill="none"]),
+.sidebar app-svg-images svg[width="22"] [fill]:not([fill="none"]),
+.sidebar app-svg-images svg[width="23"] [fill]:not([fill="none"]),
+.sidebar app-svg-images svg[width="24"] [fill]:not([fill="none"]),
+.sidebar app-svg-images svg[height="6"] [fill]:not([fill="none"]),
+.sidebar app-svg-images svg[height="14"] [fill]:not([fill="none"]),
+.sidebar app-svg-images svg[height="16"] [fill]:not([fill="none"]),
+.sidebar app-svg-images svg[height="20"] [fill]:not([fill="none"]),
+.sidebar app-svg-images svg[height="22"] [fill]:not([fill="none"]),
+.sidebar app-svg-images svg[height="23"] [fill]:not([fill="none"]),
+.sidebar app-svg-images svg[height="24"] [fill]:not([fill="none"]) {
+  fill: currentColor !important;
+}
+
+.sidebar app-svg-images svg[width="14"] [stroke]:not([stroke="none"]),
+.sidebar app-svg-images svg[width="10"] [stroke]:not([stroke="none"]),
+.sidebar app-svg-images svg[width="17"] [stroke]:not([stroke="none"]),
+.sidebar app-svg-images svg[width="20"] [stroke]:not([stroke="none"]),
+.sidebar app-svg-images svg[width="22"] [stroke]:not([stroke="none"]),
+.sidebar app-svg-images svg[width="23"] [stroke]:not([stroke="none"]),
+.sidebar app-svg-images svg[width="24"] [stroke]:not([stroke="none"]),
+.sidebar app-svg-images svg[height="6"] [stroke]:not([stroke="none"]),
+.sidebar app-svg-images svg[height="14"] [stroke]:not([stroke="none"]),
+.sidebar app-svg-images svg[height="16"] [stroke]:not([stroke="none"]),
+.sidebar app-svg-images svg[height="20"] [stroke]:not([stroke="none"]),
+.sidebar app-svg-images svg[height="22"] [stroke]:not([stroke="none"]),
+.sidebar app-svg-images svg[height="23"] [stroke]:not([stroke="none"]),
+.sidebar app-svg-images svg[height="24"] [stroke]:not([stroke="none"]) {
+  stroke: currentColor !important;
+}
+
+/* Sidebar expand/collapse arrow rotation (needs to be global because the <svg> is rendered inside app-svg-images) */
+.sidebar .expand-icon-svg {
+  display: inline-block;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  transition: transform 0.15s ease;
+}
+
+.sidebar .expand-icon-svg.expanded {
+  transform: rotate(0deg);
 }

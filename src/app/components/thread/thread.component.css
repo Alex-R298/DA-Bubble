@@ -1,5 +1,5 @@
 .thread {
-  width:  34.5rem;
+  width: var(--thread-width, 34.5rem);
   border-left: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
@@ -31,20 +31,25 @@
 .close-button {
   background: none;
   border: none;
+  border-radius: 50%;
+  background: transparent;
   font-size: 2rem;
   cursor: pointer;
   color: #000000;
   padding: 0;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-left: auto;
+  transition: all 0.125s;
 }
 
 .close-button:hover {
-  color: #333;
+  background-color: #ECEEFE;
+  transform: scale(1.05);
+  color: #444DF2;
 }
 
 .thread-messages {
@@ -67,21 +72,21 @@
 }
 
 .thread-divider {
-    color: #ADB0D9;
-    font-size: 1.125rem;
-    display: flex;
-    align-items: center;
-    gap: 0.875rem;
-    margin-top: 0.75rem;
-    margin-bottom: 1.125rem;
+  color: #ADB0D9;
+  font-size: 1.125rem;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-top: 0.75rem;
+  margin-bottom: 1.125rem;
 }
 
 .thread-divider::after {
-    content: '';
-    flex: 1;
-    max-width: 18.5rem;
-    height: 2px;
-    background-color: #adb0d9d0;
+  content: '';
+  flex: 1;
+  max-width: 18.5rem;
+  height: 2px;
+  background-color: #adb0d9d0;
 }
 
 .thread-message-header {
@@ -118,4 +123,3 @@
   padding: 1rem;
   background-color: #ffffff;
 }
-

@@ -2,6 +2,18 @@ svg {
   display: block;
 }
 
+svg.icon-colored {
+  color: inherit;
+}
+
+svg.icon-colored [fill]:not([fill="none"]) {
+  fill: currentColor !important;
+}
+
+svg.icon-colored [stroke]:not([stroke="none"]) {
+  stroke: currentColor !important;
+}
+
 svg.avatar-icon {
   border-radius: 50%;
   overflow: hidden;

@@ -2,9 +2,6 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     z-index: 999;
     /* used for global overlay (channel-info) */
 }
@@ -29,15 +26,7 @@
     margin-bottom: 16px;
 }
 
-.title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
 .title-left {
-    display: flex;
-    align-items: center;
     gap: 8px;
 }
 
@@ -54,12 +43,18 @@
 
 .btn-close {
     border: none;
+    border-radius: 50%;
     background: transparent;
     cursor: pointer;
-    font-size: 22px;
-    line-height: 1;
     width: 32px;
     height: 32px;
+    transition: all 0.125s;
+}
+
+.btn-close:hover {
+    transform: scale(1.05);
+    color: #444DF2;
+    background-color: #ECEEFE;
 }
 
 .modal-body {
@@ -69,15 +64,7 @@
 }
 
 .section {
-    display: flex;
-    flex-direction: column;
     gap: 1.25rem;
-}
-
-.section-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 }
 
 .label {
@@ -101,8 +88,6 @@
 }
 
 .value {
-    display: flex;
-    align-items: center;
     gap: 0.75rem;
 }
 
@@ -113,8 +98,6 @@
 }
 
 .channel-name-group {
-    display: flex;
-    flex-direction: column;
     gap: 8px;
 }
 
@@ -185,8 +168,6 @@
 }
 
 .created-by {
-    display: flex;
-    flex-direction: column;
     gap: 4px;
 }
 
@@ -197,8 +178,6 @@
 }
 
 .description-group {
-    display: flex;
-    flex-direction: column;
     gap: 12px;
     padding: 0;
     /* padding applied when bordered */
@@ -219,11 +198,6 @@
     font-weight: 600;
 }
 
-.leave-actions {
-    display: flex;
-    justify-content: flex-end;
-}
-
 .btn-leave {
     border: none;
     border-radius: 25px;
@@ -241,8 +215,6 @@
 }
 
 .members-list {
-    display: flex;
-    flex-direction: column;
     gap: 0.93rem;
 }
 
@@ -252,8 +224,6 @@
 }
 
 .member {
-    display: flex;
-    align-items: center;
     gap: 0.93rem;
 }
 
@@ -299,8 +269,6 @@
 }
 
 .channel-name {
-    display: flex;
-    align-items: center;
     gap: 6px;
     font-weight: 600;
 }
@@ -319,8 +287,6 @@
 }
 
 .chip {
-    display: flex;
-    align-items: center;
     gap: 8px;
     background: #ECEEFE;
     border-radius: 35px;
@@ -377,8 +343,6 @@
     width: 100%;
     border: none;
     background: transparent;
-    display: flex;
-    align-items: center;
     gap: 10px;
     padding: 8px;
     border-radius: 10px;
@@ -387,11 +351,6 @@
 
 .suggestion:hover {
     background: #ECEEFE;
-}
-
-.actions {
-    display: flex;
-    justify-content: flex-end;
 }
 
 .btn-primary {

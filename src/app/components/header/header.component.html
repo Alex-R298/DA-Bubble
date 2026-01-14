@@ -16,7 +16,13 @@
         [placeholder]="'HEADER.SEARCH_PLACEHOLDER' | translate"
         [(ngModel)]="searchQuery"
       />
-      <span class="search-icon">(img)</span>
+      <span class="search-icon" aria-hidden="true">
+        <app-svg-images
+          [iconName]="'search'"
+          [width]="'26'"
+          [height]="'26'"
+        ></app-svg-images>
+      </span>
     </div>
 
     <div class="user-area">
@@ -31,7 +37,13 @@
           </app-svg-images>
           <span class="status-indicator" [ngClass]="getStatusClass(user)"></span>
         </div>
-        <span class="dropdown-arrow">{{ showUserMenu ? '&#9650;' : '&#9660;' }}</span>
+        <app-svg-images
+          class="dropdown-arrow"
+          [iconName]="'keyboard_arrow_down'"
+          [width]="'14'"
+          [height]="'9'"
+          [className]="showUserMenu ? 'icon-colored dropdown-arrow-svg open' : 'icon-colored dropdown-arrow-svg'"
+        ></app-svg-images>
       </div>
 
       <div class="user-dropdown ui-panel ui-panel--popover" *ngIf="showUserMenu">

@@ -9,13 +9,14 @@ import { MessageService } from '../../services/message.service';
 import { MessageItemComponent } from '../message-item/message-item.component';
 import { Subscription } from 'rxjs';
 import { ChannelService, Channel } from '../../services/channel.service';
+import { SvgImagesComponent } from '../svg-images/svg-images.component';
 
 @Component({
   selector: 'app-thread',
   standalone: true,
-  imports: [CommonModule, InputFieldComponent , MessageItemComponent],
+  imports: [CommonModule, InputFieldComponent, MessageItemComponent, SvgImagesComponent],
   templateUrl: './thread.component.html',
-  styleUrl: './thread.component.css'
+  styleUrls: ['./thread.component.css']
 })
 export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
   @Input() parentMessageId: string = '';
@@ -24,7 +25,7 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
   @Output() threadClosed = new EventEmitter<void>();
 
   threadMessages: Message[] = [];
-  
+
   private threadService = inject(ThreadService);
   private authService = inject(AuthService);
   private userService = inject(UserService);
@@ -99,11 +100,11 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
 
   async onReactionToggled(event: { messageId: string | undefined; emoji: string }): Promise<void> {
     if (!event.messageId || !this.currentUserId) return;
-    
+
     try {
       const currentUser = await this.userService.getUserById(this.currentUserId);
       const userName = currentUser?.name || 'Unbekannt';
-      
+
       await this.messageService.toggleReaction(
         event.messageId,
         event.emoji,

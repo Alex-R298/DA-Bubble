@@ -2,7 +2,9 @@
   <div class="thread-header">
     <h4>Thread</h4>
     <span class="channel" *ngIf="currentChannel"> # {{ currentChannel.name }}</span>
-    <button class="close-button" (click)="closeThread()">×</button>
+    <button class="close-button" type="button" (click)="closeThread()" aria-label="Close">
+      <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
+    </button>
   </div>
   
   <div class="thread-messages">

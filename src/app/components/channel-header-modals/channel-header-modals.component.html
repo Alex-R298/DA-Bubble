@@ -1,31 +1,33 @@
 <ng-container *ngIf="isVisible">
-  <div class="modal-overlay dim" (click)="onOverlayClick()"></div>
+  <div class="modal-overlay display-center-center dim" (click)="onOverlayClick()"></div>
 
   <div class="modal" [ngClass]="activeType" (click)="onModalClick($event)">
     <!-- Channel Info Modal -->
     <ng-container *ngIf="activeType === 'channel-info'">
       <div class="modal-header">
-        <div class="title-row">
-          <div class="title-left">
+        <div class="title-row display-ai-center-jc-spacebetween">
+          <div class="title-left display-ai-center">
             <app-svg-images class="hash" [iconName]="'tag'" [width]="'100%'" [height]="'100%'"></app-svg-images>
             <span class="title">{{ channel?.name }}</span>
           </div>
-          <button type="button" class="btn-close" (click)="close()">×</button>
+          <button type="button" class="btn-close display-center-center" (click)="close()" aria-label="Close">
+            <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
+          </button>
         </div>
       </div>
 
-      <div class="modal-body">
-        <div class="section">
-          <div class="channel-name-group" [class.has-border]="!isEditingName">
+      <div class="modal-body display-flex-column">
+        <div class="section display-flex-column">
+          <div class="channel-name-group display-flex-column" [class.has-border]="!isEditingName">
             <div class="section">
-              <div class="section-head">
+              <div class="section-head display-ai-center-jc-spacebetween">
                 <span class="label">Channel-Name</span>
                 <button type="button" class="btn-edit" (click)="isEditingName ? saveName() : startEditName()">
                   {{ isEditingName ? 'Speichern' : 'Bearbeiten' }}
                 </button>
               </div>
 
-                <div class="value channel-name-value">
+                <div class="value display-ai-center channel-name-value">
                   <ng-container *ngIf="isEditingName; else nameView">
                     <div class="input-with-prefix">
                       <app-svg-images class="input-prefix" [iconName]="'tag'" [width]="'100%'"></app-svg-images>
@@ -39,7 +41,7 @@
                 </div>
             </div>
           </div>
-          <div class="description-group" [class.has-border]="!isEditingDescription">
+          <div class="description-group display-flex-column" [class.has-border]="!isEditingDescription">
             <div class="section">
               <div class="section-head">
                 <span class="label">Beschreibung</span>
@@ -55,14 +57,14 @@
 
             <div class="divider"></div>
 
-            <div class="created-by">
+            <div class="created-by display-flex-column">
               <span class="label">Erstellt von</span>
               <span class="value created-by-name">{{ createdByName }}</span>
             </div>
           </div>
         </div>
 
-        <div class="leave-actions">
+        <div class="leave-actions display-jc-flexend">
           <button type="button" class="btn-leave" (click)="leaveChannel()">Channel verlassen</button>
         </div>
       </div>
@@ -71,15 +73,17 @@
     <!-- Members Modal -->
     <ng-container *ngIf="activeType === 'members'">
       <div class="modal-header">
-        <div class="title-row">
+        <div class="title-row display-ai-center-jc-spacebetween">
           <span class="title">Mitglieder</span>
-          <button type="button" class="btn-close" (click)="close()">×</button>
+          <button type="button" class="btn-close display-center-center" (click)="close()" aria-label="Close">
+            <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
+          </button>
         </div>
       </div>
 
       <div class="modal-body">
-        <div class="members-list">
-          <div class="member gap-15px ml-20px" *ngFor="let user of memberUsers">
+        <div class="members-list display-flex-column">
+          <div class="member display-ai-center gap-15px ml-20px" *ngFor="let user of memberUsers">
             <app-svg-images
           class="user-avatar member-avatar"
           [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
@@ -99,21 +103,23 @@
     <!-- Add Members Modal -->
     <ng-container *ngIf="activeType === 'add-members'">
       <div class="modal-header">
-        <div class="title-row">
+        <div class="title-row display-ai-center-jc-spacebetween">
           <span class="title">Leute hinzufügen</span>
-          <button type="button" class="btn-close" (click)="close()">×</button>
+          <button type="button" class="btn-close display-center-center" (click)="close()" aria-label="Close">
+            <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
+          </button>
         </div>
       </div>
 
       <div class="modal-body">
-        <div class="channel-name">
+        <div class="channel-name display-ai-center">
           <app-svg-images class="hash" [iconName]="'tag'" [width]="'100%'" [height]="'100%'"></app-svg-images>
           <span>{{ channel?.name }}</span>
         </div>
 
         <div class="chip-input">
           <div class="chips">
-            <div class="chip" *ngFor="let u of selectedUsers">
+            <div class="chip display-ai-center" *ngFor="let u of selectedUsers">
               <app-svg-images
                 class="user-avatar add-member-avatar"
                 [iconName]="u?.profileImageUrl || 'steffen-hoffmann'"
@@ -132,7 +138,7 @@
             />
           </div>
 
-          <div class="suggestions" *ngIf="filteredSelectableUsers.length">
+          <div class="suggestions display-ai-center" *ngIf="filteredSelectableUsers.length">
             <button
               type="button"
               class="suggestion"
@@ -150,7 +156,7 @@
           </div>
         </div>
 
-        <div class="actions">
+        <div class="actions display-jc-flexend">
           <button type="button" class="btn-primary" [disabled]="!canConfirmAddMembers" (click)="confirmAddMembers()">
             Hinzufügen
           </button>

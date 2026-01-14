@@ -100,6 +100,11 @@
     justify-content: center;
 }
 
+.display-jc-flexend {
+    display: flex;
+    justify-content: flex-end;
+}
+
 .display-ai-center-jc-spacebetween {
     display: flex;
     align-items: center;
@@ -120,4 +125,8 @@
 
 .ml-20px {
     margin-left: 1.435rem;
+}
+
+.icon-colored:hover {
+    color: #444DF2;
 }

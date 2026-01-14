@@ -1,12 +1,17 @@
 :host {
   display: block;
-  --header-search-max: 76rem;
+  --header-search-max: max(28rem, 80vw);
+  --header-user-area-min: 20rem;
 }
 
 .header {
   padding: 1rem 1rem 0 1rem;
   background: transparent;
   gap: 1rem;
+}
+
+:host-context(.thread-open) {
+  --header-user-area-min: max(20rem, var(--thread-width, 34.5rem));
 }
 
 .logo-area {
@@ -26,7 +31,7 @@
 
 .header-right {
   flex: 1;
-  max-height: 4.375rem;
+  max-height: 5rem;
   gap: var(--header-gap, 1rem);
   min-width: 0;
 }
@@ -43,16 +48,18 @@
 
 .search-input {
   width: 100%;
-  height: 3rem;
-  padding: 0 3rem 0 1.25rem;
+  height: 5rem;
+  padding: 0 3rem 0 2rem;
   border: 1px solid #ddd;
-  border-radius: 1.5rem;
-  font-size: 1rem;
+  border-radius: 3rem;
+  font-size: 1.3rem;
   background: white;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .search-input::placeholder {
+  position: absolute;
+  left: 2rem;
   color: #999;
 }
 
@@ -64,7 +71,7 @@
 
 .search-icon {
   position: absolute;
-  right: 1rem;
+  right: 3rem;
   top: 50%;
   transform: translateY(-50%);
   font-size: 1.25rem;
@@ -92,14 +99,14 @@
 
 .user-avatar-wrapper {
   position: relative;
-  width: 3.9rem;
-  height: 3.9rem;
+  width: 5rem;
+  height: 5rem;
   flex: 0 0 auto;
 }
 
 .user-avatar {
-  width: 3.9rem;
-  height: 3.9rem;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -127,15 +134,22 @@
 }
 
 .user-name {
-  font-size: 1.8rem;
+  font-size: 2.286rem;
   font-weight: 700;
   color: black;
   white-space: nowrap;
 }
 
 .dropdown-arrow {
-  font-size: 0.625rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-arrow-svg {
   color: #666;
+  transform: rotate(0deg);
+  transition: transform 0.15s ease;
 }
 
 .user-dropdown {
