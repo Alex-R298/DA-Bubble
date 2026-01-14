@@ -5,6 +5,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { filter, Subscription } from 'rxjs';
 import { ThreadStateService } from './services/thread-state.service';
+import { TranslationService } from './services/translate.service';
 
 @Component({
   selector: 'app-root',
@@ -50,7 +51,8 @@ export class AppComponent implements OnDestroy {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private threadStateService: ThreadStateService
+    private threadStateService: ThreadStateService,
+    private translationService: TranslationService
   ) {
     this.updateVisibility(this.router.url);
 
