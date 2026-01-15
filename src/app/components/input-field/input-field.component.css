@@ -160,3 +160,109 @@
 .emoji-btn:hover {
   background: #f0f0f0;
 }
+
+/* User Tag List Dropdown */
+.user-tag-dropdown {
+  position: absolute;
+  bottom: 100%;
+  left: 4.5rem;
+  background: white;
+  border-radius: 20px 20px 20px 0;
+  padding: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid #9747FF;
+  margin-bottom: 0.5rem;
+  width: 350px;
+  height: 467px;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.user-tag-dropdown::-webkit-scrollbar {
+  width: 0.375rem;
+}
+
+.user-tag-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.user-tag-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0.1875rem;
+}
+
+.user-tag-dropdown::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.user-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0.8125rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9375rem;
+  padding: 0.25rem 1.25rem;
+  cursor: pointer;
+  border-radius: 1.875rem;
+  width: fit-content;
+  transition: color 0.125s, background 0.100s;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.user-item:hover {
+  background: rgba(120, 125, 245, 0.15);
+}
+
+.user-item.active {
+  background: #787DF5;
+  color: white;
+}
+
+.user-item.active .user-name {
+  color: white;
+}
+
+.user-avatar {
+  position: relative;
+}
+
+.status-indicator {
+  position: absolute;
+  bottom: 0px;
+  right: 1px;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.status-indicator.status-online {
+  background: #92C83E;
+}
+
+.status-indicator.status-offline {
+  background: #686868;
+}
+
+.status-indicator.status-away {
+  background: #F2C94C;
+}
+
+.user-name {
+  font-size: 1.3rem;
+}
+
+.empty-state {
+  padding: 0.75rem 1rem;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 0.9rem;
+  font-style: italic;
+}
