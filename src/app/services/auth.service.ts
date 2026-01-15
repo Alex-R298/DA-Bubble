@@ -3,7 +3,9 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   signOut, 
-  onAuthStateChanged 
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup
 } from 'firebase/auth';
 import { FirebaseService } from './firebase.service';
 import { UserService } from './user.service';
@@ -79,6 +81,26 @@ export class AuthService {
       password
     );
     return userCredential.user;
+  }
+
+  async loginWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    const userCredential = await signInWithPopup(this.firebaseService.auth, provider);
+    const user = userCredential.user;
+
+    // Validate user profile existence; create if absent
+    const existingUser = await this.userService.getUserById(user.uid, true);
+    if (!existingUser) {
+      const displayName = user.displayName || user.email?.split('@')[0] || 'Google User';
+      await this.userService.createUserProfile(user.uid, user.email || '', displayName);
+      
+      // Set Google profile image if available
+      if (user.photoURL) {
+        await this.userService.updateUserAvatar(user.uid, user.photoURL);
+      }
+    }
+
+    return user;
   }
 
   async logout() {
