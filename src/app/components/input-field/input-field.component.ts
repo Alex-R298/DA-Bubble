@@ -140,6 +140,8 @@ export class InputFieldComponent implements OnInit, AfterViewInit {
 
   toggleUserTagList(): void {
     if (this.showTagList && this.tagListType === 'user') {
+      // Schließen: @ entfernen
+      this.removeTrailingTrigger('@');
       this.showTagList = false;
       this.tagListType = null;
     } else {
@@ -188,10 +190,7 @@ export class InputFieldComponent implements OnInit, AfterViewInit {
     const el = this.messageInput?.nativeElement;
     if (el) {
       el.focus();
-      // Lösche das @ das gerade getippt wurde
       document.execCommand('delete', false);
-      
-      // Füge formatierten Tag ein
       const tagHtml = `<span class="mention-tag" contenteditable="false" data-name="${userName}" data-uid="${user.uid}">@${userName}</span>&nbsp;`;
       document.execCommand('insertHTML', false, tagHtml);
     }
@@ -223,20 +222,18 @@ export class InputFieldComponent implements OnInit, AfterViewInit {
   onInput(event: Event): void {
     const el = this.messageInput?.nativeElement;
     if (!el) return;
-    
-    // ZUERST: Update selectedUserIds basierend auf vorhandenen Tags
+    const textContent = el.textContent?.trim() || '';
+    if (textContent === '' && el.innerHTML !== '') {
+      el.innerHTML = '';
+    }
     const mentionTags = el.querySelectorAll('.mention-tag');
     const presentUserUids = Array.from(mentionTags).map(tag => tag.getAttribute('data-uid'));
     this.selectedUserIds = presentUserUids.filter(uid => uid !== null) as string[];
-    
-    // Update selectedChannelIds basierend auf vorhandenen Tags
     const channelTags = el.querySelectorAll('.channel-tag');
     const presentChannelNames = Array.from(channelTags).map(tag => tag.getAttribute('data-name'));
     this.selectedChannelIds = this.allChannels
       .filter(c => c.id && presentChannelNames.includes(c.name))
       .map(c => c.id!);
-    
-    // DANN: Prüfe ob @ oder # getippt wurde
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
     
@@ -254,9 +251,33 @@ export class InputFieldComponent implements OnInit, AfterViewInit {
       this.showTagList = false;
       this.tagListType = null;
     }
-    
-    // Update message für andere Zwecke
     this.message = this.getTextContent();
+  }
+
+  /**
+   * Entfernt das Trigger-Zeichen (@ oder #) am Ende des Inputs
+   */
+  private removeTrailingTrigger(trigger: string): void {
+    const el = this.messageInput?.nativeElement;
+    if (!el) return;
+    
+    el.focus();
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+    
+    const range = selection.getRangeAt(0);
+    const textNode = range.startContainer;
+    
+    if (textNode.nodeType === Node.TEXT_NODE && textNode.textContent) {
+      const text = textNode.textContent;
+      const offset = range.startOffset;
+      
+      // Prüfe ob das Zeichen vor dem Cursor das Trigger-Zeichen ist
+      if (offset > 0 && text[offset - 1] === trigger) {
+        // Lösche das Zeichen mit execCommand
+        document.execCommand('delete', false);
+      }
+    }
   }
 }
 

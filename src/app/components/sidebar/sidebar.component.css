@@ -235,6 +235,21 @@
   color: #787DF5;
 }
 
+/* Unread Punkt */
+.unread-dot {
+  width: 10px;
+  height: 10px;
+  background: #ED1E79;
+  border-radius: 50%;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.channel-item.has-unread .channel-name,
+.user-item.has-unread .user-name {
+  font-weight: 700;
+}
+
 .channel-icon {
   color: black;
   font-weight: bold;

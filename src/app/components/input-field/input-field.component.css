@@ -191,21 +191,31 @@
   background: #f0f0f0;
 }
 
-/* User Tag List Dropdown */
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .user-tag-dropdown {
   position: absolute;
-  bottom: 100%;
-  left: 4.5rem;
+  bottom: 78%;
+  left: 4rem;
   background: white;
   border-radius: 20px 20px 20px 0;
   padding: 1rem;
+  border: 1px solid #787DF5;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  border: 1px solid #9747FF;
   margin-bottom: 0.5rem;
   width: 350px;
-  height: 467px;
-  overflow-y: auto;
+  max-height: 1000px;
   z-index: 10;
+  animation: dropdownSlideIn 0.2s ease-out;
 }
 
 .user-tag-dropdown::-webkit-scrollbar {

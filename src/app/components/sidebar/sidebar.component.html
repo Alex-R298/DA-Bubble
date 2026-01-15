@@ -46,9 +46,11 @@
               <li class="channel-item"
                   *ngFor="let channel of channels"
                   [class.active]="selectedChannelId === channel.id"
+                  [class.has-unread]="unreadChannels.has(channel.id)"
                   (click)="selectChannel(channel)">
                 <app-svg-images [iconName]="'tag'" [width]="'17'" [height]="'16'"></app-svg-images>
                 <span class="channel-name">{{ channel.name }}</span>
+                <span class="unread-dot" *ngIf="unreadChannels.has(channel.id)"></span>
               </li>
             </ul>
             <ng-template #noChannels>
@@ -86,12 +88,14 @@
               <li class="user-item display-ai-center"
                   *ngFor="let user of users"
                   [class.active]="selectedUserId === user.uid"
+                  [class.has-unread]="unreadDMs.has(user.uid)"
                   (mousedown)="startDirectMessage(user)">
                 <div class="user-avatar">
                   <app-svg-images [iconName]="user.profileImageUrl || 'steffen-hoffmann'" [width]="'50'" [height]="'50'"></app-svg-images>
                   <span class="status-indicator" [ngClass]="getStatusClass(user)"></span>
                 </div>
                 <span class="user-name">{{ user.name }}</span>
+                <span class="unread-dot" *ngIf="unreadDMs.has(user.uid)"></span>
               </li>
             </ul>
             <ng-template #noUsers>

@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 import { NewMessageStateService } from '../../services/new-message-state.service';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { UnreadService } from '../../services/unread.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -27,12 +28,15 @@ export class SidebarComponent implements OnInit {
   private router = inject(Router);
   private channelService = inject(ChannelService);
   private newMessageStateService = inject(NewMessageStateService);
+  private unreadService = inject(UnreadService);
   private usersSubscription?: Subscription; // ← NEU
   private channelsSubscription?: Subscription;
 
   channels: any[] = [];
   users: any[] = [];
   currentUser: any | null = null;
+  unreadChannels: Set<string> = new Set();
+  unreadDMs: Set<string> = new Set();
 
   selectedChannelId: string | null = null;
   selectedUserId: string | null = null;
@@ -52,6 +56,7 @@ export class SidebarComponent implements OnInit {
     this.subscribeToChannels();
     this.subscribeToUsers();
     this.subscribeToCurrentUser();
+    this.subscribeToUnread();
   }
 
   ngOnDestroy(): void {
@@ -67,6 +72,9 @@ export class SidebarComponent implements OnInit {
     this.channelsSubscription = this.channelService.getAllChannels()
       .subscribe(channels => {
         this.channels = channels;
+        // Starte Listening für unread Nachrichten
+        const channelIds = channels.map(c => c.id).filter(id => id) as string[];
+        this.unreadService.startListeningForChannelMessages(channelIds);
       });
   }
 
@@ -75,11 +83,23 @@ export class SidebarComponent implements OnInit {
       .subscribe(users => {
         const currentUid = this.authService.getCurrentUser()?.uid;
         this.users = users.filter(u => u.uid !== currentUid);
+        // Starte Listening für unread DMs
+        const userIds = this.users.map(u => u.uid);
+        this.unreadService.startListeningForDMMessages(userIds);
       });
   }
 
   private subscribeToCurrentUser(): void {
     // this.authService.userProfile$.subscribe(user => this.currentUser = user);
+  }
+
+  private subscribeToUnread(): void {
+    this.unreadService.unreadChannels$.subscribe(set => {
+      this.unreadChannels = set;
+    });
+    this.unreadService.unreadDMs$.subscribe(set => {
+      this.unreadDMs = set;
+    });
   }
 
   toggleSidebar(): void {
@@ -93,16 +113,18 @@ export class SidebarComponent implements OnInit {
     this.newMessageStateService.closeNewMessage();
     this.selectedChannelId = channel.id;
     this.selectedUserId = null;
+    // Markiere Channel als gelesen
+    this.unreadService.markChannelAsRead(channel.id);
     // this.chatService.selectChannel(channel.id);
     this.router.navigate(['/dashboard/chat/channel', channel.id]);
-
-
   }
 
   startDirectMessage(user: any): void {
     this.newMessageStateService.closeNewMessage();
     this.selectedUserId = user.uid;
     this.selectedChannelId = null;
+    // Markiere DM als gelesen
+    this.unreadService.markDMAsRead(user.uid);
     this.router.navigate(['/dashboard/chat/user', user.uid]);
   }
 
