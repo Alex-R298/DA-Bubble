@@ -562,3 +562,40 @@
    justify-content: flex-end;
    gap: 2.3rem;
 }
+
+/* Mention und Channel Tags in Nachrichten - ::ng-deep für dynamisch eingefügte Elemente */
+:host ::ng-deep .mention-tag {
+  display: inline;
+  background-color: rgba(68, 77, 242, 0.2) !important;
+  color: #444DF2 !important;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin: 0 1px;
+  cursor: pointer;
+}
+
+:host ::ng-deep .message-bubble .mention-tag:hover {
+  background-color: rgba(68, 77, 242, 0.4) !important;
+}
+
+:host ::ng-deep .channel-tag {
+  display: inline;
+  background-color: rgba(68, 77, 242, 0.2) !important;
+  color: #444DF2 !important;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin: 0 1px;
+}
+
+/* Own message styles für Tags */
+:host ::ng-deep .message-item.own-message .mention-tag,
+:host ::ng-deep .message-item.own-message .channel-tag {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .message-item.own-message .mention-tag:hover {
+  background-color: rgba(255, 255, 255, 0.5) !important;
+}

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, inject, HostListener, ElementRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, HostListener, ElementRef, AfterViewChecked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { MessageService } from '../../services/message.service';
 
@@ -11,7 +12,7 @@ import { MessageService } from '../../services/message.service';
   templateUrl: './message-item.component.html',
   styleUrls: ['./message-item.component.css']
 })
-export class MessageItemComponent {
+export class MessageItemComponent implements AfterViewChecked {
   @Input() message: any;
 
   /** Optional: provide the current user id so we can compute own-message styling and reacted-state */
@@ -38,15 +39,42 @@ export class MessageItemComponent {
   /** Emits when sender name is clicked (sender uid) */
   @Output() senderClicked = new EventEmitter<string>();
 
+  /** Emits when a @mention is clicked (user uid) */
+  @Output() mentionClicked = new EventEmitter<string>();
+
   showEditMessage: boolean = false;
   showEditMessageInput: boolean = false;
   showReactionPicker = false;
   editedContent: string = '';
   availableReactions: string[] = ['😀', '😂', '😍', '🤔', '👍', '👎', '❤️', '🎉', '😢', '😱', '🙏', '🔥'];
   activeReactionTooltip: string | null = null;
+  private mentionListenersAdded = false;
 
   private messageService = inject(MessageService);
   private elementRef = inject(ElementRef);
+  private sanitizer = inject(DomSanitizer);
+
+  ngAfterViewChecked(): void {
+    this.attachMentionClickListeners();
+  }
+
+  private attachMentionClickListeners(): void {
+    const mentionTags = this.elementRef.nativeElement.querySelectorAll('.mention-tag');
+    mentionTags.forEach((tag: HTMLElement) => {
+      if (!tag.hasAttribute('data-listener-attached')) {
+        tag.setAttribute('data-listener-attached', 'true');
+        tag.addEventListener('mousedown', (event: MouseEvent) => {
+          if (event.button !== 0) return; // Nur Linksklick
+          event.stopPropagation();
+          event.preventDefault();
+          const name = tag.getAttribute('data-name');
+          if (name) {
+            this.mentionClicked.emit(name);
+          }
+        });
+      }
+    });
+  }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
@@ -84,6 +112,61 @@ export class MessageItemComponent {
 
   getContent(): string {
     return this.message?.content || this.message?.text || '';
+  }
+
+  /**
+   * Formatiert den Content mit @mentions und #channels als HTML-Spans
+   */
+  getFormattedContent(): SafeHtml {
+    let content = this.getContent();
+    
+    if (!content) {
+      return this.sanitizer.bypassSecurityTrustHtml('');
+    }
+    content = content
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    content = content.replace(/@\[([^\]]+)\]/g, (match, name) => {
+      const trimmedName = name.trim();
+      return `<span class="mention-tag" data-name="${trimmedName}">@${trimmedName}</span>`;
+    });
+    content = content.replace(/#(\S+)/g, '<span class="channel-tag">#$1</span>');
+    
+    return this.sanitizer.bypassSecurityTrustHtml(content);
+  }
+
+  /**
+   * Versucht die UID für einen erwähnten User zu finden
+   */
+  private getMentionUid(name: string): string | null {
+    const mentionedUsers = this.message?.mentionedUsers;
+    if (mentionedUsers && Array.isArray(mentionedUsers)) {
+      const user = mentionedUsers.find((u: any) => u.name === name || u.displayName === name);
+      if (user) return user.uid;
+    }
+    return null;
+  }
+
+  /**
+   * Handler für Klicks auf Mention-Tags
+   */
+  onMentionClick(event: MouseEvent): void {
+    console.log('onMentionClick fired, target:', event.target);
+    const target = event.target as HTMLElement;
+    console.log('target classList:', target.classList);
+    
+    if (target.classList.contains('mention-tag')) {
+      event.stopPropagation();
+      event.preventDefault();
+      
+      const name = target.getAttribute('data-name');
+      console.log('Mention clicked, name:', name);
+      
+      if (name) {
+        this.mentionClicked.emit(name);
+      }
+    }
   }
 
   /**

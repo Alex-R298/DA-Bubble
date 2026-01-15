@@ -214,9 +214,17 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.enrichOwnProfile();
   }
 
-  async openSenderProfile(senderUid: string): Promise<void> {
-    if (!senderUid) return;
-    const user = await this.userService.getUserById(senderUid);
+  async openSenderProfile(senderIdOrName: string): Promise<void> {
+    if (!senderIdOrName) return;
+    
+    // Versuche erst als UID
+    let user = await this.userService.getUserById(senderIdOrName);
+    
+    // Wenn nicht gefunden, suche nach Name
+    if (!user) {
+      user = await this.userService.getUserByName(senderIdOrName);
+    }
+    
     if (!user) return;
     this.openUserProfile(user);
   }

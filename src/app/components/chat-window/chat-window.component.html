@@ -149,6 +149,7 @@
           (threadClicked)="openThread(message)"
           [senderClickable]="true"
           (senderClicked)="openSenderProfile($event)"
+          (mentionClicked)="openSenderProfile($event)"
           (reactionToggled)="onReactionToggled($event)"
           class="chat-message">
         </app-message-item>

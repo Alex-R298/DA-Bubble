@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { doc, setDoc, collection, onSnapshot, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, onSnapshot, getDoc, updateDoc, query, where, getDocs } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
 import { Observable } from 'rxjs';
 
@@ -92,6 +92,25 @@ export class UserService {
 
   clearUserCache(): void {
     this.userCache.clear();
+  }
+
+  async getUserByName(name: string): Promise<User | null> {
+    const usersRef = collection(this.firebaseService.db, 'users');
+    const q = query(usersRef, where('name', '==', name));
+    const snapshot = await getDocs(q);
+    
+    if (!snapshot.empty) {
+      const data = snapshot.docs[0].data();
+      return {
+        uid: data['uid'],
+        email: data['email'],
+        name: data['name'],
+        profileImageUrl: data['profileImageUrl'],
+        status: data['status'],
+        createdAt: data['createdAt'].toDate()
+      };
+    }
+    return null;
   }
 
   async updateUserProfile(uid: string, name: string): Promise<void> {

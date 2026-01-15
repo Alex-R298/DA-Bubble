@@ -101,7 +101,8 @@ export class InputFieldComponent implements OnInit, AfterViewInit {
       } else if (node.nodeType === Node.ELEMENT_NODE) {
         const element = node as HTMLElement;
         if (element.classList.contains('mention-tag')) {
-          text += '@' + element.getAttribute('data-name');
+          // Format: @[Username] für Namen mit Leerzeichen
+          text += '@[' + element.getAttribute('data-name') + ']';
         } else if (element.classList.contains('channel-tag')) {
           text += '#' + element.getAttribute('data-name');
         } else {

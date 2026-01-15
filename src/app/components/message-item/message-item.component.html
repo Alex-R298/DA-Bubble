@@ -16,7 +16,7 @@
 			</div>
 
 			<div class="message-bubble">
-				<p>{{ getContent() }}</p>
+				<p [innerHTML]="getFormattedContent()"></p>
 			</div>
 
 			<div class="message-reactions" *ngIf="showReactions">
