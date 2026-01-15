@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, Output, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
+import { ChannelService, Channel } from '../../services/channel.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -14,41 +15,101 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.css']
 })
-export class InputFieldComponent implements OnInit {
+export class InputFieldComponent implements OnInit, AfterViewInit {
   @Input() channelName: string = '';
   @Input() recipientName: string = '';
   @Output() messageSent = new EventEmitter<string>();
+  @Output() userProfileClicked = new EventEmitter<string>(); // uid des Users
+  @ViewChild('messageInput') messageInput!: ElementRef<HTMLDivElement>;
+  
   private userService: UserService = inject(UserService);
   private authService = inject(AuthService);
+  private channelService = inject(ChannelService);
   private usersSubscription?: Subscription;
+  private channelsSubscription?: Subscription;
 
   message: string = '';
   isSending: boolean = false;
   users: any[] = [];
+  allChannels: Channel[] = [];
   showEmojiPicker: boolean = false;
   emojis: string[] = ['😀', '😅', '😂', '😍', '🤝', '👍', '🎉', '🔥', '✅', '❓'];
   selectedUserIds: string[] = [];
-  showUserTagList: boolean = false;
+  selectedChannelIds: string[] = [];
+  showTagList: boolean = false;
+  tagListType: 'user' | 'channel' | null = null;
+
+  // Getter: filtert den aktuellen Channel raus
+  get channels(): Channel[] {
+    return this.allChannels.filter(c => c.name !== this.channelName);
+  }
 
   ngOnInit(): void {
     this.subscribeToUsers();
+    this.subscribeToChannels();
+  }
+
+  ngAfterViewInit(): void {
+    // Click-Handler für Mention-Tags (Profil öffnen)
+    this.messageInput?.nativeElement?.addEventListener('click', (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('mention-tag')) {
+        event.preventDefault();
+        event.stopPropagation();
+        const userName = target.getAttribute('data-name');
+        const uid = target.getAttribute('data-uid');
+        if (uid) {
+          console.log('Mention geklickt, öffne Profil für uid:', uid);
+          this.userProfileClicked.emit(uid);
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
     if (this.usersSubscription) {
       this.usersSubscription.unsubscribe();
     }
+    if (this.channelsSubscription) {
+      this.channelsSubscription.unsubscribe();
+    }
   }
 
   sendMessage(): void {
     if (this.isSending) return;
-    if (this.message.trim()) {
+    const text = this.getTextContent();
+    if (text.trim()) {
       this.isSending = true;
-      this.messageSent.emit(this.message.trim());
+      this.messageSent.emit(text.trim());
+      if (this.messageInput?.nativeElement) {
+        this.messageInput.nativeElement.innerHTML = '';
+      }
       this.message = '';
       this.showEmojiPicker = false;
       this.isSending = false;
     }
+  }
+
+  getTextContent(): string {
+    const el = this.messageInput?.nativeElement;
+    if (!el) return this.message;
+    
+    let text = '';
+    el.childNodes.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        text += node.textContent;
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node as HTMLElement;
+        if (element.classList.contains('mention-tag')) {
+          text += '@' + element.getAttribute('data-name');
+        } else if (element.classList.contains('channel-tag')) {
+          text += '#' + element.getAttribute('data-name');
+        } else {
+          text += element.textContent;
+        }
+      }
+    });
+    return text;
   }
 
   private subscribeToUsers(): void {
@@ -56,6 +117,13 @@ export class InputFieldComponent implements OnInit {
       .subscribe(users => {
         const currentUid = this.authService.getCurrentUser()?.uid;
         this.users = users.filter(u => u.uid !== currentUid);
+      });
+  }
+
+  private subscribeToChannels(): void {
+    this.channelsSubscription = this.channelService.getAllChannels()
+      .subscribe(channels => {
+        this.allChannels = channels;
       });
   }
 
@@ -70,12 +138,25 @@ export class InputFieldComponent implements OnInit {
     this.showEmojiPicker = !this.showEmojiPicker;
   }
 
+  toggleUserTagList(): void {
+    if (this.showTagList && this.tagListType === 'user') {
+      this.showTagList = false;
+      this.tagListType = null;
+    } else {
+      this.showTagList = true;
+      this.tagListType = 'user';
+      this.insertMention();
+    }
+  }
+
   insertEmoji(emoji: string): void {
-    this.message = `${this.message}${emoji}`;
+    this.messageInput?.nativeElement?.focus();
+    document.execCommand('insertText', false, emoji);
   }
 
   insertMention(): void {
-    this.message = `${this.message}@`;
+    this.messageInput?.nativeElement?.focus();
+    document.execCommand('insertText', false, '@');
   }
 
   onAttachClick(): void {
@@ -98,33 +179,84 @@ export class InputFieldComponent implements OnInit {
   }
 
   tagUser(user: any): void {
-    console.log('tagUser aufgerufen mit:', user);
     const userName = user.name || user.displayName || 'Unknown';
     
-    // User zur Liste hinzufügen wenn noch nicht vorhanden
     if (!this.selectedUserIds.includes(user.uid)) {
       this.selectedUserIds.push(user.uid);
     }
     
-    this.message = this.message + userName + ' ';
-    this.showUserTagList = false;
-    console.log('Neue Nachricht:', this.message);
+    const el = this.messageInput?.nativeElement;
+    if (el) {
+      el.focus();
+      // Lösche das @ das gerade getippt wurde
+      document.execCommand('delete', false);
+      
+      // Füge formatierten Tag ein
+      const tagHtml = `<span class="mention-tag" contenteditable="false" data-name="${userName}" data-uid="${user.uid}">@${userName}</span>&nbsp;`;
+      document.execCommand('insertHTML', false, tagHtml);
+    }
+    
+    this.showTagList = false;
+    this.tagListType = null;
   }
 
-  checkForMention(event: Event) {
-    const input = (event.target as HTMLTextAreaElement).value;
-    const cursorPosition = (event.target as HTMLTextAreaElement).selectionStart;
-    this.showUserTagList = input[cursorPosition - 1] === '@';
+  tagChannel(channel: Channel): void {
+    if (channel.id && !this.selectedChannelIds.includes(channel.id)) {
+      this.selectedChannelIds.push(channel.id);
+    }
     
-    // Entferne User aus selectedUserIds wenn ihr Name nicht mehr im Text ist
-    this.selectedUserIds = this.selectedUserIds.filter(uid => {
-      const user = this.users.find(u => u.uid === uid);
-      if (user) {
-        const userName = user.name || user.displayName || '';
-        return input.includes(userName);
-      }
-      return false;
-    });
+    const el = this.messageInput?.nativeElement;
+    if (el) {
+      el.focus();
+      // Lösche das # das gerade getippt wurde
+      document.execCommand('delete', false);
+      
+      // Füge formatierten Tag ein
+      const tagHtml = `<span class="channel-tag" contenteditable="false" data-name="${channel.name}">#${channel.name}</span>&nbsp;`;
+      document.execCommand('insertHTML', false, tagHtml);
+    }
+    
+    this.showTagList = false;
+    this.tagListType = null;
+  }
+
+  onInput(event: Event): void {
+    const el = this.messageInput?.nativeElement;
+    if (!el) return;
+    
+    // ZUERST: Update selectedUserIds basierend auf vorhandenen Tags
+    const mentionTags = el.querySelectorAll('.mention-tag');
+    const presentUserUids = Array.from(mentionTags).map(tag => tag.getAttribute('data-uid'));
+    this.selectedUserIds = presentUserUids.filter(uid => uid !== null) as string[];
+    
+    // Update selectedChannelIds basierend auf vorhandenen Tags
+    const channelTags = el.querySelectorAll('.channel-tag');
+    const presentChannelNames = Array.from(channelTags).map(tag => tag.getAttribute('data-name'));
+    this.selectedChannelIds = this.allChannels
+      .filter(c => c.id && presentChannelNames.includes(c.name))
+      .map(c => c.id!);
+    
+    // DANN: Prüfe ob @ oder # getippt wurde
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+    
+    const range = selection.getRangeAt(0);
+    const textBeforeCursor = range.startContainer.textContent?.substring(0, range.startOffset) || '';
+    const lastChar = textBeforeCursor[textBeforeCursor.length - 1];
+    
+    if (lastChar === '@') {
+      this.showTagList = true;
+      this.tagListType = 'user';
+    } else if (lastChar === '#') {
+      this.showTagList = true;
+      this.tagListType = 'channel';
+    } else {
+      this.showTagList = false;
+      this.tagListType = null;
+    }
+    
+    // Update message für andere Zwecke
+    this.message = this.getTextContent();
   }
 }
 

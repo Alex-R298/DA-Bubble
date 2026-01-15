@@ -10,41 +10,59 @@
     </button>
   </div>
 
-  <div class="user-tag-dropdown" *ngIf="showUserTagList">
-    <ul class="user-list" *ngIf="users.length; else noUsers">
-      <li class="user-item"
-          *ngFor="let user of users"
-          [class.active]="selectedUserIds.includes(user.uid)"
-          (mousedown)="tagUser(user)">
-        <div class="user-avatar">
-          <app-svg-images [iconName]="user.profileImageUrl || 'steffen-hoffmann'" [width]="'50'" [height]="'50'"></app-svg-images>
-          <span class="status-indicator" [ngClass]="getStatusClass(user)"></span>
-        </div>
-        <span class="user-name">{{ user.name }}</span>
-      </li>
-    </ul>
-    <ng-template #noUsers>
-      <div class="empty-state">{{ 'SIDEBAR.NO_CONTACTS' | translate }}</div>
-    </ng-template>
+  <div class="user-tag-dropdown" *ngIf="showTagList">
+    <!-- User Liste wenn @ getippt -->
+    <ng-container *ngIf="tagListType === 'user'">
+      <ul class="user-list" *ngIf="users.length; else noUsers">
+        <li class="user-item"
+            *ngFor="let user of users"
+            [class.active]="selectedUserIds.includes(user.uid)"
+            (mousedown)="tagUser(user)">
+          <div class="user-avatar">
+            <app-svg-images [iconName]="user.profileImageUrl || 'steffen-hoffmann'" [width]="'50'" [height]="'50'"></app-svg-images>
+            <span class="status-indicator" [ngClass]="getStatusClass(user)"></span>
+          </div>
+          <span class="user-name">{{ user.name }}</span>
+        </li>
+      </ul>
+      <ng-template #noUsers>
+        <div class="empty-state">{{ 'SIDEBAR.NO_CONTACTS' | translate }}</div>
+      </ng-template>
+    </ng-container>
+    
+    <ng-container *ngIf="tagListType === 'channel'">
+      <ul class="channel-list" *ngIf="channels.length; else noChannels">
+        <li class="channel-item"
+            *ngFor="let channel of channels"
+            [class.active]="selectedChannelIds.includes(channel.id!)"
+            (mousedown)="tagChannel(channel)">
+          <span class="channel-icon">#</span>
+          <span class="channel-name">{{ channel.name }}</span>
+        </li>
+      </ul>
+      <ng-template #noChannels>
+        <div class="empty-state">{{ 'SIDEBAR.NO_CHANNELS' | translate }}</div>
+      </ng-template>
+    </ng-container>
   </div>
 
   <div class="input-wrapper">
-    <textarea
-      [(ngModel)]="message"
-      (keydown)="onKeyPress($event)"
-      [placeholder]="getTitle()"
+    <div
+      #messageInput
       class="input-field"
-      rows="1"
-      [disabled]="isSending"
-      (input)="checkForMention($event)"
-    ></textarea>
+      contenteditable="true"
+      [attr.data-placeholder]="getTitle()"
+      (keydown)="onKeyPress($event)"
+      (input)="onInput($event)"
+      [class.disabled]="isSending"
+    ></div>
 
     <div class="actions-bar">
       <div class="actions-left">
         <button type="button" class="action-btn" (click)="toggleEmojiPicker()" title="Emoji">
           <app-svg-images [iconName]="'smiley'" [width]="'20'" [height]="'20'"></app-svg-images>
         </button>
-        <button type="button" class="action-btn" title="Person erwähnen" (click)="showUserTagList = !showUserTagList; showUserTagList && insertMention()">
+        <button type="button" class="action-btn" title="Person erwähnen" (mousedown)="toggleUserTagList()">
           <app-svg-images [iconName]="'alternate_email'" [width]="'20'" [height]="'20'"></app-svg-images>
         </button>
       </div>

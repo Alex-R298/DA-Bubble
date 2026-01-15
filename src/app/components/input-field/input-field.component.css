@@ -24,29 +24,59 @@
   border-color: #787DF5;
 }
 
-.input-wrapper textarea {
+/* Contenteditable Input Field */
+.input-field {
   width: 100%;
   border: none;
   background: transparent;
-  resize: none;
   font-size: 1.3rem;
   font-family: inherit;
   line-height: 1.5;
   padding: 0.25rem 0;
-  height: 10rem;
+  height: 6rem;
+  flex: 1;
   overflow-y: auto;
-}
-
-.input-wrapper textarea:focus {
   outline: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
-.input-wrapper textarea::placeholder {
+.input-field:empty::before {
+  content: attr(data-placeholder);
   color: #999;
+  pointer-events: none;
 }
 
-.input-wrapper textarea:disabled {
+.input-field.disabled {
   opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Mention Tag (@user) - ::ng-deep für dynamisch eingefügte Elemente */
+:host ::ng-deep .input-field .mention-tag {
+  display: inline;
+  background: rgba(68, 77, 242, 0.2) !important;
+  color: #444DF2 !important;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin: 0 1px;
+  cursor: pointer;
+}
+
+:host ::ng-deep .input-field .mention-tag:hover {
+  background: rgba(68, 77, 242, 0.35) !important;
+}
+
+/* Channel Tag (#channel) */
+:host ::ng-deep .input-field .channel-tag {
+  display: inline;
+  background: rgba(68, 77, 242, 0.2) !important;
+  color: #444DF2 !important;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin: 0 1px;
 }
 
 .actions-bar {
@@ -202,6 +232,52 @@
   gap: 0.8125rem;
   display: flex;
   flex-direction: column;
+}
+
+.channel-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0.8125rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.channel-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  cursor: pointer;
+  border-radius: 1.25rem;
+  width: fit-content;
+  transition: color 0.2s, background 0.2s;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.channel-item:hover {
+  color: #444DF2;
+  background: rgba(120, 125, 245, 0.15);
+}
+
+.channel-item.active {
+  background: #787DF5;
+  color: white;
+}
+
+.channel-item.active .channel-icon {
+  color: white;
+}
+
+.channel-icon {
+  color: black;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+.channel-name {
+  font-size: 1.3rem;
 }
 
 .user-item {

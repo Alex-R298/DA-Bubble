@@ -160,7 +160,8 @@
     <app-input-field 
       [channelName]="currentChannel?.name" 
       [recipientName]="currentDMUser?.name"
-      (messageSent)="onMessageSent($event)">
+      (messageSent)="onMessageSent($event)"
+      (userProfileClicked)="openSenderProfile($event)">
     </app-input-field>
   </div>
 
