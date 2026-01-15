@@ -89,10 +89,54 @@ export class LoginComponent {
   }
 
   async onGoogleLogin(): Promise<void> {
-    // Google authentication implementation
-    // await this.authService.loginWithGoogle();
-    // this.router.navigate(['/dashboard']);
-    console.log('Google login triggered');
+    try {
+      await this.authService.loginWithGoogle();
+      this.overlayType = 'success';
+      this.overlayTitle = 'Erfolgreich angemeldet';
+      this.overlayMessage = 'Sie werden zum Dashboard weitergeleitet...';
+      this.showOverlay = true;
+      
+      setTimeout(() => {
+        this.showOverlay = false;
+        this.router.navigate(['/dashboard']);
+      }, 1500);
+    } catch (error: any) {
+      const errorInfo = this.getGoogleErrorMessage(error.code || '');
+      this.overlayType = 'error';
+      this.overlayTitle = errorInfo.title;
+      this.overlayMessage = errorInfo.message;
+      this.showOverlay = true;
+    }
+  }
+
+  private getGoogleErrorMessage(errorCode: string): { title: string; message: string } {
+    const errorMessages: { [key: string]: { title: string; message: string } } = {
+      'auth/popup-closed-by-user': {
+        title: 'Anmeldung abgebrochen',
+        message: 'Das Anmeldefenster wurde geschlossen. Bitte versuchen Sie es erneut.'
+      },
+      'auth/popup-blocked': {
+        title: 'Popup blockiert',
+        message: 'Das Anmeldefenster wurde vom Browser blockiert. Bitte erlauben Sie Popups für diese Seite.'
+      },
+      'auth/cancelled-popup-request': {
+        title: 'Anmeldung abgebrochen',
+        message: 'Die Anmeldung wurde abgebrochen. Bitte versuchen Sie es erneut.'
+      },
+      'auth/account-exists-with-different-credential': {
+        title: 'Konto existiert bereits',
+        message: 'Ein Konto mit dieser E-Mail-Adresse existiert bereits mit einer anderen Anmeldemethode.'
+      },
+      'auth/network-request-failed': {
+        title: 'Netzwerkfehler',
+        message: 'Es konnte keine Verbindung zum Server hergestellt werden. Bitte überprüfen Sie Ihre Internetverbindung.'
+      }
+    };
+
+    return errorMessages[errorCode] || {
+      title: 'Google-Anmeldung fehlgeschlagen',
+      message: 'Bei der Anmeldung mit Google ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.'
+    };
   }
 
   onOverlayClose(): void {
