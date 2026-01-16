@@ -3,10 +3,8 @@
     inset: 0;
     background: rgba(0, 0, 0, 0.2);
     z-index: 999;
-    /* used for global overlay (channel-info) */
 }
 
-/* dim overlay for inline dropdowns (members/add-members) - lower z-index so modal (absolute) can sit above */
 .modal-overlay.dim {
     z-index: 1000;
 }
@@ -15,11 +13,11 @@
     width: min(520px, calc(100vw - 32px));
     max-height: calc(100vh - 32px);
     overflow: auto;
-    background: white;
+    background: #fff;
     border-radius: 30px;
     padding: clamp(1rem, 2.5vw, 2.85rem);
     z-index: 1002;
-    /* ensure modals appear above inline dim overlay */
+    font-size: 1.29rem;
 }
 
 .modal-header {
@@ -31,30 +29,14 @@
 }
 
 .title {
-    font-size: 1.35rem;
+    font-size: 1.72rem;
     font-weight: 700;
-    color: black;
+    color: #000;
 }
 
 .hash {
     width: 1.15rem;
     font-weight: 700;
-}
-
-.btn-close {
-    border: none;
-    border-radius: 50%;
-    background: transparent;
-    cursor: pointer;
-    width: 32px;
-    height: 32px;
-    transition: all 0.125s;
-}
-
-.btn-close:hover {
-    transform: scale(1.05);
-    color: #444DF2;
-    background-color: #ECEEFE;
 }
 
 .modal-body {
@@ -68,22 +50,6 @@
 }
 
 .label {
-    font-weight: 700;
-}
-
-.btn-edit {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 1rem;
-    color: #444DF2;
-    font-family: inherit;
-    transition: all 0.125s;
-}
-
-.btn-edit:hover {
-    transform: scale(1.05);
     font-weight: 700;
 }
 
@@ -107,59 +73,15 @@
     padding: 12px;
 }
 
-.input-with-prefix {
-    position: relative;
-}
-
-.input-prefix {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0.9rem;
-    pointer-events: none;
-}
-
-.input-with-prefix .inline-input {
-    padding-left: 3.25rem;
-}
-
-/* ensure the input fills the available horizontal space inside the flex container */
-.channel-name-value .input-with-prefix {
+.channel-name-value .ui-input-with-prefix {
     flex: 1 1 auto;
     min-width: 0;
-    /* allow shrinking inside flex */
 }
 
-.channel-name-value .inline-input {
+.channel-name-value .ui-input-rounded {
     width: 100%;
     box-sizing: border-box;
     display: block;
-}
-
-.inline-input {
-    width: 100%;
-    border: 1px solid #ADB0D9;
-    border-radius: 30px;
-    padding: 18px 20px;
-    font-size: 1rem;
-}
-
-.inline-input:focus {
-    outline: none;
-    border-color: #787DF5;
-    box-shadow: 0 0 0 3px rgba(120, 125, 245, 0.15);
-}
-
-.input-prefix {
-    position: absolute;
-    left: 1.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1rem;
-    font-weight: 700;
-    color: #686868;
-    pointer-events: none;
 }
 
 .divider {
@@ -172,7 +94,7 @@
 }
 
 .created-by-name {
-    font-size: 1.2rem;
+    font-size: 1.29rem;
     font-family: inherit;
     color: #535AF1;
 }
@@ -180,7 +102,6 @@
 .description-group {
     gap: 12px;
     padding: 0;
-    /* padding applied when bordered */
 }
 
 .description-group.has-border {
@@ -189,49 +110,25 @@
     padding: 12px;
 }
 
-.btn-danger {
-    border: none;
-    background: transparent;
-    color: black;
-    cursor: pointer;
-    text-align: left;
-    font-weight: 600;
-}
-
-.btn-leave {
-    border: none;
-    border-radius: 25px;
-    padding: 12px 25px;
-    background: #444DF2;
-    color: #ffffff;
-    cursor: pointer;
-    font-size: 1rem;
-    font-family: inherit;
-    font-weight: 700;
-}
-
-.btn-leave:hover {
-    background: #787DF5;
-}
-
 .members-list {
     gap: 0.93rem;
 }
 
 .name {
     font-size: 1.29rem;
-    color: black;
+    color: #000;
 }
 
 .member {
     gap: 0.93rem;
+    width: fit-content;
+    padding: 0.25rem 1.25rem;
+    cursor: pointer;
+    border-radius: 1.875rem;
 }
 
-.avatar {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    object-fit: cover;
+.member:hover {
+    background: rgba(120, 125, 245, 0.15);
 }
 
 .btn-add-members {
@@ -243,9 +140,9 @@
     text-align: left;
     font-family: inherit;
     font-size: 1.29rem;
-    margin-left: 1rem;
-    transition: all 0.125s;
+    margin-left: 2rem;
     width: fit-content;
+    transition: transform 0.125s ease, color 0.125s ease, background 0.125s ease;
 }
 
 .btn-add-members:hover {
@@ -293,15 +190,8 @@
     padding: 6px 10px;
 }
 
-.chip-avatar {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
 .chip-name {
-    font-size: 1rem;
+    font-size: 1.29rem;
 }
 
 .chip-remove {
@@ -310,7 +200,7 @@
     border: none;
     background: transparent;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 1.29rem;
     line-height: 1;
 }
 
@@ -324,7 +214,9 @@
     min-width: 160px;
     border: none;
     outline: none;
-    font-size: 1rem;
+    font-size: 1.29rem;
+    padding-left: 0.8rem;
+    background: transparent;
 }
 
 .suggestions {
@@ -332,77 +224,55 @@
     left: 0;
     right: 0;
     top: calc(100% + 6px);
-    background: white;
+    background: #fff;
     border-radius: 12px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
     padding: 6px;
     z-index: 2;
+    max-height: min(260px, 50vh);
+    overflow-y: auto;
 }
 
 .suggestion {
     width: 100%;
     border: none;
     background: transparent;
+    display: flex;
+    align-items: center;
     gap: 10px;
     padding: 8px;
     border-radius: 10px;
     cursor: pointer;
+    text-align: left;
+}
+
+.suggestion .add-member-avatar {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
 }
 
 .suggestion:hover {
     background: #ECEEFE;
 }
 
-.btn-primary {
-    border: none;
-    border-radius: 30px;
-    padding: 10px 18px;
-    cursor: pointer;
-    background: #444DF2;
-    color: white;
-    font-weight: 700;
-}
-
-.btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Anchor for absolute positioned modals so they appear below the buttons */
-.channel-members-actions {
-    position: relative;
-}
-
-/* Modals placed under the members / add-members buttons (rendered without full-screen overlay) */
 .modal.members,
 .modal.add-members {
     position: absolute;
     top: calc(100% + 0.5rem);
     z-index: 1002;
-    background: #ffffff;
+    right: 0;
+    left: auto;
+    background: #fff;
+    border-radius: 1.875rem 0 1.875rem 1.875rem;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     transition: transform 180ms ease, opacity 180ms ease;
+    transform-origin: top right;
     min-width: 12rem;
 }
 
-/* members dropdown should align to the left edge of its own button */
-.modal.members {
-    right: 0;
-    left: auto;
-    border-radius: 1.875rem 0 1.875rem 1.875rem;
-    transform-origin: top right;
-}
-
-/* add-members dropdown should align to the right edge of its own button */
-.modal.add-members {
-    right: 0;
-    left: auto;
-    border-radius: 1.875rem 0 1.875rem 1.875rem;
-    transform-origin: top right;
-}
-
-/* Small devices: allow side spacing and smaller radius */
 @media (max-width: 430px) {
 
     .modal.members,
@@ -414,23 +284,21 @@
     }
 }
 
-/* Channel-info modal: render like inline modals but with custom corner radii */
 .modal.channel-info {
     position: absolute;
     top: calc(100% + 0.5rem);
     left: 0;
     z-index: 1002;
-    background: #ffffff;
+    background: #fff;
     border-radius: 0 1.875rem 1.875rem 1.875rem;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     transition: transform 180ms ease, opacity 180ms ease;
     transform-origin: top left;
     min-width: 12rem;
 }
 
-/* When channel-info is rendered inside the full-screen overlay, keep it centered
-   (overlay uses flex centering) instead of absolutely positioning it off-screen. */
 .modal-overlay>.modal.channel-info {
     position: static;
     z-index: 1002;

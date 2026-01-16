@@ -36,6 +36,7 @@ export class ChannelHeaderModalsComponent implements OnChanges, OnDestroy {
     @Output() closed = new EventEmitter<void>();
     @Output() channelLeft = new EventEmitter<void>();
     @Output() openType = new EventEmitter<ChannelHeaderModalType>();
+    @Output() userProfileRequested = new EventEmitter<User>();
 
     createdByName = '';
 
@@ -144,6 +145,18 @@ export class ChannelHeaderModalsComponent implements OnChanges, OnDestroy {
     getMemberLabel(user: User): string {
         const currentUid = this.authService.getCurrentUser()?.uid;
         return user.uid === currentUid ? `${user.name} (du)` : user.name;
+    }
+
+    getStatusClass(user: User | null | undefined): string {
+        if (user?.status === 'online') return 'status-online';
+        if (user?.status === 'away') return 'status-away';
+        return 'status-offline';
+    }
+
+    openMemberProfile(user: User): void {
+        if (!user) return;
+        this.userProfileRequested.emit(user);
+        this.close();
     }
 
     startEditName(): void {

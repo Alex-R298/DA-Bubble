@@ -4,7 +4,9 @@
       <ng-container *ngIf="!isEditing; else editView">
         <div class="profile-view-header ui-panel-header">
           <h3>Profil</h3>
-          <button class="profile-close" type="button" (click)="close()">✕</button>
+          <button type="button" class="ui-btn-icon-round display-center-center" (click)="close()" aria-label="Close">
+            <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
+          </button>
         </div>
 
         <div class="profile-avatar-section ui-avatar-center">
@@ -47,7 +49,13 @@
 
         <div *ngIf="showMessageButton" class="profile-actions">
           <button class="btn-message" type="button" (click)="sendMessage()">
-            <span aria-hidden="true">(img)</span>
+            <app-svg-images
+              aria-hidden="true"
+              [iconName]="'message'"
+              [width]="'20'"
+              [height]="'19'"
+              [className]="'icon-colored'"
+            ></app-svg-images>
             Nachricht
           </button>
         </div>
@@ -56,7 +64,9 @@
       <ng-template #editView>
         <div class="profile-view-header ui-panel-header">
           <h3>Dein Profil bearbeiten</h3>
-          <button class="profile-close" type="button" (click)="cancelEdit()">✕</button>
+          <button type="button" class="ui-btn-icon-round display-center-center" (click)="cancelEdit()" aria-label="Close">
+            <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
+          </button>
         </div>
 
         <div class="profile-avatar-section ui-avatar-center">

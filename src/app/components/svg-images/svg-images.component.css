@@ -18,3 +18,13 @@ svg.avatar-icon {
   border-radius: 50%;
   overflow: hidden;
 }
+
+img {
+  display: block;
+  object-fit: cover;
+}
+
+img.avatar-icon {
+  border-radius: 50%;
+  overflow: hidden;
+}

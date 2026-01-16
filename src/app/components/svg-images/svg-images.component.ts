@@ -14,6 +14,24 @@ export class SvgImagesComponent {
   @Input() height: string = '38';
   @Input() className: string = '';
 
+  private readonly imageExtPattern = /\.(png|jpe?g|webp|gif|svg)(\?.*)?$/i;
+
+  asCssSize(value: string): string {
+    const v = (value ?? '').toString().trim();
+    if (!v) return '';
+    if (/^\d+(\.\d+)?$/.test(v)) return `${v}px`;
+    return v;
+  }
+
+  isImageUrl(): boolean {
+    const v = (this.iconName ?? '').toString().trim();
+    if (!v) return false;
+    if (v.startsWith('http://') || v.startsWith('https://')) return true;
+    if (v.startsWith('assets/')) return true;
+    if (v.startsWith('./') || v.startsWith('../')) return true;
+    return this.imageExtPattern.test(v);
+  }
+
   getViewBox(): string {
     switch (this.iconName) {
       case 'google':
@@ -76,6 +94,8 @@ export class SvgImagesComponent {
       case 'green_mack':
       case 'nice':
         return '0 0 20 20';
+      case 'message':
+        return '0 0 20 19';
       case 'comment':
         return '0 0 20 19';
       case 'more_vert':
@@ -226,6 +246,10 @@ export class SvgImagesComponent {
 
   isAlternateEmailIcon(): boolean {
     return this.iconName === 'alternate_email';
+  }
+
+  isMessageIcon(): boolean {
+    return this.iconName === 'message';
   }
 
   isCommentIcon(): boolean {

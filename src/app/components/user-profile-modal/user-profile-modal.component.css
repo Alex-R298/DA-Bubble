@@ -21,23 +21,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-
-.profile-close {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 18px;
-    width: 40px;
-    height: 40px;
-    line-height: 1;
-}
-
-.profile-close:hover {
-    scale: 1.1;
-    color: #444DF2;
-    background-color: #ECEEFE;
-    border-radius: 50%;
+    font-size: 1.72rem;
 }
 
 .profile-avatar {
@@ -58,7 +42,7 @@
 }
 
 .profile-username {
-    font-size: 2rem;
+    font-size: 2.285rem;
     font-weight: 700;
     color: black;
 }
@@ -68,7 +52,7 @@
     background: transparent;
     font-family: inherit;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.29rem;
     font-weight: 600;
     color: #444DF2;
     transition: font-weight 0.125s ease-in-out;
@@ -99,7 +83,7 @@
 }
 
 .profile-status-text {
-    font-size: 16px;
+    font-size: 1.29rem;
     font-weight: 500;
     color: #686868;
 }
@@ -114,13 +98,13 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 16px;
+    font-size: 1.29rem;
     font-weight: 700;
     color: black;
 }
 
 .profile-email-value {
-    font-size: 16px;
+    font-size: 1.29rem;
     font-weight: 400;
     color: #1381FF;
     padding-left: 30px;
@@ -140,7 +124,8 @@
     border: none;
     padding: 12px 25px;
     border-radius: 25px;
-    font-size: 1rem;
+    font-size: 1.29rem;
+    font-family: inherit;
     font-weight: 700;
     cursor: pointer;
     transition: background 0.2s;
@@ -160,7 +145,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 16px;
+    font-size: 1.29rem;
     font-weight: 700;
     color: black;
 }
@@ -175,7 +160,7 @@
     border: 1px solid #444DF2;
     background: transparent;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.29rem;
     font-weight: 700;
     color: #444DF2;
     padding: 12px 20px;
@@ -194,7 +179,7 @@
     border: none;
     padding: 12px 25px;
     border-radius: 25px;
-    font-size: 1rem;
+    font-size: 1.29rem;
     font-weight: 700;
     cursor: pointer;
     transition: background 0.2s;

@@ -90,9 +90,14 @@
                   [class.active]="selectedUserId === user.uid"
                   [class.has-unread]="unreadDMs.has(user.uid)"
                   (mousedown)="startDirectMessage(user)">
-                <div class="user-avatar">
-                  <app-svg-images [iconName]="user.profileImageUrl || 'steffen-hoffmann'" [width]="'50'" [height]="'50'"></app-svg-images>
-                  <span class="status-indicator" [ngClass]="getStatusClass(user)"></span>
+                <div class="user-avatar ui-avatar-badge">
+                  <app-svg-images
+                    [iconName]="user.profileImageUrl || 'steffen-hoffmann'"
+                    [width]="'100%'"
+                    [height]="'100%'"
+                    [className]="'avatar-icon'"
+                  ></app-svg-images>
+                  <span class="ui-status-indicator" [ngClass]="getStatusClass(user)"></span>
                 </div>
                 <span class="user-name">{{ user.name }}</span>
                 <span class="unread-dot" *ngIf="unreadDMs.has(user.uid)"></span>
@@ -112,7 +117,7 @@
       <div class="modal ui-panel ui-panel--modal" (click)="$event.stopPropagation()">
         <div class="modal-header ui-panel-header">
         <h3>{{ 'SIDEBAR.CREATE_CHANNEL' | translate }}</h3>
-        <button class="btn-close display-center-center" type="button" (click)="closeNewChannelModal()" aria-label="Close">
+        <button class="ui-btn-icon-round display-center-center" type="button" (click)="closeNewChannelModal()" aria-label="Close">
           <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
         </button>
         </div>
@@ -121,8 +126,8 @@
 
         <div class="form-group">
           <label for="channelName">{{ 'SIDEBAR.CHANNEL_NAME' | translate }}</label>
-           <div class="input-with-prefix">
-             <app-svg-images class="hash input-prefix" [iconName]="'tag'" [width]="'100%'" [height]="'100%'" [className]="'icon-colored'"></app-svg-images>
+           <div class="ui-input-with-prefix">
+             <app-svg-images class="hash ui-input-prefix" [iconName]="'tag'" [width]="'100%'" [height]="'100%'" [className]="'icon-colored'"></app-svg-images>
              <input type="text" id="channelName" [(ngModel)]="newChannelName" [placeholder]="'SIDEBAR.CHANNEL_NAME_PLACEHOLDER' | translate" />
            </div>
         </div>
@@ -133,7 +138,7 @@
         </div>
 
         <div class="modal-actions ui-actions">
-          <button class="btn-primary" (click)="createChannel()" [disabled]="!newChannelName.trim()">{{ 'SIDEBAR.CREATE' | translate }}</button>
+          <button class="ui-btn-primary" (click)="createChannel()" [disabled]="!newChannelName.trim()">{{ 'SIDEBAR.CREATE' | translate }}</button>
         </div>
       </div>
     </div>

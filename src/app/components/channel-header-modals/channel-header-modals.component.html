@@ -10,7 +10,7 @@
             <app-svg-images class="hash" [iconName]="'tag'" [width]="'100%'" [height]="'100%'"></app-svg-images>
             <span class="title">{{ channel?.name }}</span>
           </div>
-          <button type="button" class="btn-close display-center-center" (click)="close()" aria-label="Close">
+          <button type="button" class="ui-btn-icon-round display-center-center" (click)="close()" aria-label="Close">
             <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
           </button>
         </div>
@@ -20,18 +20,18 @@
         <div class="section display-flex-column">
           <div class="channel-name-group display-flex-column" [class.has-border]="!isEditingName">
             <div class="section">
-              <div class="section-head display-ai-center-jc-spacebetween">
+              <div class="section-head display-ai-center-jc-spacebetween mb-20px">
                 <span class="label">Channel-Name</span>
-                <button type="button" class="btn-edit" (click)="isEditingName ? saveName() : startEditName()">
+                <button type="button" class="ui-btn-link" (click)="isEditingName ? saveName() : startEditName()">
                   {{ isEditingName ? 'Speichern' : 'Bearbeiten' }}
                 </button>
               </div>
 
                 <div class="value display-ai-center channel-name-value">
                   <ng-container *ngIf="isEditingName; else nameView">
-                    <div class="input-with-prefix">
-                      <app-svg-images class="input-prefix" [iconName]="'tag'" [width]="'100%'"></app-svg-images>
-                      <input class="inline-input" [(ngModel)]="draftName" />
+                    <div class="ui-input-with-prefix">
+                      <app-svg-images class="ui-input-prefix" [iconName]="'tag'" [width]="'100%'"></app-svg-images>
+                      <input class="ui-input-rounded" [(ngModel)]="draftName" />
                     </div>
                   </ng-container>
                   <ng-template #nameView>
@@ -43,14 +43,14 @@
           </div>
           <div class="description-group display-flex-column" [class.has-border]="!isEditingDescription">
             <div class="section">
-              <div class="section-head">
+              <div class="section-head display-ai-center-jc-spacebetween mb-20px">
                 <span class="label">Beschreibung</span>
-                <button type="button" class="btn-edit" (click)="isEditingDescription ? saveDescription() : startEditDescription()">
+                <button type="button" class="ui-btn-link" (click)="isEditingDescription ? saveDescription() : startEditDescription()">
                   {{ isEditingDescription ? 'Speichern' : 'Bearbeiten' }}
                 </button>
               </div>
               <div class="value">
-                <input *ngIf="isEditingDescription" class="inline-input" [(ngModel)]="draftDescription">
+                <input *ngIf="isEditingDescription" class="ui-input-rounded" [(ngModel)]="draftDescription">
                 <span *ngIf="!isEditingDescription">{{ channel?.description }}</span>
               </div>
             </div>
@@ -65,7 +65,7 @@
         </div>
 
         <div class="leave-actions display-jc-flexend">
-          <button type="button" class="btn-leave" (click)="leaveChannel()">Channel verlassen</button>
+          <button type="button" class="ui-btn-primary" (click)="leaveChannel()">Channel verlassen</button>
         </div>
       </div>
     </ng-container>
@@ -75,7 +75,7 @@
       <div class="modal-header">
         <div class="title-row display-ai-center-jc-spacebetween">
           <span class="title">Mitglieder</span>
-          <button type="button" class="btn-close display-center-center" (click)="close()" aria-label="Close">
+          <button type="button" class="ui-btn-icon-round display-center-center" (click)="close()" aria-label="Close">
             <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
           </button>
         </div>
@@ -83,13 +83,16 @@
 
       <div class="modal-body">
         <div class="members-list display-flex-column">
-          <div class="member display-ai-center gap-15px ml-20px" *ngFor="let user of memberUsers">
-            <app-svg-images
-          class="user-avatar member-avatar"
-          [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
-          [width]="'100%'"
-          [height]="'100%'">
-        </app-svg-images>
+          <div class="member display-ai-center gap-15px ml-20px" *ngFor="let user of memberUsers" (click)="openMemberProfile(user)">
+            <div class="ui-avatar-badge member-avatar" style="--ui-avatar-badge-size: 3.57rem;">
+              <app-svg-images
+                [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
+                [width]="'100%'"
+                [height]="'100%'"
+                [className]="'avatar-icon'"
+              ></app-svg-images>
+              <span class="ui-status-indicator" [ngClass]="getStatusClass(user)"></span>
+            </div>
             <span class="name">{{ getMemberLabel(user) }}</span>
           </div>
         </div>
@@ -105,7 +108,7 @@
       <div class="modal-header">
         <div class="title-row display-ai-center-jc-spacebetween">
           <span class="title">Leute hinzufügen</span>
-          <button type="button" class="btn-close display-center-center" (click)="close()" aria-label="Close">
+          <button type="button" class="ui-btn-icon-round display-center-center" (click)="close()" aria-label="Close">
             <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
           </button>
         </div>
@@ -138,12 +141,12 @@
             />
           </div>
 
-          <div class="suggestions display-ai-center" *ngIf="filteredSelectableUsers.length">
+          <div class="suggestions" *ngIf="filteredSelectableUsers.length">
             <button
               type="button"
               class="suggestion"
               *ngFor="let user of filteredSelectableUsers"
-              (click)="addUserToSelection(user)"
+              (mousedown)="addUserToSelection(user); $event.preventDefault()"
             >
               <app-svg-images
                 class="user-avatar add-member-avatar"
@@ -157,7 +160,7 @@
         </div>
 
         <div class="actions display-jc-flexend">
-          <button type="button" class="btn-primary" [disabled]="!canConfirmAddMembers" (click)="confirmAddMembers()">
+          <button type="button" class="ui-btn-primary" [disabled]="!canConfirmAddMembers" (click)="confirmAddMembers()">
             Hinzufügen
           </button>
         </div>

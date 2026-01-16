@@ -50,10 +50,150 @@
     object-fit: cover;
 }
 
+/* Avatar with presence/status indicator (online/offline/away) */
+.ui-avatar-badge {
+    position: relative;
+    width: var(--ui-avatar-badge-size, 50px);
+    height: var(--ui-avatar-badge-size, 50px);
+    border-radius: 50%;
+    /* keep avatar round via avatar-icon on the media; allow the status dot to sit slightly outside */
+    overflow: visible;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    background: #ECEEFE;
+}
+
+.ui-avatar-badge app-svg-images,
+.ui-avatar-badge img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.ui-avatar-badge svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.ui-status-indicator {
+    position: absolute;
+    bottom: 0px;
+    right: 1px;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    border: 2px solid white;
+    z-index: 2;
+}
+
+.ui-status-indicator.status-online {
+    background: #92C83E;
+}
+
+.ui-status-indicator.status-offline {
+    background: #686868;
+}
+
+.ui-status-indicator.status-away {
+    background: #F2C94C;
+}
+
 .ui-actions {
     display: flex;
     gap: 0.75rem;
     justify-content: flex-end;
+}
+
+/* Buttons */
+.ui-btn-icon-round {
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    width: 2.25rem;
+    height: 2.25rem;
+    transition: transform 0.125s ease, color 0.125s ease, background-color 0.125s ease;
+}
+
+.ui-btn-icon-round:hover {
+    transform: scale(1.05);
+    color: #444DF2;
+    background-color: #ECEEFE;
+}
+
+.ui-btn-link {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1.29rem;
+    font-weight: 600;
+    color: #444DF2;
+    font-family: inherit;
+    transition: transform 0.125s ease, font-weight 0.125s ease;
+}
+
+.ui-btn-link:hover {
+    transform: scale(1.05);
+    font-weight: 700;
+}
+
+.ui-btn-primary {
+    border: none;
+    border-radius: 1.5625rem;
+    padding: 0.75rem 1.5625rem;
+    cursor: pointer;
+    background: #444DF2;
+    color: white;
+    font-weight: 700;
+    font-family: inherit;
+    transition: background 0.2s;
+}
+
+.ui-btn-primary:hover:not(:disabled) {
+    background: #787DF5;
+}
+
+.ui-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Inputs */
+.ui-input-rounded {
+    width: 100%;
+    border: 1px solid #ADB0D9;
+    border-radius: 2.5rem;
+    padding: 1.125rem 1.25rem;
+    font-size: 1.29rem;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.ui-input-rounded:focus {
+    outline: none;
+    border-color: #787DF5;
+    box-shadow: 0 0 0 3px rgba(120, 125, 245, 0.15);
+}
+
+.ui-input-with-prefix {
+    position: relative;
+}
+
+.ui-input-prefix {
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0.9rem;
+    pointer-events: none;
+}
+
+.ui-input-with-prefix .ui-input-rounded,
+.ui-input-with-prefix input {
+    padding-left: 3.25rem;
 }
 
 /* Rounded text inputs used in modals/edit panels */
@@ -124,7 +264,19 @@
 }
 
 .ml-20px {
-    margin-left: 1.435rem;
+    margin-left: 1.25rem;
+}
+
+.mr-20px {
+    margin-right: 1.25rem;
+}
+
+.mb-20px {
+    margin-bottom: 1.25rem;
+}
+
+.mt-20px {
+    margin-top: 1.25rem;
 }
 
 .icon-colored:hover {
