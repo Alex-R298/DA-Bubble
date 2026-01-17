@@ -357,8 +357,8 @@
   padding: 0;
 }
 
-/* Ab 430px: maximale Größe 88px, darunter fließend verkleinern */
-@media (max-width: 430px) {
+/* Ab 768px: maximale Größe 88px, darunter fließend verkleinern */
+@media (max-width: 768px) {
   .dm-empty-avatar {
     width: clamp(64px, calc(20.4651vw), 98px);
     height: clamp(64px, calc(20.4651vw), 98px);

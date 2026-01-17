@@ -274,7 +274,7 @@
     min-width: 12rem;
 }
 
-@media (max-width: 430px) {
+@media (max-width: 768px) {
 
     .modal.members,
     .modal.add-members {

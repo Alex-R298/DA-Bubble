@@ -1,5 +1,5 @@
-<div class="chat-layout-container" [class.sidebar-collapsed]="isSidebarCollapsed">
-	<app-sidebar (collapsedChange)="onSidebarCollapsedChange($event)"></app-sidebar>
+<div class="chat-layout-container" [class.sidebar-collapsed]="isSidebarCollapsed" [class.chat-active]="isChatActive">
+	<app-sidebar class="sidebar-container" (collapsedChange)="onSidebarCollapsedChange($event)"></app-sidebar>
 
 	<div class="chat-area">
 		<router-outlet></router-outlet>

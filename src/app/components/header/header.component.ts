@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { UserService, User } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -33,9 +34,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showEditProfileView = false;
   editedFullName = '';
   editNameFocused = false;
+  isChatActive = false;
   private userSubscription?: any;
+  private routerSub?: Subscription;
 
   ngOnInit(): void {
+    this.checkIfChatActive(this.router.url);
+    
+    this.routerSub = this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe(ev => this.checkIfChatActive(ev.urlAfterRedirects));
+
     this.authService.authState$.subscribe(async (authUser) => {
       if (authUser) {
         this.userSubscription = this.userService.subscribeToUser(authUser.uid)
@@ -58,6 +67,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.userSubscription?.unsubscribe();
+    this.routerSub?.unsubscribe();
+  }
+
+  private checkIfChatActive(url: string): void {
+    this.isChatActive = url.includes('/channel/') || url.includes('/user/');
+  }
+
+  goBack(): void {
+    this.router.navigate(['/dashboard']);
   }
 
   getStatusClass(user: { status?: 'online' | 'offline' | 'away' } | null): string {

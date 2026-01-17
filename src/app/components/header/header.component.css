@@ -349,3 +349,69 @@
 .dropdown-item span {
   font-size: 1.3rem;
 }
+
+/* Mobile/Desktop visibility helpers */
+.mobile-only {
+  display: none;
+}
+
+.desktop-only {
+  display: flex;
+}
+
+/* Mobile Logo Area */
+.logo-area-mobile {
+  gap: 0.5rem;
+}
+
+.btn-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.btn-back:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: flex;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .header {
+    padding: 0.5rem 1rem;
+    justify-content: space-between;
+  }
+
+  .search-container {
+    display: none;
+  }
+
+  .user-area {
+    min-width: auto;
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .dropdown-arrow {
+    display: none;
+  }
+
+  .user-info {
+    gap: 0;
+    padding-right: 0;
+  }
+}

@@ -18,6 +18,16 @@
             <app-svg-images [iconName]="'workspace'" [width]="'60'" [height]="'60'"></app-svg-images>
           <h2>Devspace</h2>
         </div>
+        <div class="sidebar-search-container d-none">
+          <input
+            type="text"
+            class="sidebar-search-input"
+            [placeholder]="'HEADER.SEARCH_PLACEHOLDER' | translate"
+          />
+          <span class="sidebar-search-icon" aria-hidden="true">
+            <app-svg-images [iconName]="'search'" [width]="'22'" [height]="'22'"></app-svg-images>
+          </span>
+        </div>
         <button class="btn-new-chat display-center-center" (click)="openNewMessage()">
             <app-svg-images [iconName]="'edit_square'" [width]="'22'" [height]="'23'"></app-svg-images>
         </button>

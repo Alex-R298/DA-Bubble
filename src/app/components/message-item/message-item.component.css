@@ -454,11 +454,11 @@
     border-radius: 1.25rem;
     padding: 1rem 2rem;
     border: 1px solid #ADB0D9;
-    height: 10rem;
     transition: border-color 0.2s;
     background-color: #FFFFFF;
-    width: 74rem;
+    width: 100%;
     height: 11rem;
+    box-sizing: border-box;
 }
 
 .thread-spacer .message-spacer {
@@ -472,6 +472,12 @@
     transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
     overflow: hidden;
     max-height: 0;
+    flex: 1;
+    max-width: 70%;
+}
+
+.message-item.own-message .message-item-spacer {
+    /* Eigene Nachricht: Rechts ausgerichtet durch row-reverse im Parent */
 }
 
 .message-item-spacer.show-edit-input {
