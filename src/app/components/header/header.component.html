@@ -66,7 +66,9 @@
       <div class="profile-view ui-panel ui-panel--popover" *ngIf="showProfileView && !showEditProfileView">
         <div class="profile-view-header ui-panel-header display-ai-center-jc-spacebetween">
           <h3>{{ 'HEADER.PROFILE' | translate }}</h3>
-          <button class="profile-close" type="button" (click)="closeProfileView()">&#10005;</button>
+          <button type="button" class="ui-btn-icon-round display-center-center" (click)="closeProfileView()" aria-label="Close">
+            <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
+          </button>
         </div>
 
         <div class="profile-avatar-section ui-avatar-center">
@@ -92,7 +94,7 @@
         <div class="profile-email-section display-flex-column">
           <div class="profile-email-label display-ai-center">
             <svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M2 16C1.45 16 0.979333 15.8043 0.588 15.413C0.196 15.021 0 14.55 0 14V2C0 1.45 0.196 0.979333 0.588 0.588C0.979333 0.196 1.45 0 2 0H18C18.55 0 19.021 0.196 19.413 0.588C19.8043 0.979333 20 1.45 20 2V14C20 14.55 19.8043 15.021 19.413 15.413C19.021 15.8043 18.55 16 18 16H2ZM18 4L10.525 8.675C10.4417 8.725 10.354 8.76233 10.262 8.787C10.1707 8.81233 10.0833 8.825 10 8.825C9.91667 8.825 9.82933 8.81233 9.738 8.787C9.646 8.76233 9.55833 8.725 9.475 8.675L2 4V14H18V4ZM10 7L18 2H2L10 7ZM2 4.25V2.775V2.8V2.787V4.25Z" fill="#686868"/>
+              <path d="M2 16C1.45 16 0.979333 15.8043 0.588 15.413C0.196 15.021 0 14.55 0 14V2C0 1.45 0.196 0.979333 0.588 0.588C0.979333 0.196 1.45 0 2 0H18C18.55 0 19.021 0.196 19.413 0.588C19.8043 0.979333 20 1.45 20 2V14C20 14.55 19.8043 15.021 19.413 15.413C19.021 15.8043 18.55 16 18 16H2ZM18 4L10.525 8.675C10.4417 8.725 10.354 8.76233 10.262 8.787C10.1707 8.81233 10.0833 8.825 10 8.825C9.91667 8.825 9.82933 8.81233 9.738 8.787C9.646 8.76233 9.55833 8.725 9.475 8.675L2 4V14H18V4ZM10 7L18 2H2L10 7ZM2 4.25V2.775V2.8V2.787V4.25Z" fill="#000000"/>
             </svg>
             <span>{{ 'HEADER.EMAIL_ADDRESS' | translate }}</span>
           </div>
@@ -103,23 +105,28 @@
       <div class="profile-edit-view ui-panel ui-panel--popover" *ngIf="showEditProfileView">
         <div class="profile-view-header ui-panel-header">
           <h3>{{ 'HEADER.EDIT_PROFILE' | translate }}</h3>
-          <button class="profile-close" type="button" (click)="closeEditProfileView()">&#10005;</button>
+          <button type="button" class="ui-btn-icon-round display-center-center" (click)="closeEditProfileView()" aria-label="Close">
+            <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
+          </button>
         </div>
 
         <div class="profile-avatar-section ui-avatar-center">
           <app-svg-images
             class="profile-avatar ui-avatar"
             [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
-            [width]="'80'"
-            [height]="'80'">
+            [width]="'100%'"
+            [height]="'100%'">
           </app-svg-images>
         </div>
 
         <div class="edit-field display-flex-column">
           <div class="edit-field-label display-ai-center">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M8 8C6.9 8 5.95833 7.60833 5.175 6.825C4.39167 6.04167 4 5.1 4 4C4 2.9 4.39167 1.95833 5.175 1.175C5.95833 0.391667 6.9 0 8 0C9.1 0 10.0417 0.391667 10.825 1.175C11.6083 1.95833 12 2.9 12 4C12 5.1 11.6083 6.04167 10.825 6.825C10.0417 7.60833 9.1 8 8 8ZM14 16H2C1.45 16 0.979333 15.8043 0.588 15.413C0.196 15.021 0 14.55 0 14V13.2C0 12.6333 0.146 12.1123 0.438 11.637C0.729334 11.1623 1.11667 10.8 1.6 10.55C2.63333 10.0333 3.68333 9.64567 4.75 9.387C5.81667 9.129 6.9 9 8 9C9.1 9 10.1833 9.129 11.25 9.387C12.3167 9.64567 13.3667 10.0333 14.4 10.55C14.8833 10.8 15.2707 11.1623 15.562 11.637C15.854 12.1123 16 12.6333 16 13.2V14C16 14.55 15.8043 15.021 15.413 15.413C15.021 15.8043 14.55 16 14 16Z" fill="#686868"/>
-            </svg>
+            <app-svg-images
+              [iconName]="'person_large'"
+              [width]="'25'"
+              [height]="'25'"
+              aria-hidden="true"
+            ></app-svg-images>
             <span>{{ 'HEADER.FULL_NAME' | translate }}</span>
           </div>
 

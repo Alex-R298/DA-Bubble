@@ -46,6 +46,8 @@ export class SvgImagesComponent {
         return '0 0 16 16';
       case 'person':
         return '0 0 16 16';
+      case 'person_large':
+        return '0 0 25 25';
       case 'dabubble':
         return '0 0 243 70';
       case 'logo':
@@ -89,6 +91,9 @@ export class SvgImagesComponent {
         return '0 0 22 19';
       case 'search':
         return '0 0 26 26';
+      case 'radio_unchecked':
+      case 'radio_checked':
+        return '0 0 20 20';
       case 'smiley':
       case 'alternate_email':
       case 'green_mack':
@@ -127,6 +132,10 @@ export class SvgImagesComponent {
 
   isPersonIcon(): boolean {
     return this.iconName === 'person';
+  }
+
+  isPersonLargeIcon(): boolean {
+    return this.iconName === 'person_large';
   }
 
   isDABubbleIcon(): boolean {
@@ -202,6 +211,14 @@ export class SvgImagesComponent {
 
   isArrowDropDownIcon(): boolean {
     return this.iconName === 'arrow_drop_down';
+  }
+
+  isRadioUncheckedIcon(): boolean {
+    return this.iconName === 'radio_unchecked';
+  }
+
+  isRadioCheckedIcon(): boolean {
+    return this.iconName === 'radio_checked';
   }
 
   isAddReactionIcon(): boolean {

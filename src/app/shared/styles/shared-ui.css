@@ -147,6 +147,7 @@
     cursor: pointer;
     background: #444DF2;
     color: white;
+    font-size: 1.3rem;
     font-weight: 700;
     font-family: inherit;
     transition: background 0.2s;
@@ -196,6 +197,150 @@
     padding-left: 3.25rem;
 }
 
+/* Add-people modal + radio options */
+.add-people-modal h3 {
+    font-size: 1.714rem;
+}
+
+.add-people-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.radio-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    border: none;
+    background: transparent;
+    padding: 0.35rem 0;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    font-size: 1.29rem;
+    color: #000;
+}
+
+.channel-name-label {
+    color: #444DF2;
+}
+
+.channel-name-inline {
+    color: #444DF2;
+}
+
+.existing-channels {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    color: #686868;
+    font-size: 1rem;
+}
+
+.existing-channels .channel-chip {
+    background: #ECEEFE;
+    color: #444DF2;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+}
+
+.chip-input {
+    position: relative;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid #ADB0D9;
+    border-radius: 30px;
+}
+
+.chip {
+    gap: 8px;
+    background: #ECEEFE;
+    border-radius: 35px;
+    padding: 6px 10px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.chip-name {
+    font-size: 1.3rem;
+}
+
+.chip-remove {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1.29rem;
+    line-height: 1;
+}
+
+.member-input {
+    flex: 1;
+    min-width: 160px;
+    border: none;
+    outline: none;
+    font-size: 1.29rem;
+    padding-left: 0.8rem;
+    background: transparent;
+}
+
+.suggestions {
+    position: absolute;
+    z-index: 2;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ADB0D9;
+    border-radius: 16px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+    padding: 6px;
+}
+
+.suggestion {
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: transparent;
+    padding: 8px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: inherit;
+}
+
+.suggestion .name {
+    font-size: 1.3rem;
+}
+
+.suggestion:hover {
+    background: #ECEEFE;
+}
+
+.user-avatar.add-member-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-avatar.add-member-avatar svg,
+.user-avatar.add-member-avatar img {
+    border-radius: 50%;
+}
+
+
 /* Rounded text inputs used in modals/edit panels */
 .form-group input,
 .edit-input {
@@ -203,7 +348,7 @@
     padding: 1.125rem 1.25rem;
     border: 1px solid #ADB0D9;
     border-radius: 2.5rem;
-    font-size: 1rem;
+    font-size: 1.3rem;
     font-family: inherit;
 }
 

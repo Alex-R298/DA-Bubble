@@ -47,7 +47,7 @@
   border: 1px solid #ADB0D9;
   border-radius: 1.875rem;
   padding: 1.125rem 1.25rem;
-  font-size: 1rem;
+  font-size: 1.3rem;
 }
 
 .new-message-recipient:focus {
@@ -235,9 +235,15 @@
 }
 
 .empty-chat .empty-title {
-  font-size: 1.5rem;
+  font-size: 1.714rem;
   font-weight: 700;
   color: black;
+}
+
+.empty-chat .channel-empty-title {
+  display: flex;
+  align-items: center;
+  gap: 0.72rem;
 }
 
 .dm-empty-header {
@@ -255,6 +261,11 @@
   cursor: pointer;
 }
 
+.dm-empty-avatar svg,
+.dm-empty-avatar img {
+  border-radius: 50%;
+}
+
 .dm-mention {
   color: #535AF1;
   font-weight: 700;
@@ -262,7 +273,7 @@
 
 .empty-chat .empty-text {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 400;
   color: black;
 }

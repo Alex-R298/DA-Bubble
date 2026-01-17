@@ -3,10 +3,12 @@
     <div class="ui-panel ui-panel--modal profile-modal" (click)="$event.stopPropagation()">
       <ng-container *ngIf="!isEditing; else editView">
         <div class="profile-view-header ui-panel-header">
-          <h3>Profil</h3>
-          <button type="button" class="ui-btn-icon-round display-center-center" (click)="close()" aria-label="Close">
-            <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
-          </button>
+          <div class="title-row display-ai-center-jc-spacebetween">
+            <span class="title">Profil</span>
+            <button type="button" class="ui-btn-icon-round display-center-center" (click)="close()" aria-label="Close">
+              <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
+            </button>
+          </div>
         </div>
 
         <div class="profile-avatar-section ui-avatar-center">
@@ -63,10 +65,12 @@
 
       <ng-template #editView>
         <div class="profile-view-header ui-panel-header">
-          <h3>Dein Profil bearbeiten</h3>
-          <button type="button" class="ui-btn-icon-round display-center-center" (click)="cancelEdit()" aria-label="Close">
-            <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
-          </button>
+          <div class="title-row display-ai-center-jc-spacebetween">
+            <span class="title">Dein Profil bearbeiten</span>
+            <button type="button" class="ui-btn-icon-round display-center-center" (click)="close()" aria-label="Close">
+              <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
+            </button>
+          </div>
         </div>
 
         <div class="profile-avatar-section ui-avatar-center">

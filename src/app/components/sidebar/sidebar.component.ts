@@ -48,8 +48,13 @@ export class SidebarComponent implements OnInit {
   directMessagesExpanded = true;
 
   showNewChannelModal = false;
+  showAddPeopleModal = false;
   newChannelName = '';
   newChannelDescription = '';
+  addPeopleSelection: 'all' | 'specific' | null = null;
+  addPeopleQuery = '';
+  selectedAddPeople: any[] = [];
+  selectedSourceChannelId: string | null = null;
 
   ngOnInit(): void {
     // subscriptions disabled until services/models are available
@@ -135,11 +140,58 @@ export class SidebarComponent implements OnInit {
 
   openNewChannelModal(): void {
     this.showNewChannelModal = true;
+    this.showAddPeopleModal = false;
     this.newChannelName = '';
     this.newChannelDescription = '';
+    this.addPeopleSelection = null;
+    this.addPeopleQuery = '';
+    this.selectedAddPeople = [];
+    this.selectedSourceChannelId = null;
   }
 
   closeNewChannelModal(): void { this.showNewChannelModal = false; }
+
+  openAddPeopleModal(): void {
+    if (!this.newChannelName.trim()) return;
+    this.showNewChannelModal = false;
+    this.showAddPeopleModal = true;
+    this.addPeopleSelection = null;
+    this.addPeopleQuery = '';
+    this.selectedAddPeople = [];
+    this.selectedSourceChannelId = null;
+  }
+
+  closeAddPeopleModal(): void { this.showAddPeopleModal = false; }
+
+  setAddPeopleSelection(value: 'all' | 'specific', channel?: any): void {
+    this.addPeopleSelection = value;
+    if (value === 'all') {
+      this.selectedSourceChannelId = channel?.id ?? null;
+    } else {
+      this.selectedSourceChannelId = null;
+      this.addPeopleQuery = '';
+      this.selectedAddPeople = [];
+    }
+  }
+
+  get filteredAddPeople(): any[] {
+    const query = this.addPeopleQuery.trim().toLowerCase();
+    if (!query) return [];
+    const selectedIds = new Set(this.selectedAddPeople.map(u => u.uid));
+    return this.users
+      .filter(u => !selectedIds.has(u.uid))
+      .filter(u => (u.name || '').toLowerCase().includes(query) || (u.email || '').toLowerCase().includes(query));
+  }
+
+  addPersonToSelection(user: any): void {
+    if (!user || this.selectedAddPeople.find(u => u.uid === user.uid)) return;
+    this.selectedAddPeople = [...this.selectedAddPeople, user];
+    this.addPeopleQuery = '';
+  }
+
+  removeSelectedAddPerson(uid: string): void {
+    this.selectedAddPeople = this.selectedAddPeople.filter(u => u.uid !== uid);
+  }
 
   async createChannel(): Promise<void> {
     const currentUser = this.authService.getCurrentUser();
@@ -151,7 +203,7 @@ export class SidebarComponent implements OnInit {
       currentUser.uid
     );
 
-    this.closeNewChannelModal();
+    this.closeAddPeopleModal();
   }
 
   private validateUserLoggedIn(): boolean {

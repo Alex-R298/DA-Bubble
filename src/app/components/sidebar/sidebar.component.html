@@ -128,7 +128,7 @@
           <label for="channelName">{{ 'SIDEBAR.CHANNEL_NAME' | translate }}</label>
            <div class="ui-input-with-prefix">
              <app-svg-images class="hash ui-input-prefix" [iconName]="'tag'" [width]="'100%'" [height]="'100%'" [className]="'icon-colored'"></app-svg-images>
-             <input type="text" id="channelName" [(ngModel)]="newChannelName" [placeholder]="'SIDEBAR.CHANNEL_NAME_PLACEHOLDER' | translate" />
+             <input class="ui-input-rounded" type="text" id="channelName" [(ngModel)]="newChannelName" [placeholder]="'SIDEBAR.CHANNEL_NAME_PLACEHOLDER' | translate" />
            </div>
         </div>
 
@@ -138,7 +138,94 @@
         </div>
 
         <div class="modal-actions ui-actions">
-          <button class="ui-btn-primary" (click)="createChannel()" [disabled]="!newChannelName.trim()">{{ 'SIDEBAR.CREATE' | translate }}</button>
+          <button class="ui-btn-primary" (click)="openAddPeopleModal()" [disabled]="!newChannelName.trim()">{{ 'SIDEBAR.CREATE' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="showAddPeopleModal">
+    <div class="modal-overlay display-center-center" (click)="closeAddPeopleModal()">
+      <div class="modal ui-panel ui-panel--modal add-people-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header ui-panel-header">
+          <h3>Leute hinzufügen</h3>
+          <button class="ui-btn-icon-round display-center-center" type="button" (click)="closeAddPeopleModal()" aria-label="Close">
+            <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
+          </button>
+        </div>
+
+        <div class="add-people-options">
+          <button
+            type="button"
+            class="radio-option"
+            *ngFor="let channel of channels"
+            (click)="setAddPeopleSelection('all', channel)"
+          >
+            <app-svg-images
+              [iconName]="addPeopleSelection === 'all' && selectedSourceChannelId === channel.id ? 'radio_checked' : 'radio_unchecked'"
+              [width]="'20'"
+              [height]="'20'"
+            ></app-svg-images>
+            <span>
+              Alle Mitglieder von
+              <span class="channel-name-inline">{{ channel.name }}</span>
+              hinzufügen
+            </span>
+          </button>
+
+          <button type="button" class="radio-option" (click)="setAddPeopleSelection('specific')">
+            <app-svg-images
+              [iconName]="addPeopleSelection === 'specific' ? 'radio_checked' : 'radio_unchecked'"
+              [width]="'20'"
+              [height]="'20'"
+            ></app-svg-images>
+            <span>Bestimmte Leute hinzufügen</span>
+          </button>
+        </div>
+
+        <div *ngIf="addPeopleSelection === 'specific'" class="chip-input">
+          <div class="chips">
+            <div class="chip" *ngFor="let u of selectedAddPeople">
+              <app-svg-images
+                class="user-avatar add-member-avatar"
+                [iconName]="u?.profileImageUrl || 'steffen-hoffmann'"
+                [width]="'100%'"
+                [height]="'100%'"
+                [className]="'avatar-icon'">
+              </app-svg-images>
+              <span class="chip-name">{{ u.name }}</span>
+              <button type="button" class="chip-remove" (click)="removeSelectedAddPerson(u.uid)">×</button>
+            </div>
+
+            <input
+              class="member-input"
+              type="text"
+              [(ngModel)]="addPeopleQuery"
+              placeholder="Name oder E-Mail"
+            />
+          </div>
+
+          <div class="suggestions" *ngIf="filteredAddPeople.length">
+            <button
+              type="button"
+              class="suggestion"
+              *ngFor="let user of filteredAddPeople"
+              (mousedown)="addPersonToSelection(user); $event.preventDefault()"
+            >
+              <app-svg-images
+                class="user-avatar add-member-avatar"
+                [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
+                [width]="'100%'"
+                [height]="'100%'"
+                [className]="'avatar-icon'">
+              </app-svg-images>
+              <span class="name">{{ user.name }}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-actions ui-actions">
+          <button class="ui-btn-primary" (click)="createChannel()" [disabled]="!addPeopleSelection">Erstellen</button>
         </div>
       </div>
     </div>
