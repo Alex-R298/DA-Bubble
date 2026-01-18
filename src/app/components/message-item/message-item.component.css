@@ -143,7 +143,7 @@
     font-size: 0.8125rem;
     cursor: pointer;
     transition: background 0.2s, border-color 0.2s;
-     width: 64px;
+    width: 64px;
     height: 34px;
 }
 
@@ -172,9 +172,11 @@
     0% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.08);
     }
+
     100% {
         transform: scale(1);
     }
@@ -383,20 +385,20 @@
 
 .hover-reaction-bar button:nth-child(3) app-svg-images,
 .hover-reaction-bar button:nth-child(4) app-svg-images {
-  transition: filter 0.2s ease;
+    transition: filter 0.2s ease;
 }
 
 .hover-reaction-bar button:nth-child(3):hover app-svg-images,
 .hover-reaction-bar button:nth-child(4):hover app-svg-images {
-  filter: brightness(0) saturate(100%) invert(29%) sepia(93%) saturate(1986%) hue-rotate(230deg) brightness(97%) contrast(92%);
+    filter: brightness(0) saturate(100%) invert(29%) sepia(93%) saturate(1986%) hue-rotate(230deg) brightness(97%) contrast(92%);
 }
 
 .hover-reaction-bar.thread-bar button:nth-child(1) app-svg-images {
-  transition: filter 0.2s ease;
+    transition: filter 0.2s ease;
 }
 
 .hover-reaction-bar.thread-bar button:nth-child(1):hover app-svg-images {
-  filter: brightness(0) saturate(100%) invert(29%) sepia(93%) saturate(1986%) hue-rotate(230deg) brightness(97%) contrast(92%);
+    filter: brightness(0) saturate(100%) invert(29%) sepia(93%) saturate(1986%) hue-rotate(230deg) brightness(97%) contrast(92%);
 }
 
 .edit-message {
@@ -476,9 +478,10 @@
     max-width: 70%;
 }
 
-.message-item.own-message .message-item-spacer {
-    /* Eigene Nachricht: Rechts ausgerichtet durch row-reverse im Parent */
-}
+/* .message-item.own-message .message-item-spacer {
+    /* Eigene Nachricht: Rechts ausgerichtet durch row-reverse im Parent  
+    } */
+
 
 .message-item-spacer.show-edit-input {
     opacity: 1;
@@ -486,6 +489,7 @@
     transform: translateY(0);
     max-height: 500px;
 }
+
 .message-spacer textarea {
     width: 100%;
     height: 100%;
@@ -545,63 +549,63 @@
 }
 
 .btn-emoji app-svg-images {
-  transition: filter 0.2s ease;
+    transition: filter 0.2s ease;
 }
 
 .btn-emoji:hover {
-  background: #ECEEFE;
+    background: #ECEEFE;
 }
 
 .btn-emoji:hover app-svg-images {
-  filter: brightness(0) saturate(100%) invert(29%) sepia(93%) saturate(1986%) hue-rotate(230deg) brightness(97%) contrast(92%);
+    filter: brightness(0) saturate(100%) invert(29%) sepia(93%) saturate(1986%) hue-rotate(230deg) brightness(97%) contrast(92%);
 }
 
 .left-actions {
-  display: flex;
-  align-items: center;
-   justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .right-actions {
-  display: flex;
-  align-items: center;
-   justify-content: flex-end;
-   gap: 2.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2.3rem;
 }
 
 /* Mention und Channel Tags in Nachrichten - ::ng-deep für dynamisch eingefügte Elemente */
 :host ::ng-deep .mention-tag {
-  display: inline;
-  background-color: rgba(68, 77, 242, 0.2) !important;
-  color: #444DF2 !important;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin: 0 1px;
-  cursor: pointer;
+    display: inline;
+    background-color: rgba(68, 77, 242, 0.2) !important;
+    color: #444DF2 !important;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin: 0 1px;
+    cursor: pointer;
 }
 
 :host ::ng-deep .message-bubble .mention-tag:hover {
-  background-color: rgba(68, 77, 242, 0.4) !important;
+    background-color: rgba(68, 77, 242, 0.4) !important;
 }
 
 :host ::ng-deep .channel-tag {
-  display: inline;
-  background-color: rgba(68, 77, 242, 0.2) !important;
-  color: #444DF2 !important;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin: 0 1px;
+    display: inline;
+    background-color: rgba(68, 77, 242, 0.2) !important;
+    color: #444DF2 !important;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin: 0 1px;
 }
 
 /* Own message styles für Tags */
 :host ::ng-deep .message-item.own-message .mention-tag,
 :host ::ng-deep .message-item.own-message .channel-tag {
-  background-color: rgba(255, 255, 255, 0.3) !important;
-  color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
 }
 
 :host ::ng-deep .message-item.own-message .mention-tag:hover {
-  background-color: rgba(255, 255, 255, 0.5) !important;
+    background-color: rgba(255, 255, 255, 0.5) !important;
 }

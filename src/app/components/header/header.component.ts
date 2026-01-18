@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
 import { UserService, User } from '../../services/user.service';
@@ -46,8 +46,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   tagListType: 'user' | 'channel' | null = null;
   tagQuery = '';
   isChatActive = false;
+  isMobile = false;
 
   ngOnInit(): void {
+    this.updateViewportFlags();
     this.checkIfChatActive(this.router.url);
     this.authService.authState$.subscribe(async (authUser) => {
       if (authUser) {
@@ -94,6 +96,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.usersSubscription?.unsubscribe();
     this.channelsSubscription?.unsubscribe();
     this.routerSub?.unsubscribe();
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.updateViewportFlags();
   }
 
   getStatusClass(user: { status?: 'online' | 'offline' | 'away' } | null): string {
@@ -165,6 +172,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   private checkIfChatActive(url: string): void {
     this.isChatActive = url.includes('/channel/') || url.includes('/user/');
+  }
+
+  private updateViewportFlags(): void {
+    this.isMobile = window.innerWidth <= 768;
   }
 
   goBack(): void {

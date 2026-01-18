@@ -223,6 +223,12 @@
   color: #535AF1;
 }
 
+@media (max-width: 768px) {
+  .btn-members {
+    display: none;
+  }
+}
+
 .messages-container {
   flex: 1;
   min-height: 0;
@@ -368,6 +374,11 @@
 
 /* Ab 768px: maximale Größe 88px, darunter fließend verkleinern */
 @media (max-width: 768px) {
+
+  .chat-header {
+    padding: 1.5625rem;
+  }
+
   .dm-empty-avatar {
     width: clamp(64px, calc(20.4651vw), 98px);
     height: clamp(64px, calc(20.4651vw), 98px);

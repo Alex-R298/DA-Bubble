@@ -63,6 +63,7 @@ export class ChannelHeaderModalsComponent implements OnChanges, OnDestroy {
 
         if (this.activeType === 'channel-info') {
             await this.loadChannelInfo();
+            await this.loadMembers();
         }
 
         if (this.activeType === 'members') {

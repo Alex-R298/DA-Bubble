@@ -10,7 +10,7 @@
   </div>
 
   <!-- Mobile: Normales Logo (wenn kein Chat aktiv) -->
-  <div class="logo-area-mobile display-ai-center mobile-only" *ngIf="!isChatActive">
+  <div class="logo-area-mobile display-ai-center mobile-only" *ngIf="!isChatActive && isMobile">
     <app-svg-images 
       iconName="dabubble" 
       width="140" 
@@ -20,7 +20,7 @@
   </div>
 
   <!-- Mobile: Workspace Logo mit Zurück-Pfeil (wenn Chat aktiv) -->
-  <div class="logo-area-mobile display-ai-center mobile-only" *ngIf="isChatActive">
+  <div class="logo-area-mobile display-ai-center mobile-only" *ngIf="isChatActive && isMobile">
     <button class="btn-back" (click)="goBack()" aria-label="Zurück">
       <app-svg-images 
         [iconName]="'arrow_back'" 

@@ -15,7 +15,7 @@
     <div class="sidebar-header display-ai-center">
       <ng-container *ngIf="!isCollapsed">
         <div class="header-left display-ai-center">
-            <app-svg-images [iconName]="'workspace'" [width]="'60'" [height]="'60'"></app-svg-images>
+            <app-svg-images [iconName]="'workspace'" [width]="'60'" [height]="'60'" [className]="'workspace-icon'"></app-svg-images>
           <h2>Devspace</h2>
         </div>
         <div class="sidebar-search-container d-none">
@@ -58,7 +58,7 @@
                   [class.active]="selectedChannelId === channel.id"
                   [class.has-unread]="unreadChannels.has(channel.id)"
                   (click)="selectChannel(channel)">
-                <app-svg-images [iconName]="'tag'" [width]="'17'" [height]="'16'"></app-svg-images>
+                <app-svg-images [iconName]="'tag'" [width]="'17'" [height]="'16'" [className]="'icon-colored channel-tag-icon'"></app-svg-images>
                 <span class="channel-name">{{ channel.name }}</span>
                 <span class="unread-dot" *ngIf="unreadChannels.has(channel.id)"></span>
               </li>
