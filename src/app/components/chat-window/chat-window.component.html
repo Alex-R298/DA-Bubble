@@ -2,13 +2,61 @@
   <div class="chat-header" [class.new-message-mode]="isNewMessageMode">
     <ng-container *ngIf="isNewMessageMode; else normalHeader">
       <h3>{{ 'CHAT.NEW_MESSAGE' | translate }}</h3>
-      <input
-        class="new-message-recipient"
-        type="text"
-        [value]="newMessageRecipient"
-        (input)="newMessageRecipient = ($any($event.target).value)"
-        [placeholder]="'CHAT.RECIPIENT_PLACEHOLDER' | translate"
-      />
+      <div class="new-message-recipient-wrapper">
+        <input
+          class="new-message-recipient"
+          type="text"
+          [value]="newMessageRecipient"
+          (input)="onNewMessageRecipientInput($event)"
+          [placeholder]="'CHAT.RECIPIENT_PLACEHOLDER' | translate"
+        />
+
+        <div class="mention-dropdown ui-mention-dropdown" *ngIf="showRecipientTagDropdown">
+          <ng-container *ngIf="recipientTagType === 'user'">
+            <ul class="mention-list ui-mention-list" *ngIf="filteredRecipientMentionUsers.length; else noRecipientMentionUsers">
+              <li
+                class="mention-item ui-mention-item ml-20px"
+                *ngFor="let user of filteredRecipientMentionUsers"
+                (mousedown)="selectRecipientMention(user)"
+              >
+                <div class="ui-avatar-badge">
+                  <app-svg-images
+                    [iconName]="user.profileImageUrl || 'steffen-hoffmann'"
+                    [width]="'3.57rem'"
+                    [height]="'3.57rem'"
+                    [className]="'avatar-icon'"
+                  ></app-svg-images>
+                  <span class="ui-status-indicator" [ngClass]="getStatusClass(user)"></span>
+                </div>
+                <span class="mention-name ui-mention-name">{{ user.name }}</span>
+              </li>
+            </ul>
+            <ng-template #noRecipientMentionUsers>
+              <div class="mention-empty ui-mention-empty">{{ 'SIDEBAR.NO_CONTACTS' | translate }}</div>
+            </ng-template>
+          </ng-container>
+
+          <ng-container *ngIf="recipientTagType === 'channel'">
+            <ul class="mention-list ui-mention-list" *ngIf="filteredRecipientMentionChannels.length; else noRecipientMentionChannels">
+              <li
+                class="mention-item ui-mention-item ml-20px"
+                *ngFor="let channel of filteredRecipientMentionChannels"
+                (mousedown)="selectRecipientChannel(channel)"
+              >
+                <app-svg-images
+                  [iconName]="'tag'"
+                  [width]="'1.21rem'"
+                  [height]="'1.14rem'"
+                ></app-svg-images>
+                <span class="mention-name ui-mention-name">{{ channel.name }}</span>
+              </li>
+            </ul>
+            <ng-template #noRecipientMentionChannels>
+              <div class="mention-empty ui-mention-empty">{{ 'SIDEBAR.NO_CHANNELS' | translate }}</div>
+            </ng-template>
+          </ng-container>
+        </div>
+      </div>
     </ng-container>
 
     <ng-template #normalHeader>

@@ -197,10 +197,22 @@ export class SidebarComponent implements OnInit {
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) return;
 
+    let memberUids: string[] = [];
+
+    if (this.addPeopleSelection === 'all' && this.selectedSourceChannelId) {
+      const sourceChannel = this.channels.find(c => c.id === this.selectedSourceChannelId);
+      memberUids = Array.isArray(sourceChannel?.members) ? sourceChannel.members : [];
+    }
+
+    if (this.addPeopleSelection === 'specific') {
+      memberUids = this.selectedAddPeople.map(u => u.uid).filter(Boolean);
+    }
+
     await this.channelService.createChannel(
       this.newChannelName,
       this.newChannelDescription,
-      currentUser.uid
+      currentUser.uid,
+      memberUids
     );
 
     this.closeAddPeopleModal();

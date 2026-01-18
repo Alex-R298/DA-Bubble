@@ -79,6 +79,7 @@
   pointer-events: none;
 }
 
+
 .user-area {
   flex-shrink: 0;
   min-width: var(--header-user-area-min, 20rem);
@@ -348,4 +349,9 @@
 
 .dropdown-item span {
   font-size: 1.3rem;
+}
+
+.search-container .ui-mention-dropdown {
+  left: 2rem;
+  top: calc(100% - 0.5rem);
 }

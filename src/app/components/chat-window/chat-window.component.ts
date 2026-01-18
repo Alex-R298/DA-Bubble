@@ -5,7 +5,7 @@ import { Subscription, combineLatest } from 'rxjs';
 import { InputFieldComponent } from '../input-field/input-field.component';
 import { UserProfileModalComponent, UserProfileModalUser } from '../user-profile-modal/user-profile-modal.component';
 import { MessageItemComponent } from '../message-item/message-item.component';
-import { ChannelService } from '../../services/channel.service';
+import { ChannelService, Channel } from '../../services/channel.service';
 import { Message, MessageService } from '../../services/message.service';
 import { AuthService } from '../../services/auth.service';
 import { ThreadStateService } from '../../services/thread-state.service';
@@ -46,6 +46,11 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   isNewMessageMode = false;
   newMessageRecipient = '';
   channelMemberUsers: User[] = [];
+  allUsers: User[] = [];
+  memberChannels: Channel[] = [];
+  showRecipientTagDropdown = false;
+  recipientTagType: 'user' | 'channel' | null = null;
+  recipientTagQuery = '';
   isChannelHeaderModalOpen = false;
   channelHeaderModalType: ChannelHeaderModalType = null;
   selectedMessage: Message | null = null;
@@ -70,8 +75,29 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
         if (isActive) {
           this.closeChannelHeaderModal();
           this.newMessageRecipient = '';
+          this.showRecipientTagDropdown = false;
+          this.recipientTagType = null;
+          this.recipientTagQuery = '';
           this.messages = [];
         }
+      })
+    );
+
+    this.subscriptions.push(
+      this.userService.getAllUsersRealtime().subscribe(users => {
+        const currentUid = this.authService.getCurrentUser()?.uid;
+        this.allUsers = users.filter(u => u.uid !== currentUid);
+      })
+    );
+
+    this.subscriptions.push(
+      this.channelService.getAllChannels().subscribe(channels => {
+        const currentUid = this.authService.getCurrentUser()?.uid;
+        if (!currentUid) {
+          this.memberChannels = [];
+          return;
+        }
+        this.memberChannels = channels.filter(c => Array.isArray(c.members) && c.members.includes(currentUid));
       })
     );
     this.loadChannel();
@@ -203,8 +229,70 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.router.navigate(['/dashboard']);
   }
 
+  onNewMessageRecipientInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.newMessageRecipient = value;
+    this.updateRecipientTagState(value);
+  }
+
+  get filteredRecipientMentionUsers(): User[] {
+    if (!this.showRecipientTagDropdown || this.recipientTagType !== 'user') return [];
+    const sourceUsers = this.currentChannel ? this.channelMemberUsers : this.allUsers;
+    const q = this.recipientTagQuery.trim().toLowerCase();
+    if (!q) return sourceUsers;
+    return sourceUsers.filter(u =>
+      (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q)
+    );
+  }
+
+  get filteredRecipientMentionChannels(): Channel[] {
+    if (!this.showRecipientTagDropdown || this.recipientTagType !== 'channel') return [];
+    const q = this.recipientTagQuery.trim().toLowerCase();
+    if (!q) return this.memberChannels;
+    return this.memberChannels.filter(c => (c.name || '').toLowerCase().includes(q));
+  }
+
+  selectRecipientMention(user: User): void {
+    this.newMessageRecipient = this.replaceLastTag(this.newMessageRecipient, '@', user.name);
+    this.showRecipientTagDropdown = false;
+    this.recipientTagType = null;
+    this.recipientTagQuery = '';
+  }
+
+  selectRecipientChannel(channel: Channel): void {
+    this.newMessageRecipient = this.replaceLastTag(this.newMessageRecipient, '#', channel.name);
+    this.showRecipientTagDropdown = false;
+    this.recipientTagType = null;
+    this.recipientTagQuery = '';
+  }
+
+  private updateRecipientTagState(value: string): void {
+    const match = value.match(/([@#])[^\s]*$/);
+    if (!match) {
+      this.showRecipientTagDropdown = false;
+      this.recipientTagType = null;
+      this.recipientTagQuery = '';
+      return;
+    }
+    const trigger = match[1];
+    this.recipientTagType = trigger === '@' ? 'user' : 'channel';
+    this.showRecipientTagDropdown = true;
+    this.recipientTagQuery = match[0].slice(1);
+  }
+
+  private replaceLastTag(value: string, trigger: '@' | '#', name: string): string {
+    const pattern = trigger === '@' ? /@[^ -\s]*$/ : /#[^ -\s]*$/;
+    return value.replace(pattern, `${trigger}${name}`);
+  }
+
   get channelMemberPreview(): User[] {
     return this.channelMemberUsers.slice(0, 3);
+  }
+
+  getStatusClass(user: User | null | undefined): string {
+    if (user?.status === 'online') return 'status-online';
+    if (user?.status === 'away') return 'status-away';
+    return 'status-offline';
   }
 
   openUserProfile(user: any): void {
@@ -216,15 +304,15 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   async openSenderProfile(senderIdOrName: string): Promise<void> {
     if (!senderIdOrName) return;
-    
+
     // Versuche erst als UID
     let user = await this.userService.getUserById(senderIdOrName);
-    
+
     // Wenn nicht gefunden, suche nach Name
     if (!user) {
       user = await this.userService.getUserByName(senderIdOrName);
     }
-    
+
     if (!user) return;
     this.openUserProfile(user);
   }
@@ -381,11 +469,11 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   async onReactionToggled(event: { messageId: string | undefined; emoji: string }): Promise<void> {
     if (!event.messageId || !this.currentUserId) return;
-    
+
     try {
       const currentUser = await this.userService.getUserById(this.currentUserId);
       const userName = currentUser?.name || 'Unbekannt';
-      
+
       await this.messageService.toggleReaction(
         event.messageId,
         event.emoji,

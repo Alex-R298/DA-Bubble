@@ -18,13 +18,14 @@ export interface Channel {
 export class ChannelService {
   private firebaseService = inject(FirebaseService);
 
-  async createChannel(name: string, description: string, createdById: string): Promise<Channel> {
+  async createChannel(name: string, description: string, createdById: string, memberUids: string[] = []): Promise<Channel> {
+    const uniqueMembers = Array.from(new Set([createdById, ...memberUids].filter(Boolean)));
     const channelData = {
       createdAt: new Date(),
       createdById: createdById,
       name: name,
       description: description,
-      members: [createdById]
+      members: uniqueMembers
     };
 
     const docRef = await addDoc(

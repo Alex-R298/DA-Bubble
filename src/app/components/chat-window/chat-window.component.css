@@ -50,11 +50,20 @@
   font-size: 1.3rem;
 }
 
+.new-message-recipient-wrapper {
+  position: relative;
+}
+
+.new-message-recipient-wrapper .ui-mention-dropdown {
+  left: 1rem;
+}
+
 .new-message-recipient:focus {
   outline: none;
   border-color: #787DF5;
   box-shadow: 0 0 0 3px rgba(120, 125, 245, 0.15);
 }
+
 
 .channel-info {
   display: flex;
