@@ -5,7 +5,10 @@ import {
   signOut, 
   onAuthStateChanged,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+  sendPasswordResetEmail,    
+  confirmPasswordReset,       
+  verifyPasswordResetCode  
 } from 'firebase/auth';
 import { FirebaseService } from './firebase.service';
 import { UserService } from './user.service';
@@ -115,4 +118,50 @@ export class AuthService {
   getCurrentUser() {
     return this.firebaseService.auth.currentUser;
   }
+
+  async sendPasswordResetEmail(email: string) {
+  try {
+    await sendPasswordResetEmail(this.firebaseService.auth, email);
+    return { success: true, message: 'Reset-Email wurde gesendet' };
+  } catch (error: any) {
+    console.error('Fehler beim Senden der Reset-Email:', error);
+    return { success: false, message: this.getErrorMessage(error.code) };
+  }
+}
+
+async confirmPasswordReset(oobCode: string, newPassword: string) {
+  try {
+    await confirmPasswordReset(this.firebaseService.auth, oobCode, newPassword);
+    return { success: true, message: 'Passwort erfolgreich zurückgesetzt' };
+  } catch (error: any) {
+    console.error('Fehler beim Zurücksetzen:', error);
+    return { success: false, message: this.getErrorMessage(error.code) };
+  }
+}
+
+async verifyResetCode(oobCode: string) {
+  try {
+    const email = await verifyPasswordResetCode(this.firebaseService.auth, oobCode);
+    return { success: true, email };
+  } catch (error) {
+    return { success: false, email: null };
+  }
+}
+
+private getErrorMessage(code: string): string {
+  switch (code) {
+    case 'auth/user-not-found':
+      return 'Keine Benutzer mit dieser E-Mail gefunden';
+    case 'auth/invalid-email':
+      return 'Ungültige E-Mail-Adresse';
+    case 'auth/expired-action-code':
+      return 'Der Reset-Link ist abgelaufen';
+    case 'auth/invalid-action-code':
+      return 'Der Reset-Link ist ungültig oder wurde bereits verwendet';
+    case 'auth/weak-password':
+      return 'Das Passwort muss mindestens 6 Zeichen lang sein';
+    default:
+      return 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.';
+  }
+}
 }
