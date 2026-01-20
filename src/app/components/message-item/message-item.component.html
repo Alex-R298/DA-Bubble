@@ -103,7 +103,38 @@
 		
 		<div class="message-item-spacer" *ngIf="isOwnMessage && showEditMessageInput" [class.show-edit-input]="showEditMessageInput" [class.thread-spacer]="!showThreadButton">
 			<div class="message-spacer">
-				<textarea type="text" [(ngModel)]="editedContent"></textarea>
+				<div class="edit-user-tag-dropdown" *ngIf="showTagList && tagListType === 'user'">
+					<ul class="user-list">
+						<li class="user-item"
+							*ngFor="let user of users"
+							(mousedown)="tagUser(user)">
+							<div class="user-avatar">
+								<app-svg-images [iconName]="user.profileImageUrl || 'steffen-hoffmann'" [width]="'40'" [height]="'40'"></app-svg-images>
+								<span class="status-indicator" [ngClass]="getStatusClass(user)"></span>
+							</div>
+							<span class="user-name">{{ user.name }}</span>
+						</li>
+					</ul>
+					<div *ngIf="!users.length" class="empty-state">Keine Benutzer gefunden</div>
+				</div>
+				<div class="edit-user-tag-dropdown" *ngIf="showTagList && tagListType === 'channel'">
+					<ul class="channel-list">
+						<li class="channel-item"
+							*ngFor="let channel of channels"
+							(mousedown)="tagChannel(channel)">
+							<span class="channel-icon">#</span>
+							<span class="channel-name">{{ channel.name }}</span>
+						</li>
+					</ul>
+					<div *ngIf="!channels.length" class="empty-state">Keine Channels gefunden</div>
+				</div>
+				<div
+					#editTextarea
+					class="edit-textarea"
+					contenteditable="true"
+					(input)="onEditInput($event)"
+					(click)="onMentionClick($event)"
+				></div>
 				<div class="edit-message-actions">
 					<div class="left-actions">
 						<button class="btn-emoji">

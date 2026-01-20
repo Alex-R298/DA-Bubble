@@ -461,6 +461,7 @@
     width: 100%;
     height: 11rem;
     box-sizing: border-box;
+    position: relative;
 }
 
 .thread-spacer .message-spacer {
@@ -488,6 +489,7 @@
     visibility: visible;
     transform: translateY(0);
     max-height: 500px;
+    overflow: visible;
 }
 
 .message-spacer textarea {
@@ -498,6 +500,169 @@
     font-size: 1.3rem;
     font-family: 'Nunito', sans-serif;
     resize: none;
+}
+
+.message-spacer .edit-textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 1.3rem;
+    font-family: 'Nunito', sans-serif;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+:host ::ng-deep .edit-textarea .edit-mention-tag {
+    display: inline;
+    background: rgba(68, 77, 242, 0.2) !important;
+    color: #444DF2 !important;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin: 0 1px;
+    cursor: pointer;
+}
+
+:host ::ng-deep .edit-textarea .edit-mention-tag:hover {
+    background: rgba(68, 77, 242, 0.4) !important;
+}
+
+/* Edit User Tag Dropdown */
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.edit-user-tag-dropdown {
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: 2rem;
+    background: white;
+    border-radius: 20px 20px 20px 0;
+    padding: 1rem;
+    border: 1px solid #787DF5;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    width: 300px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    animation: dropdownSlideIn 0.2s ease-out;
+}
+
+.edit-user-tag-dropdown .user-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 0.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-user-tag-dropdown .user-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 1.5rem;
+    transition: background 0.1s;
+}
+
+.edit-user-tag-dropdown .user-item:hover {
+    background: rgba(120, 125, 245, 0.15);
+}
+
+.edit-user-tag-dropdown .user-avatar {
+    position: relative;
+}
+
+.edit-user-tag-dropdown .status-indicator {
+    position: absolute;
+    bottom: 0;
+    right: 1px;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.edit-user-tag-dropdown .status-indicator.status-online {
+    background: #92C83E;
+}
+
+.edit-user-tag-dropdown .status-indicator.status-offline {
+    background: #686868;
+}
+
+.edit-user-tag-dropdown .status-indicator.status-away {
+    background: #F2C94C;
+}
+
+.edit-user-tag-dropdown .user-name {
+    font-size: 1.1rem;
+}
+
+.edit-user-tag-dropdown .empty-state {
+    padding: 0.5rem 1rem;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.edit-user-tag-dropdown .channel-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 0.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-user-tag-dropdown .channel-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 1.5rem;
+    transition: background 0.1s, color 0.1s;
+}
+
+.edit-user-tag-dropdown .channel-item:hover {
+    background: rgba(120, 125, 245, 0.15);
+    color: #444DF2;
+}
+
+.edit-user-tag-dropdown .channel-icon {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.edit-user-tag-dropdown .channel-name {
+    font-size: 1.1rem;
+}
+
+:host ::ng-deep .edit-textarea .edit-channel-tag {
+    display: inline;
+    background: rgba(68, 77, 242, 0.2) !important;
+    color: #444DF2 !important;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin: 0 1px;
+    cursor: pointer;
+}
+
+:host ::ng-deep .edit-textarea .edit-channel-tag:hover {
+    background: rgba(68, 77, 242, 0.4) !important;
 }
 
 .edit-message-actions {
@@ -609,3 +774,4 @@
 :host ::ng-deep .message-item.own-message .mention-tag:hover {
     background-color: rgba(255, 255, 255, 0.5) !important;
 }
+
