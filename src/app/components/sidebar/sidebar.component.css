@@ -374,6 +374,15 @@
   justify-content: center;
 }
 
+.sidebar-search-container .ui-mention-dropdown {
+  left: 0;
+  top: calc(100% + 0.25rem);
+}
+
+.sidebar-search-container .search-options {
+  min-width: 100%;
+}
+
 @media (max-width: 768px) {
   .btn-toggle {
     display: none;
@@ -418,5 +427,9 @@
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+  }
+
+  .sidebar-search-container .ui-mention-dropdown {
+    width: 100%;
   }
 }

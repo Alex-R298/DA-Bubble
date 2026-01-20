@@ -1,0 +1,109 @@
+/* Shared search dropdown styles (header + sidebar) */
+
+.search-results {
+    max-height: 28rem;
+    overflow: auto;
+    --ui-panel-gap: 0.5rem;
+}
+
+.search-options {
+    width: fit-content;
+    max-width: 100%;
+    min-width: 50vw;
+    overflow-x: hidden;
+}
+
+.search-section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #666;
+    padding: 0.25rem 1.5rem 0.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.search-options-list.ui-mention-list {
+    width: 100%;
+    overflow-x: hidden;
+    align-items: flex-start;
+}
+
+.search-option.ui-mention-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 100%;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    align-self: stretch;
+    border: none;
+    background: transparent;
+}
+
+.search-option.ui-mention-item:hover {
+    background: #ECEEFE;
+}
+
+.search-option-prefix {
+    font-weight: 700;
+    color: #444DF2;
+    margin-right: 0.35rem;
+}
+
+.search-option-avatar {
+    flex: 0 0 auto;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.search-option-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+    text-align: left;
+}
+
+.search-option-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    width: 100%;
+    min-width: 0;
+}
+
+.search-option-title {
+    font-size: 1.3rem;
+    color: #111;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.search-option-subtitle {
+    font-size: 1.3rem;
+    color: #777;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    text-align: left;
+}
+
+.search-option-context {
+    color: #444DF2;
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+.search-empty {
+    padding: 0.75rem 1.5rem;
+    color: #777;
+    font-size: 1.15rem;
+}

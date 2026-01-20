@@ -23,10 +23,108 @@
             type="text"
             class="sidebar-search-input"
             [placeholder]="'HEADER.SEARCH_PLACEHOLDER' | translate"
+            [(ngModel)]="searchQuery"
+            (input)="onSearchInput($event)"
           />
           <span class="sidebar-search-icon" aria-hidden="true">
             <app-svg-images [iconName]="'search'" [width]="'22'" [height]="'22'"></app-svg-images>
           </span>
+
+          <div class="mention-dropdown ui-mention-dropdown" *ngIf="showTagDropdown">
+            <ng-container *ngIf="tagListType === 'user'">
+              <ul class="mention-list ui-mention-list" *ngIf="filteredMentionUsers.length; else noMentionUsers">
+                <li
+                  class="mention-item ui-mention-item ml-20px"
+                  *ngFor="let user of filteredMentionUsers"
+                  (click)="selectMentionUser(user)"
+                >
+                  <div class="ui-avatar-badge">
+                    <app-svg-images
+                      [iconName]="user.profileImageUrl || 'steffen-hoffmann'"
+                      [width]="'3.57rem'"
+                      [height]="'3.57rem'"
+                      [className]="'avatar-icon'"
+                    ></app-svg-images>
+                    <span class="ui-status-indicator" [ngClass]="getStatusClass(user)"></span>
+                  </div>
+                  <span class="mention-name ui-mention-name">{{ user.name }}</span>
+                </li>
+              </ul>
+              <ng-template #noMentionUsers>
+                <div class="mention-empty ui-mention-empty">{{ 'SIDEBAR.NO_CONTACTS' | translate }}</div>
+              </ng-template>
+            </ng-container>
+
+            <ng-container *ngIf="tagListType === 'channel'">
+              <ul class="mention-list ui-mention-list" *ngIf="filteredMentionChannels.length; else noMentionChannels">
+                <li
+                  class="mention-item ui-mention-item ml-20px"
+                  *ngFor="let channel of filteredMentionChannels"
+                  (click)="selectMentionChannel(channel)"
+                >
+                  <app-svg-images
+                    [iconName]="'tag'"
+                    [width]="'1.21rem'"
+                    [height]="'1.14rem'"
+                  ></app-svg-images>
+                  <span class="mention-name ui-mention-name">{{ channel.name }}</span>
+                </li>
+              </ul>
+              <ng-template #noMentionChannels>
+                <div class="mention-empty ui-mention-empty">{{ 'SIDEBAR.NO_CHANNELS' | translate }}</div>
+              </ng-template>
+            </ng-container>
+          </div>
+
+          <div class="search-results search-options ui-mention-dropdown ui-panel ui-panel--popover" *ngIf="showSearchResults">
+            <ng-container *ngIf="filteredSearchChannels.length">
+              <div class="search-section-title">{{ 'HEADER.SEARCH_CHANNELS' | translate }}</div>
+              <div class="search-options-list ui-mention-list">
+                <button
+                  type="button"
+                  class="search-option ui-mention-item"
+                  *ngFor="let channel of filteredSearchChannels; trackBy: trackByChannelId"
+                  (click)="selectSearchChannel(channel)"
+                >
+                  <span class="search-option-prefix">#</span>
+                  <span class="search-option-title">{{ channel.name }}</span>
+                </button>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="filteredSearchMessages.length">
+              <div class="search-section-title">{{ 'HEADER.SEARCH_MESSAGES' | translate }}</div>
+              <div class="search-options-list ui-mention-list">
+                <button
+                  type="button"
+                  class="search-option ui-mention-item"
+                  *ngFor="let message of filteredSearchMessages; trackBy: trackBySearchMessage"
+                  (click)="selectSearchMessage(message)"
+                >
+                  <span class="search-option-avatar">
+                    <app-svg-images
+                      [iconName]="message.senderProfileImage || 'steffen-hoffmann'"
+                      [width]="'3.2rem'"
+                      [height]="'3.2rem'"
+                      [className]="'avatar-icon'">
+                    </app-svg-images>
+                  </span>
+                  <span class="search-option-body">
+                    <span class="search-option-header">
+                      <span class="search-option-title">{{ message.senderName || ('HEADER.USER' | translate) }}</span>
+                      <span class="search-option-context" *ngIf="message.type === 'channel'">#{{ message.channelName }}</span>
+                      <span class="search-option-context" *ngIf="message.type === 'dm'">{{ message.otherUserName }}</span>
+                    </span>
+                    <span class="search-option-subtitle">{{ formatMessagePreview(message.content) }}</span>
+                  </span>
+                </button>
+              </div>
+            </ng-container>
+
+            <div class="search-empty" *ngIf="!hasSearchResults">
+              {{ 'HEADER.SEARCH_NO_RESULTS' | translate }}
+            </div>
+          </div>
         </div>
         <button class="btn-new-chat display-center-center" (click)="openNewMessage()">
             <app-svg-images [iconName]="'edit_square'" [width]="'22'" [height]="'23'"></app-svg-images>
@@ -121,6 +219,15 @@
       </div>
     </ng-container>
   </aside>
+
+    <app-user-profile-modal
+      *ngIf="showUserProfileModal"
+      [user]="selectedProfileUser"
+      [allowEdit]="isSelectedProfileOwn()"
+      [showMessageButton]="!isSelectedProfileOwn()"
+      (closed)="closeUserProfile()"
+      (message)="startDirectMessageFromProfile($event)"
+    ></app-user-profile-modal>
 
   <ng-container *ngIf="showNewChannelModal">
     <div class="modal-overlay display-center-center" (click)="closeNewChannelModal()">
