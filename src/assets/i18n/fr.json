@@ -60,6 +60,10 @@
   },
   "HEADER": {
     "SEARCH_PLACEHOLDER": "Rechercher dans Devspace",
+    "SEARCH_CHANNELS": "Canaux",
+    "SEARCH_USERS": "Utilisateurs",
+    "SEARCH_MESSAGES": "Messages",
+    "SEARCH_NO_RESULTS": "Aucun résultat",
     "USER": "Utilisateur",
     "PROFILE": "Profil",
     "SETTINGS": "Paramètres",

@@ -4,17 +4,35 @@ import { FormsModule } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
 import { UserService, User } from '../../services/user.service';
 import { ChannelService, Channel } from '../../services/channel.service';
+import { MessageService, Message } from '../../services/message.service';
+import { DirectMessageService, DirectMessage } from '../../services/direct-message.service';
 import { AuthService } from '../../services/auth.service';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription, filter } from 'rxjs';
+import { SearchService } from '../../services/search.service';
+import { UserProfileStateService } from '../../services/user-profile-state.service';
+
+type SearchMessageResult = {
+  type: 'channel' | 'dm';
+  messageId?: string;
+  content: string;
+  senderName?: string;
+  senderProfileImage?: string;
+  timestamp: Date;
+  channelId?: string;
+  channelName?: string;
+  conversationId?: string;
+  otherUserId?: string | null;
+  otherUserName?: string;
+};
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [CommonModule, FormsModule, SvgImagesComponent, TranslateModule],
   templateUrl: './header.component.html',
-  styleUrls: ['../../shared/styles/shared-ui.css', './header.component.css']
+  styleUrls: ['../../shared/styles/shared-ui.css', '../../shared/styles/shared-search.css', './header.component.css', './header.menu.css']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   private router = inject(Router);
@@ -22,6 +40,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private translateService = inject(TranslateService);
   private channelService = inject(ChannelService);
+  private messageService = inject(MessageService);
+  private directMessageService = inject(DirectMessageService);
+  private searchService = inject(SearchService);
+  private userProfileStateService = inject(UserProfileStateService);
 
   user: {
     name?: string;
@@ -40,18 +62,28 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private usersSubscription?: Subscription;
   private channelsSubscription?: Subscription;
   private routerSub?: Subscription;
+  private messagesSubscription?: Subscription;
+  private dmMessagesSubscription?: Subscription;
   allUsers: User[] = [];
+  allChannels: Channel[] = [];
   memberChannels: Channel[] = [];
+  allChannelMessages: Message[] = [];
+  allDirectMessages: DirectMessage[] = [];
+  currentUserProfile: User | null = null;
   showTagDropdown = false;
   tagListType: 'user' | 'channel' | null = null;
   tagQuery = '';
   isChatActive = false;
   isMobile = false;
+  showSearchResults = false;
+  currentUserId = '';
+  private readonly searchResultLimit = 6;
 
   ngOnInit(): void {
     this.updateViewportFlags();
     this.checkIfChatActive(this.router.url);
     this.authService.authState$.subscribe(async (authUser) => {
+      this.currentUserId = authUser?.uid || '';
       if (authUser) {
         this.userSubscription = this.userService.subscribeToUser(authUser.uid)
           .subscribe(userData => {
@@ -62,10 +94,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 email: userData.email,
                 status: userData.status
               };
+              this.currentUserProfile = userData;
+            } else {
+              this.currentUserProfile = null;
             }
           });
       } else {
         this.user = null;
+        this.currentUserProfile = null;
         this.userSubscription?.unsubscribe();
       }
     });
@@ -78,12 +114,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.channelsSubscription = this.channelService.getAllChannels()
       .subscribe(channels => {
+        this.allChannels = channels;
         const currentUid = this.authService.getCurrentUser()?.uid;
         if (!currentUid) {
           this.memberChannels = [];
           return;
         }
         this.memberChannels = channels.filter(c => Array.isArray(c.members) && c.members.includes(currentUid));
+      });
+
+    this.messagesSubscription = this.messageService.getAllMessages()
+      .subscribe(messages => {
+        this.allChannelMessages = messages;
+      });
+
+    this.dmMessagesSubscription = this.directMessageService.getAllDirectMessages()
+      .subscribe(messages => {
+        this.allDirectMessages = messages;
       });
 
     this.routerSub = this.router.events
@@ -96,6 +143,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.usersSubscription?.unsubscribe();
     this.channelsSubscription?.unsubscribe();
     this.routerSub?.unsubscribe();
+    this.messagesSubscription?.unsubscribe();
+    this.dmMessagesSubscription?.unsubscribe();
   }
 
   @HostListener('window:resize')
@@ -119,6 +168,72 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery = value;
     this.updateTagState(value);
+    this.updateSearchResultsVisibility();
+  }
+
+  get filteredSearchChannels(): Channel[] {
+    const q = this.normalizedSearchQuery;
+    if (!q) return [];
+    return this.getSearchableChannels()
+      .filter(c => (c.name || '').toLowerCase().includes(q))
+      .slice(0, this.searchResultLimit);
+  }
+
+  get filteredSearchUsers(): User[] {
+    const q = this.normalizedSearchQuery;
+    if (!q) return [];
+    const sourceUsers = this.getSearchUsersSource();
+    return sourceUsers
+      .filter(u => (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q))
+      .slice(0, this.searchResultLimit);
+  }
+
+  get filteredSearchMessages(): SearchMessageResult[] {
+    const q = this.normalizedSearchQuery;
+    if (!q) return [];
+
+    const channelIds = new Set(this.getSearchableChannels().map(c => c.id).filter(Boolean) as string[]);
+
+    const channelMessages = this.allChannelMessages
+      .filter(m => channelIds.has(m.channelId) && !(m as any).parentMessageId)
+      .filter(m => this.messageMatchesQuery(m, q))
+      .map(m => ({
+        type: 'channel',
+        messageId: m.id,
+        content: m.content,
+        senderName: m.senderName,
+        senderProfileImage: (m as any).senderProfileImage,
+        timestamp: m.timestamp,
+        channelId: m.channelId,
+        channelName: this.getChannelNameById(m.channelId)
+      } as SearchMessageResult));
+
+    const directMessages = this.allDirectMessages
+      .filter(dm => this.isCurrentUserInConversation(dm.conversationId) && !(dm as any).parentMessageId)
+      .filter(dm => this.messageMatchesQuery(dm, q))
+      .map(dm => {
+        const otherUserId = this.getOtherUserIdFromConversation(dm.conversationId);
+        return {
+          type: 'dm',
+          messageId: dm.id,
+          content: dm.content,
+          senderName: dm.senderName,
+          senderProfileImage: (dm as any).senderProfileImage,
+          timestamp: dm.timestamp,
+          conversationId: dm.conversationId,
+          otherUserId: otherUserId,
+          otherUserName: otherUserId ? this.getUserNameById(otherUserId) : undefined
+        } as SearchMessageResult;
+      });
+
+    return [...channelMessages, ...directMessages]
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+      .slice(0, this.searchResultLimit);
+  }
+
+  get hasSearchResults(): boolean {
+    return this.filteredSearchChannels.length > 0
+      || this.filteredSearchMessages.length > 0;
   }
 
   get filteredMentionUsers(): User[] {
@@ -133,26 +248,49 @@ export class HeaderComponent implements OnInit, OnDestroy {
   get filteredMentionChannels(): Channel[] {
     if (!this.showTagDropdown || this.tagListType !== 'channel') return [];
     const q = this.tagQuery.trim().toLowerCase();
-    if (!q) return this.memberChannels;
-    return this.memberChannels.filter(c => (c.name || '').toLowerCase().includes(q));
+    const channels = this.getSearchableChannels();
+    if (!q) return channels;
+    return channels.filter(c => (c.name || '').toLowerCase().includes(q));
   }
 
   selectMentionUser(user: User): void {
-    this.searchQuery = this.replaceLastTag(this.searchQuery, '@', user.name);
-    this.showTagDropdown = false;
-    this.tagListType = null;
-    this.tagQuery = '';
+    if (!user?.uid) return;
+    this.clearSearch();
+    this.userProfileStateService.openProfile(user);
   }
 
   selectMentionChannel(channel: Channel): void {
-    this.searchQuery = this.replaceLastTag(this.searchQuery, '#', channel.name);
-    this.showTagDropdown = false;
-    this.tagListType = null;
-    this.tagQuery = '';
+    if (!channel?.id) return;
+    this.clearSearch();
+    this.router.navigate(['/dashboard/chat/channel', channel.id]);
+  }
+
+  selectSearchChannel(channel: Channel): void {
+    if (!channel?.id) return;
+    this.clearSearch();
+    this.router.navigate(['/dashboard/chat/channel', channel.id]);
+  }
+
+  selectSearchUser(user: User): void {
+    if (!user?.uid) return;
+    this.clearSearch();
+    this.router.navigate(['/dashboard/chat/user', user.uid]);
+  }
+
+  selectSearchMessage(result: SearchMessageResult): void {
+    if (result.type === 'channel' && result.channelId) {
+      this.clearSearch();
+      this.router.navigate(['/dashboard/chat/channel', result.channelId]);
+      return;
+    }
+    if (result.type === 'dm' && result.otherUserId) {
+      this.clearSearch();
+      this.router.navigate(['/dashboard/chat/user', result.otherUserId]);
+    }
   }
 
   private updateTagState(value: string): void {
-    const match = value.match(/([@#])[^\s]*$/);
+    const match = value.trim().match(/^([@#])([^\s]*)$/);
     if (!match) {
       this.showTagDropdown = false;
       this.tagListType = null;
@@ -162,12 +300,72 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const trigger = match[1];
     this.tagListType = trigger === '@' ? 'user' : 'channel';
     this.showTagDropdown = true;
-    this.tagQuery = match[0].slice(1);
+    this.tagQuery = match[2] || '';
+  }
+
+  private updateSearchResultsVisibility(): void {
+    const hasQuery = !!this.normalizedSearchQuery;
+    this.showSearchResults = hasQuery && !this.showTagDropdown;
+  }
+
+  private clearSearch(): void {
+    this.searchQuery = '';
+    this.showSearchResults = false;
+    this.showTagDropdown = false;
+    this.tagListType = null;
+    this.tagQuery = '';
+  }
+
+  private get normalizedSearchQuery(): string {
+    return this.searchQuery.trim().toLowerCase();
+  }
+
+  private messageMatchesQuery(message: { content: string; senderName?: string }, q: string): boolean {
+    return this.searchService.messageMatchesQuery(message, q);
+  }
+
+  private normalizeText(value: string): string {
+    return this.searchService.normalizeText(value);
+  }
+
+  private getSearchUsersSource(): User[] {
+    return this.searchService.getSearchUsersSource(this.allUsers, this.currentUserProfile);
+  }
+
+  private getChannelNameById(channelId: string): string {
+    return this.searchService.getChannelNameById(channelId, this.getSearchableChannels());
+  }
+
+  private getSearchableChannels(): Channel[] {
+    return this.searchService.getSearchableChannels(this.memberChannels, this.allChannels);
+  }
+
+  private isCurrentUserInConversation(conversationId?: string): boolean {
+    return this.searchService.isCurrentUserInConversation(conversationId, this.currentUserId);
+  }
+
+  private getOtherUserIdFromConversation(conversationId?: string): string | null {
+    return this.searchService.getOtherUserIdFromConversation(conversationId, this.currentUserId);
+  }
+
+  private getUserNameById(uid: string): string {
+    return this.searchService.getUserNameById(this.allUsers, this.currentUserProfile, uid);
+  }
+
+  formatMessagePreview(content: string): string {
+    return this.searchService.formatMessagePreview(content);
+  }
+
+  trackByChannelId(index: number, channel: Channel): string {
+    return channel.id || `${index}`;
+  }
+
+  trackBySearchMessage(index: number, message: SearchMessageResult): string {
+    return message.messageId || `${message.type}-${message.timestamp.getTime()}-${index}`;
   }
 
   private replaceLastTag(value: string, trigger: '@' | '#', name: string): string {
-    const pattern = trigger === '@' ? /@[^\s]*$/ : /#[^\s]*$/;
-    return value.replace(pattern, `${trigger}${name}`);
+    return this.searchService.replaceLastTag(value, trigger, name);
   }
 
   private checkIfChatActive(url: string): void {
