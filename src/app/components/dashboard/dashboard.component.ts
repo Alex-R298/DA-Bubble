@@ -29,6 +29,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   isSidebarCollapsed = false;
   isChatActive = false;
+  isThreadActive = false;
 
   private routerSub?: Subscription;
 
@@ -48,6 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.threadStateService.selectedMessage$.subscribe(message => {
       this.selectedMessage = message;
+      this.isThreadActive = !!message;
     });
 
     this.routerSub = this.router.events
@@ -74,6 +76,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   closeThread(): void {
     this.threadStateService.closeThread();
+    this.isThreadActive = false;
   }
 
   onSidebarCollapsedChange(isCollapsed: boolean): void {

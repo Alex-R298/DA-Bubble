@@ -12,6 +12,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription, filter } from 'rxjs';
 import { SearchService } from '../../services/search.service';
 import { UserProfileStateService } from '../../services/user-profile-state.service';
+import { ThreadStateService } from '../../services/thread-state.service';
 
 type SearchMessageResult = {
   type: 'channel' | 'dm';
@@ -44,6 +45,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private directMessageService = inject(DirectMessageService);
   private searchService = inject(SearchService);
   private userProfileStateService = inject(UserProfileStateService);
+  private threadStateService = inject(ThreadStateService);
 
   user: {
     name?: string;
@@ -74,6 +76,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   tagListType: 'user' | 'channel' | null = null;
   tagQuery = '';
   isChatActive = false;
+  isThreadActive = false;
   isMobile = false;
   showSearchResults = false;
   currentUserId = '';
@@ -136,6 +139,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.routerSub = this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(ev => this.checkIfChatActive(ev.urlAfterRedirects));
+
+    this.threadStateService.selectedMessage$.subscribe(message => {
+      this.isThreadActive = !!message;
+    });
   }
 
   ngOnDestroy(): void {
@@ -377,7 +384,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['/dashboard']);
+    if (this.isThreadActive) {
+      this.threadStateService.closeThread();
+    } else {
+      this.router.navigate(['/dashboard']);
+    }
   }
 
   toggleUserMenu(): void {
