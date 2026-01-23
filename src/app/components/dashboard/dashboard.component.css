@@ -55,7 +55,7 @@
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .chat-layout-container {
         display: flex;
         flex-direction: column;
@@ -113,7 +113,7 @@
         border-radius: 0;
     }
 
-    .chat-layout-container.thread-active .thread-area > * {
+    .chat-layout-container.thread-active .thread-area>* {
         width: 100%;
     }
 }

@@ -500,7 +500,7 @@
     color: #444DF2;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .ui-mention-item {
         width: 100%;
         margin-left: 0;

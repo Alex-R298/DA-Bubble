@@ -135,7 +135,7 @@
 }
 
 .user-name {
-  font-size: 2.286rem;
+  font-size: clamp(1.2rem, 2.2vw, 2.286rem);
   font-weight: 700;
   color: black;
   white-space: nowrap;
@@ -184,7 +184,7 @@
   background: rgba(0, 0, 0, 0.05);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .mobile-only {
     display: flex;
   }

@@ -1,9 +1,12 @@
 .message-item {
     display: flex;
     gap: 0.75rem;
-    padding: 1.5rem 3.75rem;
-    width: calc(100% + 7.5rem);
-    margin-left: -3.75rem;
+    --message-side-padding: clamp(1rem, calc(3.75rem + (100vw - 64rem) * 0.0625), 3.75rem);
+    padding: 1.5rem var(--message-side-padding);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-left: 0;
     transition: background-color 0.2s ease;
     position: relative;
 }
@@ -336,7 +339,7 @@
     background-color: #ffffff;
     position: absolute;
     top: -23px;
-    right: 3.75rem;
+    right: var(--message-side-padding);
     z-index: 10;
     opacity: 0;
     visibility: hidden;
@@ -353,7 +356,7 @@
 
 .hover-reaction-bar.own-message-bar {
     right: auto;
-    left: 3.75rem;
+    left: var(--message-side-padding);
     width: 250px;
     border-radius: 25px 25px 25px 0px;
 }
@@ -419,7 +422,7 @@
 }
 
 .edit-message-container {
-    width: 269px;
+    width: min(269px, calc(100% - (var(--message-side-padding) * 2)));
     height: 67px;
     border-radius: 0px 30px 30px 30px;
     box-shadow: #00000029 0px 4px 12px;
@@ -428,7 +431,8 @@
     background-color: #FFFFFF;
     top: 0rem;
     font-family: 'Nunito', sans-serif;
-    left: 19.5rem;
+    left: auto;
+    right: var(--message-side-padding);
     z-index: 10;
     display: flex;
     align-items: center;
@@ -446,8 +450,8 @@
 }
 
 .edit-message-container.thread-edit {
-    left: 10.5rem;
-    right: 0;
+    left: auto;
+    right: var(--message-side-padding);
 }
 
 .message-spacer {
@@ -535,6 +539,7 @@
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -544,13 +549,14 @@
 .edit-user-tag-dropdown {
     position: absolute;
     bottom: calc(100% + 0.5rem);
-    left: 2rem;
+    left: auto;
+    right: var(--message-side-padding);
     background: white;
     border-radius: 20px 20px 20px 0;
     padding: 1rem;
     border: 1px solid #787DF5;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    width: 300px;
+    width: min(300px, calc(100% - (var(--message-side-padding) * 2)));
     max-height: 300px;
     overflow-y: auto;
     z-index: 1000;
@@ -774,4 +780,3 @@
 :host ::ng-deep .message-item.own-message .mention-tag:hover {
     background-color: rgba(255, 255, 255, 0.5) !important;
 }
-

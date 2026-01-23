@@ -384,7 +384,7 @@
   min-width: 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .btn-toggle {
     display: none;
   }

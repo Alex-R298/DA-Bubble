@@ -391,7 +391,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   private updateViewportFlags(): void {
-    this.isMobile = window.innerWidth <= 768;
+    this.isMobile = window.innerWidth <= 1024;
   }
 
   goBack(): void {

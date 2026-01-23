@@ -257,6 +257,7 @@
   border-radius: 2.14rem;
   cursor: pointer;
   font-size: 1.44rem;
+  font-family: inherit;
   font-weight: 600;
   transition: all 0.125s;
 }
@@ -271,7 +272,7 @@
   color: #535AF1;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .btn-members {
     display: none;
   }
@@ -281,7 +282,9 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 1rem 3.75rem;
+  overflow-x: hidden;
+  max-width: 100%;
+  padding: 1rem 0;
   display: flex;
   flex-direction: column;
 }
@@ -421,7 +424,7 @@
 }
 
 /* Ab 768px: maximale Größe 88px, darunter fließend verkleinern */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
 
   .chat-header {
     padding: 1.5625rem;
