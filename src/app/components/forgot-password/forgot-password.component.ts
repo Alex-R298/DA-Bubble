@@ -46,10 +46,4 @@ export class ForgotPasswordComponent {
       this.errorMessage = result.message;
     }
   }
-
-  copyToClipboard(): void {
-    navigator.clipboard.writeText(this.resetLink).then(() => {
-      alert('Link in Zwischenablage kopiert!');
-    });
-  }
 }

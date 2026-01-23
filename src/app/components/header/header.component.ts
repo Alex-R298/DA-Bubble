@@ -13,6 +13,7 @@ import { Subscription, filter } from 'rxjs';
 import { SearchService } from '../../services/search.service';
 import { UserProfileStateService } from '../../services/user-profile-state.service';
 import { NewMessageStateService } from '../../services/new-message-state.service';
+import { ThreadStateService } from '../../services/thread-state.service';
 
 type SearchMessageResult = {
   type: 'channel' | 'dm';
@@ -46,6 +47,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private searchService = inject(SearchService);
   private userProfileStateService = inject(UserProfileStateService);
   private newMessageStateService = inject(NewMessageStateService);
+  private threadStateService = inject(ThreadStateService);
 
   user: {
     name?: string;
@@ -77,6 +79,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   tagListType: 'user' | 'channel' | null = null;
   tagQuery = '';
   isChatActive = false;
+  isThreadActive = false;
   isMobile = false;
   private isNewMessageActive = false;
   showSearchResults = false;
@@ -142,10 +145,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe(ev => this.checkIfChatActive(ev.urlAfterRedirects));
 
     this.newMessageSub = this.newMessageStateService.isNewMessageActive$
-      .subscribe(isActive => {
+      .subscribe((isActive: boolean) => {
         this.isNewMessageActive = isActive;
         this.checkIfChatActive(this.router.url);
       });
+
+    this.threadStateService.selectedMessage$.subscribe((message: Message | null) => {
+      this.isThreadActive = !!message;
+    });
   }
 
   ngOnDestroy(): void {
@@ -389,7 +396,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   goBack(): void {
     this.newMessageStateService.closeNewMessage();
-    this.router.navigate(['/dashboard']);
+    if (this.isThreadActive) {
+      this.threadStateService.closeThread();
+    } else {
+      this.router.navigate(['/dashboard']);
+    }
   }
 
   toggleUserMenu(): void {

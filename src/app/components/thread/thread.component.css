@@ -84,7 +84,6 @@
 .thread-divider::after {
   content: '';
   flex: 1;
-  max-width: 18.5rem;
   height: 2px;
   background-color: #adb0d9d0;
 }
@@ -122,4 +121,36 @@
   border-top: 1px solid #e0e0e0;
   padding: 1rem;
   background-color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  :host {
+    display: flex;
+    width: 100% !important;
+    height: 100%;
+  }
+
+  .thread {
+    width: 100% !important;
+    border-left: none;
+    border-radius: 0;
+  }
+
+  .close-button {
+    display: none;
+  }
+
+  .thread-header {
+    padding: 1.5rem;
+  }
+
+  .thread-messages {
+    padding: 1.5rem;
+  }
+
+  :host ::ng-deep .message-item {
+    padding: 1rem 1.5rem;
+    width: calc(100% + 3rem);
+    margin-left: -1.5rem;
+  }
 }

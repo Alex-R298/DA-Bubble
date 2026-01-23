@@ -1,4 +1,4 @@
-<div class="chat-layout-container" [class.sidebar-collapsed]="isSidebarCollapsed" [class.chat-active]="isChatActive">
+<div class="chat-layout-container" [class.sidebar-collapsed]="isSidebarCollapsed" [class.chat-active]="isChatActive" [class.thread-active]="isThreadActive">
 	<app-sidebar class="sidebar-container" (collapsedChange)="onSidebarCollapsedChange($event)"></app-sidebar>
 
 	<div class="chat-area">

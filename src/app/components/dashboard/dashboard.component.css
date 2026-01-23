@@ -86,4 +86,34 @@
         margin: 0;
         border-radius: 0;
     }
+
+    .thread-area {
+        display: none;
+    }
+
+    /* Wenn Thread aktiv ist: Chat und Sidebar verstecken, Thread zeigen */
+    .chat-layout-container.thread-active .sidebar-container {
+        display: none;
+    }
+
+    .chat-layout-container.thread-active .chat-area {
+        display: none;
+    }
+
+    .chat-layout-container.thread-active {
+        flex-direction: row;
+    }
+
+    .chat-layout-container.thread-active .thread-area {
+        display: flex;
+        flex: 1;
+        width: 100% !important;
+        height: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .chat-layout-container.thread-active .thread-area > * {
+        width: 100%;
+    }
 }
