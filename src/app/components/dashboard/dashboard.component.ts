@@ -3,6 +3,7 @@ import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { ThreadComponent } from '../thread/thread.component';
 import { ThreadStateService } from '../../services/thread-state.service';
+import { NewMessageStateService } from '../../services/new-message-state.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { Message } from '../../services/message.service';
@@ -21,6 +22,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   authService = inject(AuthService);
   private userService = inject(UserService);
   private router = inject(Router);
+  private newMessageStateService = inject(NewMessageStateService);
 
   selectedMessageId: string = '';
   selectedChannelId: string = '';
@@ -29,6 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   isSidebarCollapsed = false;
   isChatActive = false;
+  private isNewMessageActive = false;
 
   private routerSub?: Subscription;
 
@@ -50,6 +53,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.selectedMessage = message;
     });
 
+    this.newMessageStateService.isNewMessageActive$.subscribe(isActive => {
+      this.isNewMessageActive = isActive;
+      this.checkIfChatActive(this.router.url);
+    });
+
     this.routerSub = this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(ev => this.checkIfChatActive(ev.urlAfterRedirects));
@@ -61,7 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private checkIfChatActive(url: string): void {
     // Chat ist aktiv wenn URL /channel/ oder /user/ enthält
-    this.isChatActive = url.includes('/channel/') || url.includes('/user/');
+    this.isChatActive = url.includes('/channel/') || url.includes('/user/') || this.isNewMessageActive;
   }
 
   private async loadCurrentUserName(): Promise<void> {

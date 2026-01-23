@@ -12,6 +12,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription, filter } from 'rxjs';
 import { SearchService } from '../../services/search.service';
 import { UserProfileStateService } from '../../services/user-profile-state.service';
+import { NewMessageStateService } from '../../services/new-message-state.service';
 
 type SearchMessageResult = {
   type: 'channel' | 'dm';
@@ -44,6 +45,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private directMessageService = inject(DirectMessageService);
   private searchService = inject(SearchService);
   private userProfileStateService = inject(UserProfileStateService);
+  private newMessageStateService = inject(NewMessageStateService);
 
   user: {
     name?: string;
@@ -62,6 +64,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private usersSubscription?: Subscription;
   private channelsSubscription?: Subscription;
   private routerSub?: Subscription;
+  private newMessageSub?: Subscription;
   private messagesSubscription?: Subscription;
   private dmMessagesSubscription?: Subscription;
   allUsers: User[] = [];
@@ -75,6 +78,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   tagQuery = '';
   isChatActive = false;
   isMobile = false;
+  private isNewMessageActive = false;
   showSearchResults = false;
   currentUserId = '';
   private readonly searchResultLimit = 6;
@@ -136,6 +140,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.routerSub = this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(ev => this.checkIfChatActive(ev.urlAfterRedirects));
+
+    this.newMessageSub = this.newMessageStateService.isNewMessageActive$
+      .subscribe(isActive => {
+        this.isNewMessageActive = isActive;
+        this.checkIfChatActive(this.router.url);
+      });
   }
 
   ngOnDestroy(): void {
@@ -143,6 +153,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.usersSubscription?.unsubscribe();
     this.channelsSubscription?.unsubscribe();
     this.routerSub?.unsubscribe();
+    this.newMessageSub?.unsubscribe();
     this.messagesSubscription?.unsubscribe();
     this.dmMessagesSubscription?.unsubscribe();
   }
@@ -369,7 +380,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   private checkIfChatActive(url: string): void {
-    this.isChatActive = url.includes('/channel/') || url.includes('/user/');
+    this.isChatActive = url.includes('/channel/') || url.includes('/user/') || this.isNewMessageActive;
   }
 
   private updateViewportFlags(): void {
@@ -377,6 +388,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
+    this.newMessageStateService.closeNewMessage();
     this.router.navigate(['/dashboard']);
   }
 

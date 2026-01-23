@@ -19,7 +19,12 @@
             [class.active]="selectedUserIds.includes(user.uid)"
             (mousedown)="tagUser(user)">
           <div class="user-avatar">
-            <app-svg-images [iconName]="user.profileImageUrl || 'steffen-hoffmann'" [width]="'50'" [height]="'50'"></app-svg-images>
+            <app-svg-images
+              [iconName]="user.profileImageUrl || 'steffen-hoffmann'"
+              [width]="'50'"
+              [height]="'50'"
+              [className]="'avatar-icon'"
+            ></app-svg-images>
             <span class="status-indicator" [ngClass]="getStatusClass(user)"></span>
           </div>
           <span class="user-name">{{ user.name }}</span>

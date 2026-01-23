@@ -49,6 +49,7 @@
 .new-message-recipient-chip-input .chips {
   display: flex;
   flex-wrap: wrap;
+  height: 55px;
   gap: 8px;
   padding: 10px 12px;
   border: 1px solid #ADB0D9;
@@ -106,7 +107,9 @@
 }
 
 .new-message-recipient-wrapper .ui-mention-dropdown {
-  left: 1rem;
+  left: 0;
+  right: 0;
+  width: 100%;
 }
 
 

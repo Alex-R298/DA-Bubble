@@ -15,7 +15,7 @@
     overflow: auto;
     background: #fff;
     border-radius: 30px;
-    padding: clamp(2rem, 2.5vw, 2.85rem);
+    padding: clamp(1.3rem, 2.5vw, 2.85rem);
     z-index: 1002;
     font-size: 1.29rem;
 }
@@ -166,8 +166,8 @@
 }
 
 .add-member-btn {
-    width: 2.29rem;
-    height: 2.29rem;
+    min-width: 2.29rem;
+    min-height: 2.29rem;
     border: none;
     border-radius: 50%;
     background-color: #ECEEFE;
@@ -365,5 +365,27 @@
     .members-inline .members-list {
         max-height: 12rem;
         overflow-y: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .member.ml-20px {
+        margin-left: 0;
+    }
+
+    .btn-add-members {
+        margin-left: 0;
+    }
+
+    .modal,
+    .created-by-name,
+    .name,
+    .ui-btn-link,
+    .btn-add-members,
+    .chip-name,
+    .chip-remove,
+    .member-input,
+    .suggestion {
+        font-size: 1.214285rem;
     }
 }
