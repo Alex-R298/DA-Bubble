@@ -1,0 +1,26 @@
+<div class="user-tag-dropdown" *ngIf="showTagList && tagListType === 'user'">
+	<ul class="user-list">
+		<li class="user-item"
+			*ngFor="let user of users"
+			(mousedown)="onUserSelect(user)">
+			<div class="user-avatar">
+				<app-svg-images [iconName]="user.profileImageUrl || 'steffen-hoffmann'" [width]="'40'" [height]="'40'"></app-svg-images>
+				<span class="status-indicator" [ngClass]="getStatusClass(user)"></span>
+			</div>
+			<span class="user-name">{{ user.name || user.displayName }}</span>
+		</li>
+	</ul>
+	<div *ngIf="!users.length" class="empty-state">Keine Benutzer gefunden</div>
+</div>
+
+<div class="user-tag-dropdown" *ngIf="showTagList && tagListType === 'channel'">
+	<ul class="channel-list">
+		<li class="channel-item"
+			*ngFor="let channel of channels"
+			(mousedown)="onChannelSelect(channel)">
+			<span class="channel-icon">#</span>
+			<span class="channel-name">{{ channel.name }}</span>
+		</li>
+	</ul>
+	<div *ngIf="!channels.length" class="empty-state">Keine Channels gefunden</div>
+</div>

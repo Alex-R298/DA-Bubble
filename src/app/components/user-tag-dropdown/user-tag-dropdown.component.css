@@ -1,0 +1,120 @@
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-tag-dropdown {
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: auto;
+    right: var(--message-side-padding, 1rem);
+    background: white;
+    border-radius: 20px 20px 20px 0;
+    padding: 1rem;
+    border: 1px solid #787DF5;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    width: min(300px, calc(100% - (var(--message-side-padding, 1rem) * 2)));
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    animation: dropdownSlideIn 0.2s ease-out;
+}
+
+.user-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 0.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 1.5rem;
+    transition: background 0.1s;
+}
+
+.user-item:hover {
+    background: rgba(120, 125, 245, 0.15);
+}
+
+.user-avatar {
+    position: relative;
+}
+
+.status-indicator {
+    position: absolute;
+    bottom: 0;
+    right: 1px;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.status-indicator.status-online {
+    background: #92C83E;
+}
+
+.status-indicator.status-offline {
+    background: #686868;
+}
+
+.status-indicator.status-away {
+    background: #F2C94C;
+}
+
+.user-name {
+    font-size: 1.1rem;
+}
+
+.empty-state {
+    padding: 0.5rem 1rem;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.channel-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 0.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.channel-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 1.5rem;
+    transition: background 0.1s, color 0.1s;
+}
+
+.channel-item:hover {
+    background: rgba(120, 125, 245, 0.15);
+    color: #444DF2;
+}
+
+.channel-icon {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.channel-name {
+    font-size: 1.1rem;
+}

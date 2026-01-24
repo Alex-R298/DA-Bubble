@@ -304,6 +304,9 @@
 }
 
 .thread-reply-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     color: #797EF3;
     font-size: 18px;
     font-weight: 400;
@@ -312,7 +315,6 @@
     cursor: pointer;
     padding: 4px 0;
     margin-top: 4px;
-    transition: color 0.2s;
     text-align: left;
     font-family: 'Nunito', sans-serif;
     transition: all 0.2s;
@@ -320,88 +322,32 @@
 
 .thread-reply-btn:hover {
     color: #535AF1;
+}
+
+.thread-reply-btn:hover .reply-count {
     font-weight: 700;
 }
 
+.reply-count {
+    color: #797EF3;
+    transition: all 0.2s;
+}
+
+.last-reply-time {
+    color: #686868;
+    font-size: 14px;
+}
+
 .message-item.own-message .thread-reply-btn {
+    flex-direction: row-reverse;
     text-align: right;
 }
 
-.hover-reaction-bar {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    width: 210px;
-    height: 46px;
-    border: 1px solid #ADB0D9;
-    justify-content: center;
-    border-radius: 25px 25px 0px 25px;
-    background-color: #ffffff;
-    position: absolute;
-    top: -23px;
-    right: var(--message-side-padding);
-    z-index: 10;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(5px);
-    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
-}
-
-.message-item:hover .hover-reaction-bar {
+/* Hover reaction bar styles moved to hover-reaction-bar.component.css */
+.message-item:hover app-hover-reaction-bar ::ng-deep .hover-reaction-bar {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
-}
-
-
-.hover-reaction-bar.own-message-bar {
-    right: auto;
-    left: var(--message-side-padding);
-    width: 250px;
-    border-radius: 25px 25px 25px 0px;
-}
-
-.hover-reaction-bar.thread-bar {
-    width: 90px;
-}
-
-.hover-reaction-bar.thread-bar.own-message-bar {
-    width: 130px;
-}
-
-.hover-reaction-bar button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    border-radius: 50%;
-    transition: background 0.2s;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.hover-reaction-bar button:hover {
-    background: #ECEEFE;
-}
-
-.hover-reaction-bar button:nth-child(3) app-svg-images,
-.hover-reaction-bar button:nth-child(4) app-svg-images {
-    transition: filter 0.2s ease;
-}
-
-.hover-reaction-bar button:nth-child(3):hover app-svg-images,
-.hover-reaction-bar button:nth-child(4):hover app-svg-images {
-    filter: brightness(0) saturate(100%) invert(29%) sepia(93%) saturate(1986%) hue-rotate(230deg) brightness(97%) contrast(92%);
-}
-
-.hover-reaction-bar.thread-bar button:nth-child(1) app-svg-images {
-    transition: filter 0.2s ease;
-}
-
-.hover-reaction-bar.thread-bar button:nth-child(1):hover app-svg-images {
-    filter: brightness(0) saturate(100%) invert(29%) sepia(93%) saturate(1986%) hue-rotate(230deg) brightness(97%) contrast(92%);
 }
 
 .edit-message {
@@ -533,128 +479,7 @@
     background: rgba(68, 77, 242, 0.4) !important;
 }
 
-/* Edit User Tag Dropdown */
-@keyframes dropdownSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.edit-user-tag-dropdown {
-    position: absolute;
-    bottom: calc(100% + 0.5rem);
-    left: auto;
-    right: var(--message-side-padding);
-    background: white;
-    border-radius: 20px 20px 20px 0;
-    padding: 1rem;
-    border: 1px solid #787DF5;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    width: min(300px, calc(100% - (var(--message-side-padding) * 2)));
-    max-height: 300px;
-    overflow-y: auto;
-    z-index: 1000;
-    animation: dropdownSlideIn 0.2s ease-out;
-}
-
-.edit-user-tag-dropdown .user-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 0.5rem;
-    display: flex;
-    flex-direction: column;
-}
-
-.edit-user-tag-dropdown .user-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    border-radius: 1.5rem;
-    transition: background 0.1s;
-}
-
-.edit-user-tag-dropdown .user-item:hover {
-    background: rgba(120, 125, 245, 0.15);
-}
-
-.edit-user-tag-dropdown .user-avatar {
-    position: relative;
-}
-
-.edit-user-tag-dropdown .status-indicator {
-    position: absolute;
-    bottom: 0;
-    right: 1px;
-    width: 0.7rem;
-    height: 0.7rem;
-    border-radius: 50%;
-    border: 2px solid white;
-}
-
-.edit-user-tag-dropdown .status-indicator.status-online {
-    background: #92C83E;
-}
-
-.edit-user-tag-dropdown .status-indicator.status-offline {
-    background: #686868;
-}
-
-.edit-user-tag-dropdown .status-indicator.status-away {
-    background: #F2C94C;
-}
-
-.edit-user-tag-dropdown .user-name {
-    font-size: 1.1rem;
-}
-
-.edit-user-tag-dropdown .empty-state {
-    padding: 0.5rem 1rem;
-    color: rgba(0, 0, 0, 0.5);
-    font-size: 0.9rem;
-    font-style: italic;
-}
-
-.edit-user-tag-dropdown .channel-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 0.5rem;
-    display: flex;
-    flex-direction: column;
-}
-
-.edit-user-tag-dropdown .channel-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    border-radius: 1.5rem;
-    transition: background 0.1s, color 0.1s;
-}
-
-.edit-user-tag-dropdown .channel-item:hover {
-    background: rgba(120, 125, 245, 0.15);
-    color: #444DF2;
-}
-
-.edit-user-tag-dropdown .channel-icon {
-    font-weight: bold;
-    font-size: 1.2rem;
-}
-
-.edit-user-tag-dropdown .channel-name {
-    font-size: 1.1rem;
-}
+/* User tag dropdown styles moved to user-tag-dropdown.component.css */
 
 :host ::ng-deep .edit-textarea .edit-channel-tag {
     display: inline;

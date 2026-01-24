@@ -74,6 +74,7 @@ export class MessageService {
                 timestamp: data['timestamp'] ? data['timestamp'].toDate() : new Date(),
                 parentMessageId: data['parentMessageId'],
                 replies: data['replies'] || [],
+                lastReplyTimestamp: data['lastReplyTimestamp'] ? data['lastReplyTimestamp'].toDate() : null,
                 reactions: data['reactions'] || {},
                 isEdited: data['isEdited'] || false
               };
@@ -121,6 +122,7 @@ export class MessageService {
               timestamp: data['timestamp'] ? data['timestamp'].toDate() : new Date(),
               parentMessageId: data['parentMessageId'],
               replies: data['replies'] || [],
+              lastReplyTimestamp: data['lastReplyTimestamp'] ? data['lastReplyTimestamp'].toDate() : null,
               reactions: data['reactions'] || {},
               isEdited: data['isEdited'] || false
             };

@@ -1,18 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, inject, HostListener, ElementRef, AfterViewChecked, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, ElementRef, AfterViewChecked, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SafeHtml } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
+import { HoverReactionBarComponent } from '../hover-reaction-bar/hover-reaction-bar.component';
+import { UserTagDropdownComponent, TagUser } from '../user-tag-dropdown/user-tag-dropdown.component';
 import { MessageService } from '../../services/message.service';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { ChannelService, Channel } from '../../services/channel.service';
+import { ContentFormatterService } from '../../services/content-formatter.service';
 
 @Component({
   selector: 'app-message-item',
   standalone: true,
-  imports: [CommonModule, SvgImagesComponent, FormsModule],
+  imports: [CommonModule, SvgImagesComponent, FormsModule, HoverReactionBarComponent, UserTagDropdownComponent],
   templateUrl: './message-item.component.html',
   styleUrls: ['./message-item.component.css']
 })
@@ -50,17 +53,14 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
 
   showEditMessage: boolean = false;
   showEditMessageInput: boolean = false;
-  showReactionPicker = false;
   editedContent: string = '';
-  availableReactions: string[] = ['😀', '😂', '😍', '🤔', '👍', '👎', '❤️', '🎉', '😢', '😱', '🙏', '🔥'];
-  activeReactionTooltip: string | null = null;
   private mentionListenersAdded = false;
 
   private messageService = inject(MessageService);
   private elementRef = inject(ElementRef);
-  private sanitizer = inject(DomSanitizer);
   private userService = inject(UserService);
   private authService = inject(AuthService);
+  private contentFormatter = inject(ContentFormatterService);
 
   // Tag-Dropdown für Edit-Modus
   showTagList: boolean = false;
@@ -118,12 +118,6 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     });
   }
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    if (this.showReactionPicker && !this.elementRef.nativeElement.contains(event.target)) {
-      this.showReactionPicker = false;
-    }
-  }
 
   get isOwnMessage(): boolean {
     if (this.isOwnMessageOverride !== null) return this.isOwnMessageOverride;
@@ -135,6 +129,15 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   getTime(): string {
     const timestamp = this.message?.timestamp;
     if (!timestamp) return '';
+    const date = new Date(timestamp);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  getLastReplyTime(): string {
+    const timestamp = this.message?.lastReplyTimestamp;
+    if (!timestamp) return '';
+
     const date = new Date(timestamp);
     if (Number.isNaN(date.getTime())) return '';
     return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
@@ -160,44 +163,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
    * Formatiert den Content mit @mentions und #channels als HTML-Spans
    */
   getFormattedContent(): SafeHtml {
-    let content = this.getContent();
-
-    if (!content) {
-      return this.sanitizer.bypassSecurityTrustHtml('');
-    }
-    content = content
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-    content = content.replace(/@\[([^\]]+)\]/g, (match, name) => {
-      const trimmedName = name.trim();
-      return `<span class="mention-tag" data-name="${trimmedName}">@${trimmedName}</span>`;
-    });
-    content = content.replace(/#(\S+)/g, '<span class="channel-tag">#$1</span>');
-
-    return this.sanitizer.bypassSecurityTrustHtml(content);
-  }
-
-  /**
-   * Formatiert den Content für das Bearbeitungsfeld (editedContent statt message.content)
-   */
-  getEditableFormattedContent(): SafeHtml {
-    let content = this.editedContent;
-
-    if (!content) {
-      return this.sanitizer.bypassSecurityTrustHtml('');
-    }
-    content = content
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-    content = content.replace(/@\[([^\]]+)\]/g, (match, name) => {
-      const trimmedName = name.trim();
-      return `<span class="edit-mention-tag" data-name="${trimmedName}">@${trimmedName}</span>`;
-    });
-    content = content.replace(/#(\S+)/g, '<span class="channel-tag">#$1</span>');
-
-    return this.sanitizer.bypassSecurityTrustHtml(content);
+    return this.contentFormatter.formatContent(this.getContent());
   }
 
   /**
@@ -205,36 +171,16 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
    */
   onEditInput(event: Event): void {
     const target = event.target as HTMLElement;
-    // Extrahiere den Text und wandle mention-tags zurück in @[Name] Format
-    this.editedContent = this.extractRawContent(target);
+    this.editedContent = this.contentFormatter.extractRawContent(target);
 
-    // Prüfe ob @ getippt wurde für Tag-Dropdown
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) {
-      this.showTagList = false;
-      return;
-    }
-
-    const range = selection.getRangeAt(0);
-    const textBeforeCursor = range.startContainer.textContent?.substring(0, range.startOffset) || '';
-    const lastChar = textBeforeCursor[textBeforeCursor.length - 1];
-
-    if (lastChar === '@') {
+    const tagType = this.contentFormatter.getTagTriggerType();
+    if (tagType) {
       this.showTagList = true;
-      this.tagListType = 'user';
-    } else if (lastChar === '#') {
-      this.showTagList = true;
-      this.tagListType = 'channel';
+      this.tagListType = tagType;
     } else {
       this.showTagList = false;
       this.tagListType = null;
     }
-  }
-
-  getStatusClass(user: any): string {
-    if (user?.status === 'online') return 'status-online';
-    if (user?.status === 'away') return 'status-away';
-    return 'status-offline';
   }
 
   tagUser(user: any): void {
@@ -243,11 +189,8 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
 
     if (el) {
       el.focus();
-      // Lösche das @ das gerade getippt wurde
       document.execCommand('delete', false);
-      // Füge formatierten Tag ein
-      const tagHtml = `<span class="edit-mention-tag" contenteditable="false" data-name="${userName}" data-uid="${user.uid}">@${userName}</span>&nbsp;`;
-      document.execCommand('insertHTML', false, tagHtml);
+      document.execCommand('insertHTML', false, this.contentFormatter.createUserTagHtml(userName, user.uid));
     }
 
     this.showTagList = false;
@@ -259,51 +202,12 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
 
     if (el) {
       el.focus();
-      // Lösche das # das gerade getippt wurde
       document.execCommand('delete', false);
-      // Füge formatierten Tag ein
-      const tagHtml = `<span class="edit-channel-tag" contenteditable="false" data-name="${channel.name}">#${channel.name}</span>&nbsp;`;
-      document.execCommand('insertHTML', false, tagHtml);
+      document.execCommand('insertHTML', false, this.contentFormatter.createChannelTagHtml(channel.name));
     }
 
     this.showTagList = false;
     this.tagListType = null;
-  }
-
-  /**
-   * Extrahiert den Rohtext aus dem HTML und wandelt mentions zurück
-   */
-  private extractRawContent(element: HTMLElement): string {
-    let result = '';
-    element.childNodes.forEach(node => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        result += node.textContent;
-      } else if (node.nodeType === Node.ELEMENT_NODE) {
-        const el = node as HTMLElement;
-        if (el.classList.contains('edit-mention-tag')) {
-          const name = el.getAttribute('data-name');
-          result += `@[${name}]`;
-        } else if (el.classList.contains('edit-channel-tag') || el.classList.contains('channel-tag')) {
-          const name = el.getAttribute('data-name');
-          result += `#${name}`;
-        } else {
-          result += el.textContent;
-        }
-      }
-    });
-    return result;
-  }
-
-  /**
-   * Versucht die UID für einen erwähnten User zu finden
-   */
-  private getMentionUid(name: string): string | null {
-    const mentionedUsers = this.message?.mentionedUsers;
-    if (mentionedUsers && Array.isArray(mentionedUsers)) {
-      const user = mentionedUsers.find((u: any) => u.name === name || u.displayName === name);
-      if (user) return user.uid;
-    }
-    return null;
   }
 
   /**
@@ -405,13 +309,6 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     return reaction.emoji;
   }
 
-  showReactionTooltip(reaction: { emoji: string }): void {
-    this.activeReactionTooltip = reaction.emoji;
-  }
-
-  hideReactionTooltip(): void {
-    this.activeReactionTooltip = null;
-  }
 
   getReactionUserName(reaction: { emoji: string; hasReacted: boolean; userNames: string[] }): string {
     // Wenn ich reagiert habe und es andere gibt, zeige einen anderen Namen
@@ -475,14 +372,6 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     this.reactionToggled.emit({ messageId: this.message?.id, emoji });
   }
 
-  toggleReactionPicker(): void {
-    this.showReactionPicker = !this.showReactionPicker;
-  }
-
-  addReaction(emoji: string): void {
-    this.toggleReaction(emoji);
-    this.showReactionPicker = false;
-  }
 
   onSenderNameClick(event: MouseEvent): void {
     if (!this.senderClickable) return;
@@ -517,30 +406,11 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     this.showEditMessage = false;
     this.editedContent = this.getContent();
 
-    // Setze den formatierten Inhalt nach dem nächsten Render-Zyklus
     setTimeout(() => {
       if (this.editTextarea?.nativeElement) {
-        this.editTextarea.nativeElement.innerHTML = this.formatContentForEdit(this.editedContent);
+        this.editTextarea.nativeElement.innerHTML = this.contentFormatter.formatContentForEdit(this.editedContent);
       }
     });
-  }
-
-  private formatContentForEdit(content: string): string {
-    if (!content) return '';
-
-    let formatted = content
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-
-    formatted = formatted.replace(/@\[([^\]]+)\]/g, (match, name) => {
-      const trimmedName = name.trim();
-      return `<span class="edit-mention-tag" data-name="${trimmedName}" contenteditable="false">@${trimmedName}</span>`;
-    });
-
-    formatted = formatted.replace(/#(\S+)/g, '<span class="channel-tag" contenteditable="false">#$1</span>');
-
-    return formatted;
   }
 
   async saveEditMessage(): Promise<void> {

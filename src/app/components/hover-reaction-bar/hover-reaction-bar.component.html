@@ -1,0 +1,29 @@
+<div class="hover-reaction-bar" [class.own-message-bar]="isOwnMessage" [class.thread-bar]="!showThreadButton">
+	<ng-container *ngIf="showThreadButton">
+		<button (click)="toggleReaction('check')">
+			<app-svg-images [iconName]="'green_mack'" [width]="'20'" [height]="'20'"></app-svg-images>
+		</button>
+		<button (click)="toggleReaction('nice')">
+			<app-svg-images [iconName]="'nice'" [width]="'20'" [height]="'20'"></app-svg-images>
+		</button>
+	</ng-container>
+	<button (click)="toggleReactionPicker()">
+		<app-svg-images [iconName]="'add_reaction'" [width]="'24'" [height]="'24'"></app-svg-images>
+	</button>
+	<button *ngIf="showThreadButton" (click)="onThreadButtonClick()">
+		<app-svg-images [iconName]="'comment'" [width]="'24'" [height]="'24'"></app-svg-images>
+	</button>
+	<button *ngIf="isOwnMessage" (mousedown)="onMoreVertClick()">
+		<app-svg-images [iconName]="'more_vert'" [width]="'4'" [height]="'16'"></app-svg-images>
+	</button>
+	<div class="reaction-picker hover-picker" *ngIf="showReactionPicker">
+		<button
+			type="button"
+			class="reaction-option"
+			*ngFor="let emoji of availableReactions"
+			(click)="addReaction(emoji)"
+		>
+			{{ emoji }}
+		</button>
+	</div>
+</div>

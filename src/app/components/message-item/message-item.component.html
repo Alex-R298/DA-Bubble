@@ -56,45 +56,24 @@
 				</div>
 			</div>
 
-			<button *ngIf="showThreadButton" class="thread-reply-btn" (click)="threadClicked.emit()">
-				<ng-container *ngIf="message.replies?.length; else noReplies">
+			<button *ngIf="showThreadButton && message.replies?.length" class="thread-reply-btn" (click)="threadClicked.emit()">
+				<span class="reply-count">
 					{{ message.replies.length }}
 					{{ message.replies.length === 1 ? 'Antwort' : 'Antworten' }}
-				</ng-container>
-				<ng-template #noReplies>Antworten</ng-template>
+				</span>
+				<span class="last-reply-time">Letzte Antwort {{ getLastReplyTime() }}</span>
 			</button>
 		</div>
 
 		
-		<div class="hover-reaction-bar" *ngIf="!showEditMessageInput" [class.own-message-bar]="isOwnMessage" [class.thread-bar]="!showThreadButton">
-			<ng-container *ngIf="showThreadButton">
-				<button (click)="toggleReaction('check')">
-					<app-svg-images [iconName]="'green_mack'" [width]="'20'" [height]="'20'"></app-svg-images>
-				</button>
-				<button (click)="toggleReaction('nice')">
-					<app-svg-images [iconName]="'nice'" [width]="'20'" [height]="'20'"></app-svg-images>
-				</button>
-			</ng-container>
-			<button (click)="toggleReactionPicker()">
-				<app-svg-images [iconName]="'add_reaction'" [width]="'24'" [height]="'24'"></app-svg-images>
-			</button>
-			<button *ngIf="showThreadButton">
-				<app-svg-images [iconName]="'comment'" [width]="'24'" [height]="'24'"></app-svg-images>
-			</button>
-			<button *ngIf="isOwnMessage" (mousedown)="onMoreVertClick()">
-				<app-svg-images [iconName]="'more_vert'" [width]="'4'" [height]="'16'"></app-svg-images>
-			</button>
-			<div class="reaction-picker hover-picker" *ngIf="showReactionPicker">
-				<button
-					type="button"
-					class="reaction-option"
-					*ngFor="let emoji of availableReactions"
-					(click)="addReaction(emoji)"
-				>
-					{{ emoji }}
-				</button>
-			</div>
-		</div>
+		<app-hover-reaction-bar
+			*ngIf="!showEditMessageInput"
+			[isOwnMessage]="isOwnMessage"
+			[showThreadButton]="showThreadButton"
+			(reactionToggled)="toggleReaction($event)"
+			(moreVertClicked)="onMoreVertClick()"
+			(threadButtonClicked)="threadClicked.emit()">
+		</app-hover-reaction-bar>
 		<div class="edit-message-container" *ngIf="isOwnMessage" [class.show]="showEditMessage" [class.thread-edit]="!showThreadButton">
 			<button (click)="openEditMessageInput()" class="edit-message">
 				Nachricht bearbeiten
@@ -103,31 +82,14 @@
 		
 		<div class="message-item-spacer" *ngIf="isOwnMessage && showEditMessageInput" [class.show-edit-input]="showEditMessageInput" [class.thread-spacer]="!showThreadButton">
 			<div class="message-spacer">
-				<div class="edit-user-tag-dropdown" *ngIf="showTagList && tagListType === 'user'">
-					<ul class="user-list">
-						<li class="user-item"
-							*ngFor="let user of users"
-							(mousedown)="tagUser(user)">
-							<div class="user-avatar">
-								<app-svg-images [iconName]="user.profileImageUrl || 'steffen-hoffmann'" [width]="'40'" [height]="'40'"></app-svg-images>
-								<span class="status-indicator" [ngClass]="getStatusClass(user)"></span>
-							</div>
-							<span class="user-name">{{ user.name }}</span>
-						</li>
-					</ul>
-					<div *ngIf="!users.length" class="empty-state">Keine Benutzer gefunden</div>
-				</div>
-				<div class="edit-user-tag-dropdown" *ngIf="showTagList && tagListType === 'channel'">
-					<ul class="channel-list">
-						<li class="channel-item"
-							*ngFor="let channel of channels"
-							(mousedown)="tagChannel(channel)">
-							<span class="channel-icon">#</span>
-							<span class="channel-name">{{ channel.name }}</span>
-						</li>
-					</ul>
-					<div *ngIf="!channels.length" class="empty-state">Keine Channels gefunden</div>
-				</div>
+				<app-user-tag-dropdown
+					[showTagList]="showTagList"
+					[tagListType]="tagListType"
+					[users]="users"
+					[channels]="channels"
+					(userSelected)="tagUser($event)"
+					(channelSelected)="tagChannel($event)">
+				</app-user-tag-dropdown>
 				<div
 					#editTextarea
 					class="edit-textarea"

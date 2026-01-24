@@ -73,7 +73,8 @@ export class ThreadService {
     const docRef = await addDoc(messagesRef, replyData);
     const parentMessageRef = doc(this.firebaseService.db, 'messages', parentMessageId);
     await updateDoc(parentMessageRef, {
-      replies: arrayUnion(docRef.id)
+      replies: arrayUnion(docRef.id),
+      lastReplyTimestamp: replyData.timestamp
     });
 
     return {
