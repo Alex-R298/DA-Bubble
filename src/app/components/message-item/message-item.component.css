@@ -1,7 +1,7 @@
 .message-item {
     display: flex;
     gap: 0.75rem;
-    --message-side-padding: clamp(1rem, calc(3.75rem + (100vw - 64rem) * 0.0625), 3.75rem);
+    --message-side-padding: 2.8125rem;
     padding: 1.5rem var(--message-side-padding);
     width: 100%;
     max-width: 100%;
@@ -375,9 +375,9 @@
     position: absolute;
     border: 1px solid #ADB0D9;
     background-color: #FFFFFF;
-    top: 0rem;
+    top: 1rem;
     font-family: 'Nunito', sans-serif;
-    left: auto;
+    left: 18rem;
     right: var(--message-side-padding);
     z-index: 10;
     display: flex;
@@ -396,7 +396,7 @@
 }
 
 .edit-message-container.thread-edit {
-    left: auto;
+    left: 9rem;
     right: var(--message-side-padding);
 }
 
@@ -604,4 +604,10 @@
 
 :host ::ng-deep .message-item.own-message .mention-tag:hover {
     background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+@media (max-width: 1024px) {
+    .message-item {
+        --message-side-padding: 1.5625rem;
+    }
 }

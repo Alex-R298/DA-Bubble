@@ -146,18 +146,16 @@
     <ng-template #dmOrChoose>
       <ng-container *ngIf="currentDMUser; else chooseOne">
         <div class="channel-info dm-info">
-          <app-svg-images
-            class="dm-profile-trigger"
-            [iconName]="currentDMUser.profileImageUrl || 'steffen-hoffmann'"
-            [width]="'50'"
-            [height]="'50'"
-            [className]="'avatar-icon'"
-            (click)="openUserProfile(currentDMUser)">
-          </app-svg-images>
+          <div class="dm-avatar-wrapper" (click)="openUserProfile(currentDMUser)">
+            <app-svg-images
+              [iconName]="currentDMUser.profileImageUrl || 'steffen-hoffmann'"
+              [width]="'50'"
+              [height]="'50'"
+              [className]="'avatar-icon'">
+            </app-svg-images>
+            <span class="ui-status-indicator" [ngClass]="'status-' + currentDMUser.status"></span>
+          </div>
           <h3 class="dm-profile-trigger" (click)="openUserProfile(currentDMUser)">{{ currentDMUser.name }}</h3>
-          <span class="dm-status" [class.online]="currentDMUser.status === 'online'">
-            {{ currentDMUser.status === 'online' ? ('CHAT.ONLINE' | translate) : ('CHAT.OFFLINE' | translate) }}
-          </span>
         </div>
       </ng-container>
     </ng-template>

@@ -234,17 +234,13 @@
   cursor: pointer;
 }
 
-.channel-info.dm-info .dm-status {
-  font-size: 0.75rem;
-  color: #888;
-  padding: 0.125rem 0.5rem;
-  border-radius: 0.75rem;
-  background: #f0f0f0;
+.channel-info.dm-info {
+  padding-left: 0;
 }
 
-.channel-info.dm-info .dm-status.online {
-  color: #4CAF50;
-  background: #E8F5E9;
+.channel-info.dm-info .dm-avatar-wrapper {
+  position: relative;
+  cursor: pointer;
 }
 
 .btn-members {
@@ -298,6 +294,7 @@
   margin-top: auto;
   margin-bottom: 2.5rem;
   gap: 1.4rem;
+  padding: 0 2.8125rem;
 }
 
 .empty-chat .empty-title {
@@ -352,6 +349,7 @@
   display: flex;
   align-items: center;
   margin: 1rem 0;
+  padding: 0 2.8125rem;
 }
 
 .date-separator::before,
@@ -420,7 +418,7 @@
 
 .input-container {
   background: white;
-  padding: 0;
+  padding: 0 2.8125rem;
 }
 
 /* Ab 768px: maximale Größe 88px, darunter fließend verkleinern */
@@ -428,6 +426,18 @@
 
   .chat-header {
     padding: 1.5625rem;
+  }
+
+  .empty-chat {
+    padding: 0 1.5625rem;
+  }
+
+  .input-container {
+    padding: 0 1.5625rem;
+  }
+
+  .date-separator {
+    padding: 0 1.5625rem;
   }
 
   .dm-empty-avatar {
