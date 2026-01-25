@@ -42,6 +42,34 @@ body {
   background-color: #ECEEFE;
 }
 
+/* Custom Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #797EF3 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #797EF3;
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #535AF1;
+}
+
+*::-webkit-scrollbar-button {
+  display: none;
+}
+
 :root {
   /* Keep in sync with dashboard layout */
   --layout-padding: 1rem;
