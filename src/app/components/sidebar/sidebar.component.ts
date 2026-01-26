@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -99,6 +99,7 @@ export class SidebarComponent implements OnInit {
   private readonly searchResultLimit = 6;
 
   ngOnInit(): void {
+    this.ensureSidebarOpenForMobile();
     // subscriptions disabled until services/models are available
     this.authSubscription = this.authService.authState$.subscribe(authUser => {
       this.currentUserId = authUser?.uid || '';
@@ -121,6 +122,19 @@ export class SidebarComponent implements OnInit {
     this.subscribeToUnread();
     this.subscribeToMessages();
     this.subscribeToDirectMessages();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.ensureSidebarOpenForMobile();
+  }
+
+  private ensureSidebarOpenForMobile(): void {
+    if (typeof window === 'undefined') return;
+    if (window.innerWidth <= 1024 && this.isCollapsed) {
+      this.isCollapsed = false;
+      this.collapsedChange.emit(this.isCollapsed);
+    }
   }
 
   ngOnDestroy(): void {
