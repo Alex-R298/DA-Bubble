@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, inject, ElementRef, AfterViewChecked, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, ElementRef, AfterViewChecked, ViewChild, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SafeHtml } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
@@ -19,7 +19,7 @@ import { ContentFormatterService } from '../../services/content-formatter.servic
   templateUrl: './message-item.component.html',
   styleUrls: ['./message-item.component.css']
 })
-export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy {
+export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy, OnChanges {
   @Input() message: any;
 
   /** Optional: provide the current user id so we can compute own-message styling and reacted-state */
@@ -49,6 +49,9 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   /** Emits when a @mention is clicked (user uid) */
   @Output() mentionClicked = new EventEmitter<string>();
 
+  /** Emits when a #channel is clicked (channel name) */
+  @Output() channelClicked = new EventEmitter<string>();
+
   @ViewChild('editTextarea') editTextarea!: ElementRef<HTMLDivElement>;
 
   showEditMessage: boolean = false;
@@ -58,6 +61,14 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
 
   /** Controls whether all reactions are shown or limited */
   reactionsExpanded: boolean = false;
+
+  /** Cached formatted content to prevent flickering */
+  private cachedFormattedContent: SafeHtml | null = null;
+  private lastContentHash: string = '';
+
+  /** Cached reactions to prevent flickering */
+  private cachedReactions: { emoji: string; count: number; hasReacted: boolean; userNames: string[] }[] = [];
+  private lastReactionsHash: string = '';
 
   private messageService = inject(MessageService);
   private elementRef = inject(ElementRef);
@@ -77,6 +88,30 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   ngOnInit(): void {
     this.subscribeToUsers();
     this.subscribeToChannels();
+    this.updateFormattedContent();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['message']) {
+      this.updateFormattedContent();
+      this.updateCachedReactions();
+    }
+  }
+
+  private updateFormattedContent(): void {
+    const content = this.getContent();
+    if (content !== this.lastContentHash) {
+      this.lastContentHash = content;
+      this.cachedFormattedContent = this.contentFormatter.formatContent(content);
+    }
+  }
+
+  private updateCachedReactions(): void {
+    const reactionsHash = JSON.stringify(this.message?.reactions || {});
+    if (reactionsHash !== this.lastReactionsHash) {
+      this.lastReactionsHash = reactionsHash;
+      this.cachedReactions = this.computeReactionsWithUsers();
+    }
   }
 
   ngOnDestroy(): void {
@@ -104,17 +139,35 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   }
 
   private attachMentionClickListeners(): void {
+    // Mention tags (@user)
     const mentionTags = this.elementRef.nativeElement.querySelectorAll('.mention-tag');
     mentionTags.forEach((tag: HTMLElement) => {
       if (!tag.hasAttribute('data-listener-attached')) {
         tag.setAttribute('data-listener-attached', 'true');
         tag.addEventListener('mousedown', (event: MouseEvent) => {
-          if (event.button !== 0) return; // Nur Linksklick
+          if (event.button !== 0) return;
           event.stopPropagation();
           event.preventDefault();
           const name = tag.getAttribute('data-name');
           if (name) {
             this.mentionClicked.emit(name);
+          }
+        });
+      }
+    });
+
+    // Channel tags (#channel)
+    const channelTags = this.elementRef.nativeElement.querySelectorAll('.channel-tag');
+    channelTags.forEach((tag: HTMLElement) => {
+      if (!tag.hasAttribute('data-listener-attached')) {
+        tag.setAttribute('data-listener-attached', 'true');
+        tag.addEventListener('mousedown', (event: MouseEvent) => {
+          if (event.button !== 0) return;
+          event.stopPropagation();
+          event.preventDefault();
+          const name = tag.getAttribute('data-name');
+          if (name) {
+            this.channelClicked.emit(name);
           }
         });
       }
@@ -165,8 +218,14 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   /**
    * Formatiert den Content mit @mentions und #channels als HTML-Spans
    */
+  /**
+   * Returns cached formatted content to prevent DOM flickering
+   */
   getFormattedContent(): SafeHtml {
-    return this.contentFormatter.formatContent(this.getContent());
+    if (!this.cachedFormattedContent || this.getContent() !== this.lastContentHash) {
+      this.updateFormattedContent();
+    }
+    return this.cachedFormattedContent!;
   }
 
   /**
@@ -271,9 +330,20 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   }
 
   /**
-   * Extended version with user names for tooltips
+   * Returns cached reactions to prevent DOM flickering
    */
   getReactionsWithUsers(): { emoji: string; count: number; hasReacted: boolean; userNames: string[] }[] {
+    const reactionsHash = JSON.stringify(this.message?.reactions || {});
+    if (reactionsHash !== this.lastReactionsHash) {
+      this.updateCachedReactions();
+    }
+    return this.cachedReactions;
+  }
+
+  /**
+   * Computes reactions with user names (internal)
+   */
+  private computeReactionsWithUsers(): { emoji: string; count: number; hasReacted: boolean; userNames: string[] }[] {
     const reactions = this.message?.reactions;
     if (!reactions) return [];
 

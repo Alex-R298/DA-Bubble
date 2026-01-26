@@ -34,7 +34,7 @@ export class ContentFormatterService {
     });
 
     // Format #channel tags
-    formatted = formatted.replace(/#(\S+)/g, '<span class="channel-tag">#$1</span>');
+    formatted = formatted.replace(/#(\S+)/g, '<span class="channel-tag" data-name="$1">#$1</span>');
 
     return this.sanitizer.bypassSecurityTrustHtml(formatted);
   }
@@ -54,7 +54,7 @@ export class ContentFormatterService {
     });
 
     // Format #channel tags
-    formatted = formatted.replace(/#(\S+)/g, '<span class="channel-tag" contenteditable="false">#$1</span>');
+    formatted = formatted.replace(/#(\S+)/g, '<span class="channel-tag" contenteditable="false" data-name="$1">#$1</span>');
 
     return formatted;
   }

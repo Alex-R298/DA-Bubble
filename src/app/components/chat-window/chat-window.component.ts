@@ -579,4 +579,12 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
       console.error('Error toggling reaction:', error);
     }
   }
+
+  async navigateToChannel(channelName: string): Promise<void> {
+    if (!channelName) return;
+    const channel = this.allChannels.find(c => c.name === channelName);
+    if (channel?.id) {
+      await this.router.navigate(['/dashboard/chat/channel', channel.id]);
+    }
+  }
 }

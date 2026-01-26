@@ -446,6 +446,26 @@
     width: 100%;
 }
 
+.thread-spacer .edit-message-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.thread-spacer .edit-message-actions .left-actions {
+    order: 1;
+}
+
+.thread-spacer .edit-message-actions .right-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.thread-spacer .btn-cancel,
+.thread-spacer .btn-save {
+    width: 100%;
+}
+
 .message-item-spacer {
     opacity: 0;
     visibility: hidden;
@@ -621,6 +641,11 @@
     padding: 2px 6px;
     border-radius: 4px;
     margin: 0 1px;
+    cursor: pointer;
+}
+
+:host ::ng-deep .message-bubble .channel-tag:hover {
+    background-color: rgba(68, 77, 242, 0.4) !important;
 }
 
 /* Own message styles für Tags */
@@ -630,7 +655,8 @@
     color: #ffffff !important;
 }
 
-:host ::ng-deep .message-item.own-message .mention-tag:hover {
+:host ::ng-deep .message-item.own-message .mention-tag:hover,
+:host ::ng-deep .message-item.own-message .channel-tag:hover {
     background-color: rgba(255, 255, 255, 0.5) !important;
 }
 

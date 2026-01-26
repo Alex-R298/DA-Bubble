@@ -226,7 +226,7 @@
           <span>{{ getMessageDate(message) }}</span>
         </div>
 
-        <app-message-item 
+        <app-message-item
           [message]="message"
           [currentUserId]="currentUserId"
           [showThreadButton]="true"
@@ -234,6 +234,7 @@
           [senderClickable]="true"
           (senderClicked)="openSenderProfile($event)"
           (mentionClicked)="openSenderProfile($event)"
+          (channelClicked)="navigateToChannel($event)"
           (reactionToggled)="onReactionToggled($event)"
           class="chat-message">
         </app-message-item>
