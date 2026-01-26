@@ -196,6 +196,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -351,4 +352,10 @@
   color: rgba(0, 0, 0, 0.5);
   font-size: 0.9rem;
   font-style: italic;
+}
+
+@media (max-width: 480px) {
+  .chat-input-container {
+    padding: 1rem 0rem;
+  }
 }

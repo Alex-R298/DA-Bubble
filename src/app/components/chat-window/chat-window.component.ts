@@ -18,13 +18,14 @@ import { ChannelHeaderModalsComponent, ChannelHeaderModalType } from '../channel
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UserProfileStateService } from '../../services/user-profile-state.service';
+import { SearchService } from '../../services/search.service';
 
 @Component({
   selector: 'app-chat-window',
   standalone: true,
   imports: [CommonModule, FormsModule, InputFieldComponent, ChannelHeaderModalsComponent, UserProfileModalComponent, MessageItemComponent, SvgImagesComponent, TranslateModule],
   templateUrl: './chat-window.component.html',
-  styleUrls: ['../../shared/styles/shared-ui.css', './chat-window.component.css']
+  styleUrls: ['../../shared/styles/shared-ui.css', '../../shared/styles/shared-search.css', './chat-window.component.css']
 })
 export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked {
   private route = inject(ActivatedRoute);
@@ -38,6 +39,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   private newMessageStateService = inject(NewMessageStateService);
   private translateService = inject(TranslateService);
   private userProfileStateService = inject(UserProfileStateService);
+  private searchService = inject(SearchService);
   private messagesSubscription?: Subscription;
 
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;
@@ -54,6 +56,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   allUsers: User[] = [];
   allChannels: Channel[] = [];
   memberChannels: Channel[] = [];
+  currentUserProfile: User | null = null;
   showRecipientTagDropdown = false;
   recipientTagType: 'user' | 'channel' | null = null;
   recipientTagQuery = '';
@@ -97,6 +100,15 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
         this.allUsers = users.filter(u => u.uid !== currentUid);
       })
     );
+
+    const currentUid = this.authService.getCurrentUser()?.uid;
+    if (currentUid) {
+      this.subscriptions.push(
+        this.userService.subscribeToUser(currentUid).subscribe(user => {
+          this.currentUserProfile = user;
+        })
+      );
+    }
 
     this.subscriptions.push(
       this.channelService.getAllChannels().subscribe(channels => {
@@ -253,7 +265,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   get filteredRecipientMentionUsers(): User[] {
     if (!this.showRecipientTagDropdown || this.recipientTagType !== 'user') return [];
     const q = this.recipientTagQuery.trim().toLowerCase();
-    const sourceUsers = this.allUsers;
+    const sourceUsers = this.searchService.getSearchUsersSource(this.allUsers, this.currentUserProfile);
     if (!q) return sourceUsers.filter(u => !this.selectedRecipientUsers.some(s => s.uid === u.uid));
     return sourceUsers
       .filter(u => !this.selectedRecipientUsers.some(s => s.uid === u.uid))
@@ -305,20 +317,30 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
       return;
     }
     const trigger = trimmed[0];
-    if (trigger !== '@' && trigger !== '#') {
-      this.showRecipientTagDropdown = false;
-      this.recipientTagType = null;
-      this.recipientTagQuery = '';
+    if (trigger === '#') {
+      this.recipientTagType = 'channel';
+      this.showRecipientTagDropdown = true;
+      this.recipientTagQuery = trimmed.slice(1);
       return;
     }
-    this.recipientTagType = trigger === '@' ? 'user' : 'channel';
+    if (trigger === '@') {
+      this.recipientTagType = 'user';
+      this.showRecipientTagDropdown = true;
+      this.recipientTagQuery = trimmed.slice(1);
+      return;
+    }
+    this.recipientTagType = 'user';
     this.showRecipientTagDropdown = true;
-    this.recipientTagQuery = trimmed.slice(1);
+    this.recipientTagQuery = trimmed;
   }
 
   private replaceLastTag(value: string, trigger: '@' | '#', name: string): string {
     const pattern = trigger === '@' ? /@[^ -\s]*$/ : /#[^ -\s]*$/;
     return value.replace(pattern, `${trigger}${name}`);
+  }
+
+  isRecipientEmailQuery(): boolean {
+    return this.searchService.isEmailQuery(this.recipientInput);
   }
 
   get channelMemberPreview(): User[] {

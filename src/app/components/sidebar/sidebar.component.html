@@ -92,6 +92,33 @@
               </div>
             </ng-container>
 
+            <ng-container *ngIf="filteredSearchUsers.length">
+              <div class="search-section-title">{{ 'HEADER.SEARCH_USERS' | translate }}</div>
+              <div class="search-options-list ui-mention-list">
+                <button
+                  type="button"
+                  class="search-option ui-mention-item"
+                  *ngFor="let user of filteredSearchUsers"
+                  (click)="selectSearchUser(user)"
+                >
+                  <span class="search-option-avatar">
+                    <app-svg-images
+                      [iconName]="user.profileImageUrl || 'steffen-hoffmann'"
+                      [width]="'3.2rem'"
+                      [height]="'3.2rem'"
+                      [className]="'avatar-icon'">
+                    </app-svg-images>
+                  </span>
+                  <span class="search-option-body">
+                    <span class="search-option-header">
+                      <span class="search-option-title">{{ user.name || ('HEADER.USER' | translate) }}</span>
+                    </span>
+                    <span class="search-option-subtitle" *ngIf="user.email">{{ user.email }}</span>
+                  </span>
+                </button>
+              </div>
+            </ng-container>
+
             <ng-container *ngIf="filteredSearchMessages.length">
               <div class="search-section-title">{{ 'HEADER.SEARCH_MESSAGES' | translate }}</div>
               <div class="search-options-list ui-mention-list">

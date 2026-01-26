@@ -639,3 +639,9 @@
         --message-side-padding: 1.5625rem;
     }
 }
+
+@media (max-width: 480px) {
+    .edit-message-container {
+        left: 3rem;
+    }
+}

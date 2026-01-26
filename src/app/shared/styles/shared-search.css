@@ -1,7 +1,7 @@
 /* Shared search dropdown styles (header + sidebar) */
 
 .search-results {
-    max-height: 28rem;
+    max-height: auto;
     overflow: auto;
     --ui-panel-gap: 0.5rem;
 }

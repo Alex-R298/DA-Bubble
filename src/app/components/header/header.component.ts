@@ -200,7 +200,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   get filteredSearchUsers(): User[] {
     const q = this.normalizedSearchQuery;
     if (!q) return [];
+    if (!this.isEmailQuery() && q.length < 3) return [];
+    if (!this.isEmailQuery() && this.filteredSearchMessages.length > 0) return [];
     const sourceUsers = this.getSearchUsersSource();
+    if (this.isEmailQuery()) {
+      return sourceUsers
+        .filter(u => (u.email || '').toLowerCase().includes(q))
+        .slice(0, this.searchResultLimit);
+    }
     return sourceUsers
       .filter(u => (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q))
       .slice(0, this.searchResultLimit);
@@ -209,6 +216,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   get filteredSearchMessages(): SearchMessageResult[] {
     const q = this.normalizedSearchQuery;
     if (!q) return [];
+    if (this.isEmailQuery()) return [];
 
     const channelIds = new Set(this.getSearchableChannels().map(c => c.id).filter(Boolean) as string[]);
 
@@ -251,6 +259,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   get hasSearchResults(): boolean {
     return this.filteredSearchChannels.length > 0
+      || this.filteredSearchUsers.length > 0
       || this.filteredSearchMessages.length > 0;
   }
 
@@ -344,6 +353,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   private normalizeText(value: string): string {
     return this.searchService.normalizeText(value);
+  }
+
+  private isEmailQuery(): boolean {
+    return this.searchService.isEmailQuery(this.searchQuery);
   }
 
   private getSearchUsersSource(): User[] {

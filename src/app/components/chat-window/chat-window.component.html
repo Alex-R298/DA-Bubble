@@ -33,28 +33,38 @@
           </div>
         </div>
 
-        <div class="mention-dropdown ui-mention-dropdown" *ngIf="showRecipientTagDropdown">
+        <div
+          class="mention-dropdown ui-mention-dropdown"
+          [ngClass]="recipientTagType === 'user' ? 'search-results search-options ui-panel ui-panel--popover' : ''"
+          *ngIf="showRecipientTagDropdown"
+        >
           <ng-container *ngIf="recipientTagType === 'user'">
-            <ul class="mention-list ui-mention-list" *ngIf="filteredRecipientMentionUsers.length; else noRecipientMentionUsers">
-              <li
-                class="mention-item ui-mention-item ml-20px"
+            <div class="search-section-title">{{ 'HEADER.SEARCH_USERS' | translate }}</div>
+            <div class="search-options-list ui-mention-list" *ngIf="filteredRecipientMentionUsers.length; else noRecipientUsers">
+              <button
+                type="button"
+                class="search-option ui-mention-item"
                 *ngFor="let user of filteredRecipientMentionUsers"
                 (click)="selectRecipientMention(user)"
               >
-                <div class="ui-avatar-badge">
+                <span class="search-option-avatar">
                   <app-svg-images
                     [iconName]="user.profileImageUrl || 'steffen-hoffmann'"
-                    [width]="'3.57rem'"
-                    [height]="'3.57rem'"
-                    [className]="'avatar-icon'"
-                  ></app-svg-images>
-                  <span class="ui-status-indicator" [ngClass]="getStatusClass(user)"></span>
-                </div>
-                <span class="mention-name ui-mention-name">{{ user.name }}</span>
-              </li>
-            </ul>
-            <ng-template #noRecipientMentionUsers>
-              <div class="mention-empty ui-mention-empty">{{ 'SIDEBAR.NO_CONTACTS' | translate }}</div>
+                    [width]="'3.2rem'"
+                    [height]="'3.2rem'"
+                    [className]="'avatar-icon'">
+                  </app-svg-images>
+                </span>
+                <span class="search-option-body">
+                  <span class="search-option-header">
+                    <span class="search-option-title">{{ user.name || ('HEADER.USER' | translate) }}</span>
+                  </span>
+                  <span class="search-option-subtitle" *ngIf="user.email">{{ user.email }}</span>
+                </span>
+              </button>
+            </div>
+            <ng-template #noRecipientUsers>
+              <div class="search-empty">{{ 'SIDEBAR.NO_CONTACTS' | translate }}</div>
             </ng-template>
           </ng-container>
 
