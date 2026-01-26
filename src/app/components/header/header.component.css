@@ -71,7 +71,7 @@
 
 .search-icon {
   position: absolute;
-  right: 3rem;
+  right: clamp(1.5rem, 2.5vw, 3rem);
   top: 50%;
   transform: translateY(-50%);
   font-size: 1.25rem;

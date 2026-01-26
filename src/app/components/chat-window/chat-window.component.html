@@ -13,7 +13,7 @@
                 [height]="'100%'"
                 [className]="'avatar-icon'">
               </app-svg-images>
-              <span class="chip-name">&#64;{{ u.name }}</span>
+              <span class="chip-name">&#64;{{ u.name || u.email }}</span>
               <button type="button" class="chip-remove" (click)="removeRecipientUser(u.uid)">×</button>
             </div>
 
@@ -24,6 +24,7 @@
             </div>
 
             <input
+              #recipientInputEl
               class="member-input new-message-recipient-input"
               type="text"
               [value]="recipientInput"
@@ -45,7 +46,7 @@
                 type="button"
                 class="search-option ui-mention-item"
                 *ngFor="let user of filteredRecipientMentionUsers"
-                (click)="selectRecipientMention(user)"
+                (mousedown)="selectRecipientMention(user)"
               >
                 <span class="search-option-avatar">
                   <app-svg-images

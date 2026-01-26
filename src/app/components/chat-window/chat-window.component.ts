@@ -43,6 +43,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   private messagesSubscription?: Subscription;
 
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('recipientInputEl') private recipientInputEl?: ElementRef<HTMLInputElement>;
 
   currentChannel: any | null = null;
   currentDMUser: any | null = null;
@@ -289,6 +290,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.showRecipientTagDropdown = false;
     this.recipientTagType = null;
     this.recipientTagQuery = '';
+    this.focusRecipientInput();
   }
 
   selectRecipientChannel(channel: Channel): void {
@@ -298,6 +300,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.showRecipientTagDropdown = false;
     this.recipientTagType = null;
     this.recipientTagQuery = '';
+    this.focusRecipientInput();
   }
 
   removeRecipientUser(uid: string): void {
@@ -306,6 +309,13 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   removeRecipientChannel(id: string): void {
     this.selectedRecipientChannels = this.selectedRecipientChannels.filter(c => c.id !== id);
+  }
+
+  private focusRecipientInput(): void {
+    const inputEl = this.recipientInputEl?.nativeElement;
+    if (inputEl) {
+      inputEl.focus();
+    }
   }
 
   private updateRecipientTagState(value: string): void {
