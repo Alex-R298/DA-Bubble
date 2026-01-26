@@ -527,7 +527,7 @@
     background: rgba(68, 77, 242, 0.4) !important;
 }
 
-/* User tag dropdown styles moved to user-tag-dropdown.component.css */
+
 
 :host ::ng-deep .edit-textarea .edit-channel-tag {
     display: inline;

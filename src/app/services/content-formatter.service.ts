@@ -54,7 +54,7 @@ export class ContentFormatterService {
     });
 
     // Format #channel tags
-    formatted = formatted.replace(/#(\S+)/g, '<span class="channel-tag" contenteditable="false" data-name="$1">#$1</span>');
+    formatted = formatted.replace(/#(\S+)/g, '<span class="edit-channel-tag" contenteditable="false" data-name="$1">#$1</span>');
 
     return formatted;
   }
