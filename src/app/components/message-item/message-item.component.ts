@@ -56,6 +56,9 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   editedContent: string = '';
   private mentionListenersAdded = false;
 
+  /** Controls whether all reactions are shown or limited */
+  reactionsExpanded: boolean = false;
+
   private messageService = inject(MessageService);
   private elementRef = inject(ElementRef);
   private userService = inject(UserService);
@@ -307,6 +310,50 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
 
   trackByEmoji(index: number, reaction: { emoji: string }): string {
     return reaction.emoji;
+  }
+
+  /**
+   * Returns max visible reactions: 7 for threads/mobile, 20 for desktop
+   */
+  getMaxVisibleReactions(): number {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 1024;
+    const isThread = !this.showThreadButton;
+    return (isMobile || isThread) ? 7 : 20;
+  }
+
+  /**
+   * Returns the reactions to display based on expanded state
+   */
+  getVisibleReactions(): { emoji: string; count: number; hasReacted: boolean; userNames: string[] }[] {
+    const allReactions = this.getReactionsWithUsers();
+    if (this.reactionsExpanded) {
+      return allReactions;
+    }
+    const maxVisible = this.getMaxVisibleReactions();
+    return allReactions.slice(0, maxVisible);
+  }
+
+  /**
+   * Returns the count of hidden reactions
+   */
+  getHiddenReactionsCount(): number {
+    const allReactions = this.getReactionsWithUsers();
+    const maxVisible = this.getMaxVisibleReactions();
+    return Math.max(0, allReactions.length - maxVisible);
+  }
+
+  /**
+   * Returns true if there are more reactions than the limit
+   */
+  hasHiddenReactions(): boolean {
+    return this.getHiddenReactionsCount() > 0;
+  }
+
+  /**
+   * Toggles the expanded state of reactions
+   */
+  toggleReactionsExpanded(): void {
+    this.reactionsExpanded = !this.reactionsExpanded;
   }
 
 

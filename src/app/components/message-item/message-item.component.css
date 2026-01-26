@@ -130,6 +130,34 @@
     margin-top: 0.25rem;
 }
 
+.reaction-expand-btn,
+.reaction-collapse-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 1px solid #ADB0D9;
+    padding: 0.25rem 0.625rem;
+    border-radius: 20px;
+    font-size: 0.8125rem;
+    font-family: 'Nunito', sans-serif;
+    color: #444DF2;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    height: 34px;
+    white-space: nowrap;
+}
+
+.reaction-expand-btn:hover,
+.reaction-collapse-btn:hover {
+    background: #ECEEFE;
+    border-color: #444DF2;
+}
+
+.reaction-collapse-btn {
+    color: #686868;
+}
+
 .reaction-badge-wrapper {
     position: relative;
     display: inline-block;
