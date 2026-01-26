@@ -86,6 +86,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   currentUserId = '';
   private readonly searchResultLimit = 6;
 
+
+  /**
+   * Initializes the component and sets up subscriptions for user, channels, messages, and routing
+   */
   ngOnInit(): void {
     this.updateViewportFlags();
     this.checkIfChatActive(this.router.url);
@@ -155,6 +159,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  /**
+   * Cleans up all subscriptions when component is destroyed
+   */
   ngOnDestroy(): void {
     this.userSubscription?.unsubscribe();
     this.usersSubscription?.unsubscribe();
@@ -165,23 +173,44 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.dmMessagesSubscription?.unsubscribe();
   }
 
+
+  /**
+   * Handles window resize events
+   */
   @HostListener('window:resize')
   onResize(): void {
     this.updateViewportFlags();
   }
 
+
+  /**
+   * Gets the CSS class for user status indicator
+   * @param user - The user to check status for
+   * @returns CSS class name for status
+   */
   getStatusClass(user: { status?: 'online' | 'offline' | 'away' } | null): string {
     if (user?.status === 'online') return 'status-online';
     if (user?.status === 'away') return 'status-away';
     return 'status-offline';
   }
 
+
+  /**
+   * Gets the translated status text for a user
+   * @param user - The user to get status text for
+   * @returns Translated status text
+   */
   getStatusText(user: { status?: 'online' | 'offline' | 'away' } | null): string {
     if (user?.status === 'online') return this.translateService.instant('STATUS.ONLINE');
     if (user?.status === 'away') return this.translateService.instant('STATUS.OFFLINE');
     return 'Offline';
   }
 
+
+  /**
+   * Handles search input changes
+   * @param event - The input event
+   */
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery = value;
@@ -189,6 +218,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.updateSearchResultsVisibility();
   }
 
+
+  /**
+   * Gets filtered channels based on search query
+   * @returns Filtered array of channels
+   */
   get filteredSearchChannels(): Channel[] {
     const q = this.normalizedSearchQuery;
     if (!q) return [];
@@ -197,6 +231,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .slice(0, this.searchResultLimit);
   }
 
+
+  /**
+   * Gets filtered users based on search query
+   * @returns Filtered array of users
+   */
   get filteredSearchUsers(): User[] {
     const q = this.normalizedSearchQuery;
     if (!q) return [];
@@ -213,6 +252,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .slice(0, this.searchResultLimit);
   }
 
+
+  /**
+   * Gets filtered messages from channels and DMs based on search query
+   * @returns Filtered array of search message results
+   */
   get filteredSearchMessages(): SearchMessageResult[] {
     const q = this.normalizedSearchQuery;
     if (!q) return [];
@@ -257,12 +301,22 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .slice(0, this.searchResultLimit);
   }
 
+
+  /**
+   * Checks if there are any search results
+   * @returns True if any search results exist
+   */
   get hasSearchResults(): boolean {
     return this.filteredSearchChannels.length > 0
       || this.filteredSearchUsers.length > 0
       || this.filteredSearchMessages.length > 0;
   }
 
+
+  /**
+   * Gets filtered users for mention dropdown
+   * @returns Filtered array of users for mentions
+   */
   get filteredMentionUsers(): User[] {
     if (!this.showTagDropdown || this.tagListType !== 'user') return [];
     const q = this.tagQuery.trim().toLowerCase();
@@ -272,6 +326,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     );
   }
 
+
+  /**
+   * Gets filtered channels for mention dropdown
+   * @returns Filtered array of channels for mentions
+   */
   get filteredMentionChannels(): Channel[] {
     if (!this.showTagDropdown || this.tagListType !== 'channel') return [];
     const q = this.tagQuery.trim().toLowerCase();
@@ -280,30 +339,55 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return channels.filter(c => (c.name || '').toLowerCase().includes(q));
   }
 
+
+  /**
+   * Selects a user from mention dropdown and opens their profile
+   * @param user - The user to select
+   */
   selectMentionUser(user: User): void {
     if (!user?.uid) return;
     this.clearSearch();
     this.userProfileStateService.openProfile(user);
   }
 
+
+  /**
+   * Selects a channel from mention dropdown and navigates to it
+   * @param channel - The channel to select
+   */
   selectMentionChannel(channel: Channel): void {
     if (!channel?.id) return;
     this.clearSearch();
     this.router.navigate(['/dashboard/chat/channel', channel.id]);
   }
 
+
+  /**
+   * Selects a channel from search results and navigates to it
+   * @param channel - The channel to select
+   */
   selectSearchChannel(channel: Channel): void {
     if (!channel?.id) return;
     this.clearSearch();
     this.router.navigate(['/dashboard/chat/channel', channel.id]);
   }
 
+
+  /**
+   * Selects a user from search results and navigates to direct message
+   * @param user - The user to select
+   */
   selectSearchUser(user: User): void {
     if (!user?.uid) return;
     this.clearSearch();
     this.router.navigate(['/dashboard/chat/user', user.uid]);
   }
 
+
+  /**
+   * Selects a message from search results and navigates to its location
+   * @param result - The search message result to select
+   */
   selectSearchMessage(result: SearchMessageResult): void {
     if (result.type === 'channel' && result.channelId) {
       this.clearSearch();
@@ -316,6 +400,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+
+  /**
+   * Updates tag dropdown state based on search input
+   * @private
+   * @param value - The search input value
+   */
   private updateTagState(value: string): void {
     const match = value.trim().match(/^([@#])([^\s]*)$/);
     if (!match) {
@@ -330,11 +420,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.tagQuery = match[2] || '';
   }
 
+
+  /**
+   * Updates the visibility of search results dropdown
+   * @private
+   */
   private updateSearchResultsVisibility(): void {
     const hasQuery = !!this.normalizedSearchQuery;
     this.showSearchResults = hasQuery && !this.showTagDropdown;
   }
 
+
+  /**
+   * Clears all search-related state
+   * @private
+   */
   private clearSearch(): void {
     this.searchQuery = '';
     this.showSearchResults = false;
@@ -343,70 +443,181 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.tagQuery = '';
   }
 
+
+  /**
+   * Gets the normalized search query in lowercase
+   * @private
+   * @returns Normalized search query
+   */
   private get normalizedSearchQuery(): string {
     return this.searchQuery.trim().toLowerCase();
   }
 
+
+  /**
+   * Checks if a message matches the search query
+   * @private
+   * @param message - The message to check
+   * @param q - The search query
+   * @returns True if message matches query
+   */
   private messageMatchesQuery(message: { content: string; senderName?: string }, q: string): boolean {
     return this.searchService.messageMatchesQuery(message, q);
   }
 
+
+  /**
+   * Normalizes text for search comparison
+   * @private
+   * @param value - The text to normalize
+   * @returns Normalized text
+   */
   private normalizeText(value: string): string {
     return this.searchService.normalizeText(value);
   }
 
+
+  /**
+   * Checks if the search query is an email query
+   * @private
+   * @returns True if query is email format
+   */
   private isEmailQuery(): boolean {
     return this.searchService.isEmailQuery(this.searchQuery);
   }
 
+
+  /**
+   * Gets the source of users for search
+   * @private
+   * @returns Array of users to search through
+   */
   private getSearchUsersSource(): User[] {
     return this.searchService.getSearchUsersSource(this.allUsers, this.currentUserProfile);
   }
 
+
+  /**
+   * Gets channel name by its ID
+   * @private
+   * @param channelId - The channel ID
+   * @returns Channel name or empty string
+   */
   private getChannelNameById(channelId: string): string {
     return this.searchService.getChannelNameById(channelId, this.getSearchableChannels());
   }
 
+
+  /**
+   * Gets channels that are searchable by current user
+   * @private
+   * @returns Array of searchable channels
+   */
   private getSearchableChannels(): Channel[] {
     return this.searchService.getSearchableChannels(this.memberChannels, this.allChannels);
   }
 
+
+  /**
+   * Checks if current user is part of a conversation
+   * @private
+   * @param conversationId - The conversation ID
+   * @returns True if user is in conversation
+   */
   private isCurrentUserInConversation(conversationId?: string): boolean {
     return this.searchService.isCurrentUserInConversation(conversationId, this.currentUserId);
   }
 
+
+  /**
+   * Gets the other user ID from a conversation
+   * @private
+   * @param conversationId - The conversation ID
+   * @returns Other user's ID or null
+   */
   private getOtherUserIdFromConversation(conversationId?: string): string | null {
     return this.searchService.getOtherUserIdFromConversation(conversationId, this.currentUserId);
   }
 
+
+  /**
+   * Gets user name by user ID
+   * @private
+   * @param uid - The user ID
+   * @returns User name
+   */
   private getUserNameById(uid: string): string {
     return this.searchService.getUserNameById(this.allUsers, this.currentUserProfile, uid);
   }
 
+
+  /**
+   * Formats message content for preview display
+   * @param content - The message content
+   * @returns Formatted preview text
+   */
   formatMessagePreview(content: string): string {
     return this.searchService.formatMessagePreview(content);
   }
 
+
+  /**
+   * Tracking function for channel list in ngFor
+   * @param index - The index of the item
+   * @param channel - The channel object
+   * @returns Unique identifier for tracking
+   */
   trackByChannelId(index: number, channel: Channel): string {
     return channel.id || `${index}`;
   }
 
+
+  /**
+   * Tracking function for search message list in ngFor
+   * @param index - The index of the item
+   * @param message - The message result object
+   * @returns Unique identifier for tracking
+   */
   trackBySearchMessage(index: number, message: SearchMessageResult): string {
     return message.messageId || `${message.type}-${message.timestamp.getTime()}-${index}`;
   }
 
+
+  /**
+   * Replaces the last tag in search input with selected item
+   * @private
+   * @param value - The current search value
+   * @param trigger - The tag trigger character
+   * @param name - The name to insert
+   * @returns Updated search value
+   */
   private replaceLastTag(value: string, trigger: '@' | '#', name: string): string {
     return this.searchService.replaceLastTag(value, trigger, name);
   }
 
+
+  /**
+   * Checks if a chat view is currently active based on URL
+   * @private
+   * @param url - The current URL
+   */
   private checkIfChatActive(url: string): void {
     this.isChatActive = url.includes('/channel/') || url.includes('/user/') || this.isNewMessageActive;
   }
 
+
+  /**
+   * Updates viewport-related flags based on window size
+   * @private
+   */
   private updateViewportFlags(): void {
     this.isMobile = window.innerWidth <= 1024;
   }
 
+
+  /**
+   * Navigates back from current view
+   */
   goBack(): void {
     this.newMessageStateService.closeNewMessage();
     if (this.isThreadActive) {
@@ -416,6 +627,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+
+  /**
+   * Toggles the user menu visibility
+   */
   toggleUserMenu(): void {
     if (this.showProfileView || this.showEditProfileView) {
       this.showProfileView = false;
@@ -426,28 +641,48 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.showUserMenu = !this.showUserMenu;
   }
 
+
+  /**
+   * Closes the user menu
+   */
   closeUserMenu(): void {
     this.showUserMenu = false;
   }
 
+
+  /**
+   * Closes all menus and views
+   */
   closeMenus(): void {
     this.showUserMenu = false;
     this.showProfileView = false;
     this.showEditProfileView = false;
   }
 
+
+  /**
+   * Opens the profile view
+   */
   openProfile(): void {
     this.showUserMenu = false;
     this.showProfileView = true;
     this.showEditProfileView = false;
   }
 
+
+  /**
+   * Closes the profile view and returns to menu
+   */
   closeProfileView(): void {
     this.showProfileView = false;
     this.showEditProfileView = false;
     this.showUserMenu = true;
   }
 
+
+  /**
+   * Opens the edit profile view
+   */
   openEditProfile(): void {
     this.editedFullName = this.user?.name || '';
     this.editNameFocused = false;
@@ -456,23 +691,43 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.showUserMenu = false;
   }
 
+
+  /**
+   * Handles focus event on edit name input
+   */
   onEditNameFocus(): void {
     this.editNameFocused = true;
   }
 
+
+  /**
+   * Handles blur event on edit name input
+   */
   onEditNameBlur(): void {
     this.editNameFocused = false;
   }
 
+
+  /**
+   * Closes edit profile view and returns to profile view
+   */
   closeEditProfileView(): void {
     this.showEditProfileView = false;
     this.showProfileView = true;
   }
 
+
+  /**
+   * Cancels profile editing
+   */
   cancelEditProfile(): void {
     this.closeEditProfileView();
   }
 
+
+  /**
+   * Saves the edited profile information
+   */
   async saveEditProfile(): Promise<void> {
     const nextName = this.editedFullName.trim();
     if (!nextName) return;
@@ -486,11 +741,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.closeEditProfileView();
   }
 
+
+  /**
+   * Opens the settings page
+   */
   openSettings(): void {
     this.closeMenus();
     this.router.navigate(['/settings']);
   }
 
+
+  /**
+   * Logs out the current user and navigates to login
+   */
   async onLogout(): Promise<void> {
     this.closeMenus();
     await this.authService.logout();

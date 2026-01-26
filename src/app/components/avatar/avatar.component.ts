@@ -6,13 +6,17 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './avatar.component.html',
-  styleUrl: './avatar.component.css'
+  styleUrl: './avatar.component.css',
 })
 export class AvatarComponent {
   @Input() imageUrl?: string;
   @Input() name: string = '';
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
 
+  /**
+   * Gets the initials from the name for display in the avatar
+   * @returns Initials string (first letter of first two words or single letter)
+   */
   get initials(): string {
     if (!this.name) return '?';
     const parts = this.name.trim().split(' ');
@@ -22,4 +26,3 @@ export class AvatarComponent {
     return this.name[0].toUpperCase();
   }
 }
-

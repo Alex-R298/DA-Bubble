@@ -15,7 +15,7 @@ import { filter, Subscription } from 'rxjs';
   standalone: true,
   imports: [SidebarComponent, RouterModule, ThreadComponent, CommonModule],
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   private threadStateService = inject(ThreadStateService);
@@ -36,44 +36,64 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private routerSub?: Subscription;
 
+  /**
+   * Initializes the component and loads current user name
+   */
   constructor() {
     this.loadCurrentUserName();
     this.checkIfChatActive(this.router.url);
   }
 
+  /**
+   * Sets up subscriptions for thread state, message state, and router events
+   */
   async ngOnInit(): Promise<void> {
-    this.threadStateService.messageId$.subscribe(messageId => {
+    this.threadStateService.messageId$.subscribe((messageId) => {
       this.selectedMessageId = messageId;
     });
 
-    this.threadStateService.channelId$.subscribe(channelId => {
+    this.threadStateService.channelId$.subscribe((channelId) => {
       this.selectedChannelId = channelId;
     });
 
-    this.threadStateService.selectedMessage$.subscribe(message => {
+    this.threadStateService.selectedMessage$.subscribe((message) => {
       this.selectedMessage = message;
       this.isThreadActive = !!message;
     });
 
-    this.newMessageStateService.isNewMessageActive$.subscribe(isActive => {
+    this.newMessageStateService.isNewMessageActive$.subscribe((isActive) => {
       this.isNewMessageActive = isActive;
       this.checkIfChatActive(this.router.url);
     });
 
     this.routerSub = this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe(ev => this.checkIfChatActive(ev.urlAfterRedirects));
+      .subscribe((ev) => this.checkIfChatActive(ev.urlAfterRedirects));
   }
 
+  /**
+   * Cleans up subscriptions when component is destroyed
+   */
   ngOnDestroy(): void {
     this.routerSub?.unsubscribe();
   }
 
+  /**
+   * Checks if a chat view is currently active based on the URL
+   * @private
+   * @param url - The current URL to check
+   */
   private checkIfChatActive(url: string): void {
-    // Chat ist aktiv wenn URL /channel/ oder /user/ enthält
-    this.isChatActive = url.includes('/channel/') || url.includes('/user/') || this.isNewMessageActive;
+    this.isChatActive =
+      url.includes('/channel/') ||
+      url.includes('/user/') ||
+      this.isNewMessageActive;
   }
 
+  /**
+   * Loads the current user's name from the user service
+   * @private
+   */
   private async loadCurrentUserName(): Promise<void> {
     const currentUser = this.authService.getCurrentUser();
     if (currentUser) {
@@ -82,11 +102,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Closes the thread panel and resets thread state
+   */
   closeThread(): void {
     this.threadStateService.closeThread();
     this.isThreadActive = false;
   }
 
+  /**
+   * Handles sidebar collapse state changes
+   * @param isCollapsed - Whether the sidebar is collapsed
+   */
   onSidebarCollapsedChange(isCollapsed: boolean): void {
     this.isSidebarCollapsed = isCollapsed;
   }
