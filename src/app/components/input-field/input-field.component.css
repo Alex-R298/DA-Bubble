@@ -376,6 +376,6 @@
 
 @media (max-width: 480px) {
   .chat-input-container {
-    padding: 1rem 0rem;
+    padding: 1rem 1.5rem;
   }
 }

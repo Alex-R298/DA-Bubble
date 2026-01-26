@@ -425,7 +425,6 @@
 
 .input-container {
   background: white;
-  padding: 0 2.8125rem;
 }
 
 /* Ab 768px: maximale Größe 88px, darunter fließend verkleinern */
@@ -439,9 +438,6 @@
     padding: 0 1.5625rem;
   }
 
-  .input-container {
-    padding: 0 1.5625rem;
-  }
 
   .date-separator {
     padding: 0 1.5625rem;
