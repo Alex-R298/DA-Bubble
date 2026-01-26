@@ -112,6 +112,13 @@
   width: 100%;
 }
 
+.new-message-recipient-wrapper .ui-mention-dropdown.search-options {
+  right: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+}
+
 
 .channel-info {
   display: flex;

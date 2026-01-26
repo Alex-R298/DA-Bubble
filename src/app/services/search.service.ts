@@ -6,6 +6,11 @@ import { Channel } from './channel.service';
     providedIn: 'root'
 })
 export class SearchService {
+    isEmailQuery(query: string): boolean {
+        const trimmed = (query || '').trim().toLowerCase();
+        return /^[^\s@]+@[^\s@]+/.test(trimmed);
+    }
+
     normalizeText(value: string): string {
         return value
             .replace(/<[^>]+>/g, ' ')
