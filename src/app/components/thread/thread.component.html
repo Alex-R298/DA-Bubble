@@ -8,12 +8,13 @@
   </div>
   
   <div class="thread-messages">
-    <app-message-item 
-      *ngIf="parentMessage" 
+    <app-message-item
+      *ngIf="parentMessage"
       [message]="parentMessage"
       [currentUserId]="currentUserId"
       [showReactions]="true"
       (reactionToggled)="onReactionToggled($event)"
+      (channelClicked)="navigateToChannel($event)"
       class="original-message">
     </app-message-item>
     
@@ -25,12 +26,13 @@
             
     </div>
     
-    <app-message-item 
-      *ngFor="let message of threadMessages" 
+    <app-message-item
+      *ngFor="let message of threadMessages"
       [message]="message"
       [currentUserId]="currentUserId"
       [showReactions]="true"
-      (reactionToggled)="onReactionToggled($event)">
+      (reactionToggled)="onReactionToggled($event)"
+      (channelClicked)="navigateToChannel($event)">
     </app-message-item>
     
     <p *ngIf="threadMessages.length === 0">No replies yet.</p>

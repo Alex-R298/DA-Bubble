@@ -22,7 +22,7 @@
 			<div class="message-reactions" *ngIf="showReactions">
 				<div
 					class="reaction-badge-wrapper"
-					*ngFor="let reaction of getReactionsWithUsers(); trackBy: trackByEmoji"
+					*ngFor="let reaction of getVisibleReactions(); trackBy: trackByEmoji"
 				>
 					<button
 						type="button"
@@ -54,6 +54,22 @@
 						<span class="tooltip-text">hat reagiert</span>
 					</div>
 				</div>
+				<button
+					*ngIf="hasHiddenReactions() && !reactionsExpanded"
+					type="button"
+					class="reaction-expand-btn"
+					(click)="toggleReactionsExpanded()"
+				>
+					+{{ getHiddenReactionsCount() }} weitere
+				</button>
+				<button
+					*ngIf="reactionsExpanded && hasHiddenReactions()"
+					type="button"
+					class="reaction-collapse-btn"
+					(click)="toggleReactionsExpanded()"
+				>
+					Weniger anzeigen
+				</button>
 			</div>
 
 			<button *ngIf="showThreadButton && message.replies?.length" class="thread-reply-btn" (click)="threadClicked.emit()">

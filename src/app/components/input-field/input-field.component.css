@@ -77,6 +77,26 @@
   padding: 2px 6px;
   border-radius: 4px;
   margin: 0 1px;
+  cursor: pointer;
+}
+
+:host ::ng-deep .input-field .channel-tag:hover {
+  background: rgba(68, 77, 242, 0.35) !important;
+}
+
+:host ::ng-deep .input-field .edit-channel-tag {
+  display: inline;
+  background: rgba(68, 77, 242, 0.2) !important;
+  color: #444DF2 !important;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin: 0 1px;
+  cursor: pointer;
+}
+
+:host ::ng-deep .input-field .edit-channel-tag:hover {
+  background: rgba(68, 77, 242, 0.35) !important;
 }
 
 .actions-bar {

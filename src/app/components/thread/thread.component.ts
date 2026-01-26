@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, inject, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 import { InputFieldComponent } from '../input-field/input-field.component';
 import { Message } from '../../models/message.model';
 import { ThreadService } from '../../services/thread.service';
@@ -31,18 +32,29 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
   private userService = inject(UserService);
   private channelService = inject(ChannelService);
   private messageService = inject(MessageService);
+  private router = inject(Router);
   private subscription?: Subscription;
+  private channelsSubscription?: Subscription;
   currentUserId: string = '';
   private currentUserName: string = '';
   private currentUserProfileImage: string = '';
   currentChannel: Channel | null = null;
+  private allChannels: Channel[] = [];
 
   async ngOnInit(): Promise<void> {
     await this.loadCurrentUser();
     await this.loadChannel();
+    this.loadAllChannels();
     if (this.parentMessageId) {
       this.loadThreadMessages();
     }
+  }
+
+  private loadAllChannels(): void {
+    this.channelsSubscription = this.channelService.getAllChannels()
+      .subscribe(channels => {
+        this.allChannels = channels;
+      });
   }
 
   ngOnChanges(): void {
@@ -53,6 +65,7 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
+    this.channelsSubscription?.unsubscribe();
   }
 
   private async loadCurrentUser(): Promise<void> {
@@ -113,6 +126,14 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
       );
     } catch (error) {
       console.error('Error toggling reaction:', error);
+    }
+  }
+
+  async navigateToChannel(channelName: string): Promise<void> {
+    if (!channelName) return;
+    const channel = this.allChannels.find(c => c.name === channelName);
+    if (channel?.id) {
+      await this.router.navigate(['/dashboard/chat/channel', channel.id]);
     }
   }
 }
