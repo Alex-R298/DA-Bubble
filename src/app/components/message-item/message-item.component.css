@@ -116,7 +116,7 @@
 
 .message-bubble p {
     margin: 0;
-    font-size: 1.3rem;
+    font-size: clamp(1.214285rem, 1.5vw, 1.3rem);
     line-height: 1.4;
     word-wrap: break-word;
     color: #000000;
@@ -171,7 +171,8 @@
     border: 1px solid #ADB0D9;
     padding: 0.25rem 0.5rem;
     border-radius: 20px;
-    font-size: 0.8125rem;
+    font-size: 1.142857rem;
+    font-family: inherit;
     cursor: pointer;
     transition: background 0.2s, border-color 0.2s;
     width: 64px;
@@ -193,7 +194,6 @@
 .reaction-badge.has-reacted {
     background: #FFFFFF;
     border-color: #ADB0D9;
-    font-size: 18px;
     display: flex;
     align-items: center;
     animation: pop 0.3s ease-out;
@@ -672,7 +672,11 @@
 
 @media (max-width: 1024px) {
     .message-item {
-        --message-side-padding: 1.5625rem;
+        --message-side-padding: clamp(1.2rem, 2vw, 1.5625rem);
+    }
+
+    .reaction-tooltip {
+        display: none;
     }
 }
 

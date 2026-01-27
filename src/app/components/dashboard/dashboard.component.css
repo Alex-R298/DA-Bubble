@@ -47,6 +47,27 @@
     border-radius: 1.875rem;
 }
 
+@media (max-width: 1439px) {
+    .chat-layout-container.thread-active .chat-area {
+        display: none;
+    }
+
+    .chat-layout-container.thread-active .thread-area {
+        display: block;
+        flex: 1 1 auto;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .chat-layout-container.thread-active.sidebar-collapsed .thread-area {
+        margin-left: 0;
+    }
+
+    .chat-layout-container.thread-active .thread-area>* {
+        width: 100%;
+    }
+}
+
 /* ensure router-loaded components can scroll */
 .chat-area>* {
     flex: 1 1 auto;

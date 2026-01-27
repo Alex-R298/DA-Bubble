@@ -1,5 +1,8 @@
 <div class="thread">
   <div class="thread-header">
+    <button class="back-button" type="button" (click)="closeThread()" aria-label="Zurück">
+      <app-svg-images [iconName]="'arrow_back'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
+    </button>
     <h4>Thread</h4>
     <span class="channel" *ngIf="currentChannel"> # {{ currentChannel.name }}</span>
     <button class="close-button" type="button" (click)="closeThread()" aria-label="Close">
@@ -35,7 +38,7 @@
       (channelClicked)="navigateToChannel($event)">
     </app-message-item>
     
-    <p *ngIf="threadMessages.length === 0">No replies yet.</p>
+    <p *ngIf="threadMessages.length === 0" class="no-replies message-item">No replies yet.</p>
   </div>
   
   <div class="thread-input">

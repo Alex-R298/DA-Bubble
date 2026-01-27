@@ -9,7 +9,7 @@
     border-radius: 25px 25px 0px 25px;
     background-color: #ffffff;
     position: absolute;
-    top: -23px;
+    top: -10px;
     right: var(--message-side-padding, 1rem);
     z-index: 10;
     opacity: 0;
@@ -32,7 +32,7 @@
 }
 
 .hover-reaction-bar.thread-bar {
-    width: 90px;
+    width: 66px;
 }
 
 .hover-reaction-bar.thread-bar.own-message-bar {

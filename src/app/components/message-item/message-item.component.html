@@ -1,7 +1,7 @@
 <ng-container *ngIf="message">
 	<div class="message-item" [class.own-message]="isOwnMessage" [class.edit-mode]="showEditMessage || showEditMessageInput" (mouseleave)="onMouseLeave()">
 		<div class="message-avatar">
-			<app-svg-images [iconName]="getAvatarSrc()" [width]="'70'" [height]="'70'"></app-svg-images>
+			<app-svg-images [iconName]="getAvatarSrc()" [width]="'clamp(3.5rem, 5vw, 4.375rem)'" [height]="'clamp(3.5rem, 5vw, 4.375rem)'"></app-svg-images>
 		</div>
 
 		<div class="message-content" *ngIf="!showEditMessageInput">
