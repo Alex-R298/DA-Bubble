@@ -8,6 +8,10 @@ import { HeaderLoginComponent } from '../header-login/header-login.component';
 import { OverlayComponent } from '../overlay/overlay.component';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Login component for user authentication.
+ * Provides email/password login and Google OAuth login functionality.
+ */
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -21,12 +25,17 @@ export class LoginComponent {
 
   email: string = '';
   password: string = '';
-  
+
   showOverlay: boolean = false;
   overlayType: 'error' | 'success' = 'error';
   overlayTitle: string = '';
   overlayMessage: string = '';
 
+  /**
+   * Maps Firebase authentication error codes to user-friendly messages.
+   * @param errorCode - The Firebase error code.
+   * @returns An object containing the error title and message.
+   */
   private getErrorMessage(errorCode: string): { title: string; message: string } {
     const errorMessages: { [key: string]: { title: string; message: string } } = {
       'auth/user-not-found': {
@@ -65,6 +74,10 @@ export class LoginComponent {
     };
   }
 
+  /**
+   * Handles the login form submission with email and password.
+   * Shows success overlay and redirects to dashboard on success, or displays error overlay on failure.
+   */
   async onSubmit(): Promise<void> {
     if (this.email && this.password) {
       try {
@@ -88,6 +101,10 @@ export class LoginComponent {
     }
   }
 
+  /**
+   * Handles Google OAuth login.
+   * Shows success overlay and redirects to dashboard on success, or displays error overlay on failure.
+   */
   async onGoogleLogin(): Promise<void> {
     try {
       await this.authService.loginWithGoogle();
@@ -109,6 +126,11 @@ export class LoginComponent {
     }
   }
 
+  /**
+   * Maps Google OAuth error codes to user-friendly messages.
+   * @param errorCode - The Firebase/Google error code.
+   * @returns An object containing the error title and message.
+   */
   private getGoogleErrorMessage(errorCode: string): { title: string; message: string } {
     const errorMessages: { [key: string]: { title: string; message: string } } = {
       'auth/popup-closed-by-user': {
@@ -139,6 +161,9 @@ export class LoginComponent {
     };
   }
 
+  /**
+   * Closes the overlay when the user dismisses it.
+   */
   onOverlayClose(): void {
     this.showOverlay = false;
   }

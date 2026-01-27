@@ -4,6 +4,10 @@ import { Router, RouterModule } from '@angular/router';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { PrivacyStateService } from '../../services/privacy-state.service';
 
+/**
+ * Privacy policy page component.
+ * Displays the privacy policy and handles user acceptance for signup flow.
+ */
 @Component({
   selector: 'app-privacy-policy',
   standalone: true,
@@ -16,10 +20,17 @@ export class PrivacyPolicyComponent {
   private router = inject(Router);
   private privacyStateService = inject(PrivacyStateService);
 
+  /**
+   * Navigates back to the previous page.
+   */
   goBack(): void {
     this.location.back();
   }
 
+  /**
+   * Accepts the privacy policy and navigates back.
+   * If coming from signup, marks privacy as accepted and returns to signup page.
+   */
   acceptAndGoBack(): void {
     const returnRoute = this.privacyStateService.getReturnRoute();
     if (returnRoute === '/signup') {

@@ -7,6 +7,10 @@ import { HeaderLoginComponent } from '../header-login/header-login.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../services/auth.service';
 
+/**
+ * Reset password component for setting a new password.
+ * Validates the reset code from email link and allows users to set a new password.
+ */
 @Component({
   selector: 'app-reset-password',
   standalone: true,
@@ -35,6 +39,10 @@ export class ResetPasswordComponent implements OnInit {
   validCode: boolean = false;
   loading: boolean = false;
 
+  /**
+   * Initializes the component by extracting and validating the reset code from URL.
+   * Redirects to login if the code is missing or invalid.
+   */
   async ngOnInit(): Promise<void> {
     this.oobCode = this.route.snapshot.queryParamMap.get('oobCode');
 
@@ -57,10 +65,17 @@ export class ResetPasswordComponent implements OnInit {
     }
   }
 
+  /**
+   * Validates that the new password and confirmation password match.
+   */
   checkPasswordsMatch(): void {
     this.passwordsMatch = this.newPassword === this.confirmPassword;
   }
 
+  /**
+   * Submits the new password to Firebase for password reset.
+   * Validates password requirements and redirects to login on success.
+   */
   async onSubmit(): Promise<void> {
     if (!this.newPassword || !this.confirmPassword || !this.passwordsMatch) {
       return;
