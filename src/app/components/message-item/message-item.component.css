@@ -678,6 +678,11 @@
     .reaction-tooltip {
         display: none;
     }
+
+    .edit-message-container {
+        left: 16.8rem;
+
+    }
 }
 
 @media (max-width: 640px) {
@@ -746,10 +751,6 @@
 
 @media (max-width: 380px) {
     .edit-message-container {
-        left: 1rem;
-        right: 1rem;
-        width: auto;
-        max-width: calc(100% - 2rem);
         height: 55px;
     }
 
@@ -760,7 +761,6 @@
     }
 
     .edit-message {
-        font-size: 1rem;
         height: 40px;
     }
 
