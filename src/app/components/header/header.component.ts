@@ -14,20 +14,8 @@ import { SearchService } from '../../services/search.service';
 import { UserProfileStateService } from '../../services/user-profile-state.service';
 import { NewMessageStateService } from '../../services/new-message-state.service';
 import { ThreadStateService } from '../../services/thread-state.service';
-
-type SearchMessageResult = {
-  type: 'channel' | 'dm';
-  messageId?: string;
-  content: string;
-  senderName?: string;
-  senderProfileImage?: string;
-  timestamp: Date;
-  channelId?: string;
-  channelName?: string;
-  conversationId?: string;
-  otherUserId?: string | null;
-  otherUserName?: string;
-};
+import { HeaderSearchHelper, SearchMessageResult } from './header-search.helper';
+import { HeaderMenuHelper } from './header-menu.helper';
 
 @Component({
   selector: 'app-header',
@@ -49,19 +37,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private newMessageStateService = inject(NewMessageStateService);
   private threadStateService = inject(ThreadStateService);
 
-  user: {
-    name?: string;
-    profileImageUrl?: string;
-    email?: string;
-    status?: 'online' | 'offline' | 'away'
-  } | null = null;
-
-  searchQuery = '';
-  showUserMenu = false;
-  showProfileView = false;
-  showEditProfileView = false;
-  editedFullName = '';
-  editNameFocused = false;
+  user: { name?: string; profileImageUrl?: string; email?: string; status?: 'online' | 'offline' | 'away' } | null = null;
   private userSubscription?: Subscription;
   private usersSubscription?: Subscription;
   private channelsSubscription?: Subscription;
@@ -75,94 +51,38 @@ export class HeaderComponent implements OnInit, OnDestroy {
   allChannelMessages: Message[] = [];
   allDirectMessages: DirectMessage[] = [];
   currentUserProfile: User | null = null;
-  showTagDropdown = false;
-  tagListType: 'user' | 'channel' | null = null;
-  tagQuery = '';
   isChatActive = false;
   isThreadActive = false;
   isMobile = false;
   private isNewMessageActive = false;
-  showSearchResults = false;
   currentUserId = '';
-  private readonly searchResultLimit = 6;
 
+  readonly searchHelper = new HeaderSearchHelper();
+  readonly menuHelper = new HeaderMenuHelper();
 
-  /**
-   * Initializes the component and sets up subscriptions for user, channels, messages, and routing
-   */
+  get searchQuery() { return this.searchHelper.searchQuery; }
+  set searchQuery(v: string) { this.searchHelper.searchQuery = v; }
+  get showSearchResults() { return this.searchHelper.showSearchResults; }
+  get showTagDropdown() { return this.searchHelper.showTagDropdown; }
+  get tagListType() { return this.searchHelper.tagListType; }
+  get showUserMenu() { return this.menuHelper.showUserMenu; }
+  get showProfileView() { return this.menuHelper.showProfileView; }
+  get showEditProfileView() { return this.menuHelper.showEditProfileView; }
+  get editedFullName() { return this.menuHelper.editedFullName; }
+  set editedFullName(v: string) { this.menuHelper.editedFullName = v; }
+  get editNameFocused() { return this.menuHelper.editNameFocused; }
+
+  /** Initializes the component and sets up subscriptions */
   ngOnInit(): void {
     this.updateViewportFlags();
     this.checkIfChatActive(this.router.url);
-    this.authService.authState$.subscribe(async (authUser) => {
-      this.currentUserId = authUser?.uid || '';
-      if (authUser) {
-        this.userSubscription = this.userService.subscribeToUser(authUser.uid)
-          .subscribe(userData => {
-            if (userData) {
-              this.user = {
-                name: userData.name,
-                profileImageUrl: userData.profileImageUrl,
-                email: userData.email,
-                status: userData.status
-              };
-              this.currentUserProfile = userData;
-            } else {
-              this.currentUserProfile = null;
-            }
-          });
-      } else {
-        this.user = null;
-        this.currentUserProfile = null;
-        this.userSubscription?.unsubscribe();
-      }
-    });
-
-    this.usersSubscription = this.userService.getAllUsersRealtime()
-      .subscribe(users => {
-        const currentUid = this.authService.getCurrentUser()?.uid;
-        this.allUsers = users.filter(u => u.uid !== currentUid);
-      });
-
-    this.channelsSubscription = this.channelService.getAllChannels()
-      .subscribe(channels => {
-        this.allChannels = channels;
-        const currentUid = this.authService.getCurrentUser()?.uid;
-        if (!currentUid) {
-          this.memberChannels = [];
-          return;
-        }
-        this.memberChannels = channels.filter(c => Array.isArray(c.members) && c.members.includes(currentUid));
-      });
-
-    this.messagesSubscription = this.messageService.getAllMessages()
-      .subscribe(messages => {
-        this.allChannelMessages = messages;
-      });
-
-    this.dmMessagesSubscription = this.directMessageService.getAllDirectMessages()
-      .subscribe(messages => {
-        this.allDirectMessages = messages;
-      });
-
-    this.routerSub = this.router.events
-      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe(ev => this.checkIfChatActive(ev.urlAfterRedirects));
-
-    this.newMessageSub = this.newMessageStateService.isNewMessageActive$
-      .subscribe((isActive: boolean) => {
-        this.isNewMessageActive = isActive;
-        this.checkIfChatActive(this.router.url);
-      });
-
-    this.threadStateService.selectedMessage$.subscribe((message: Message | null) => {
-      this.isThreadActive = !!message;
-    });
+    this.setupAuthSubscription();
+    this.setupDataSubscriptions();
+    this.setupRouterSubscription();
+    this.setupThreadSubscription();
   }
 
-
-  /**
-   * Cleans up all subscriptions when component is destroyed
-   */
+  /** Cleans up all subscriptions when component is destroyed */
   ngOnDestroy(): void {
     this.userSubscription?.unsubscribe();
     this.usersSubscription?.unsubscribe();
@@ -173,451 +93,192 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.dmMessagesSubscription?.unsubscribe();
   }
 
-
-  /**
-   * Handles window resize events
-   */
+  /** Handles window resize events */
   @HostListener('window:resize')
   onResize(): void {
     this.updateViewportFlags();
   }
 
+  private setupAuthSubscription(): void {
+    this.authService.authState$.subscribe(async (authUser) => {
+      this.currentUserId = authUser?.uid || '';
+      if (authUser) {
+        this.userSubscription = this.userService.subscribeToUser(authUser.uid).subscribe(userData => {
+          if (userData) {
+            this.user = { name: userData.name, profileImageUrl: userData.profileImageUrl, email: userData.email, status: userData.status };
+            this.currentUserProfile = userData;
+          } else {
+            this.currentUserProfile = null;
+          }
+        });
+      } else {
+        this.user = null;
+        this.currentUserProfile = null;
+        this.userSubscription?.unsubscribe();
+      }
+    });
+  }
 
-  /**
-   * Gets the CSS class for user status indicator
-   * @param user - The user to check status for
-   * @returns CSS class name for status
-   */
+  private setupDataSubscriptions(): void {
+    this.usersSubscription = this.userService.getAllUsersRealtime().subscribe(users => {
+      const currentUid = this.authService.getCurrentUser()?.uid;
+      this.allUsers = users.filter(u => u.uid !== currentUid);
+    });
+
+    this.channelsSubscription = this.channelService.getAllChannels().subscribe(channels => {
+      this.allChannels = channels;
+      const currentUid = this.authService.getCurrentUser()?.uid;
+      this.memberChannels = currentUid ? channels.filter(c => Array.isArray(c.members) && c.members.includes(currentUid)) : [];
+    });
+
+    this.messagesSubscription = this.messageService.getAllMessages().subscribe(messages => {
+      this.allChannelMessages = messages;
+    });
+
+    this.dmMessagesSubscription = this.directMessageService.getAllDirectMessages().subscribe(messages => {
+      this.allDirectMessages = messages;
+    });
+  }
+
+  private setupRouterSubscription(): void {
+    this.routerSub = this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe(ev => this.checkIfChatActive(ev.urlAfterRedirects));
+
+    this.newMessageSub = this.newMessageStateService.isNewMessageActive$.subscribe((isActive: boolean) => {
+      this.isNewMessageActive = isActive;
+      this.checkIfChatActive(this.router.url);
+    });
+  }
+
+  private setupThreadSubscription(): void {
+    this.threadStateService.selectedMessage$.subscribe((message: Message | null) => {
+      this.isThreadActive = !!message;
+    });
+  }
+
+  /** Gets the CSS class for user status indicator */
   getStatusClass(user: { status?: 'online' | 'offline' | 'away' } | null): string {
     if (user?.status === 'online') return 'status-online';
     if (user?.status === 'away') return 'status-away';
     return 'status-offline';
   }
 
-
-  /**
-   * Gets the translated status text for a user
-   * @param user - The user to get status text for
-   * @returns Translated status text
-   */
+  /** Gets the translated status text for a user */
   getStatusText(user: { status?: 'online' | 'offline' | 'away' } | null): string {
     if (user?.status === 'online') return this.translateService.instant('STATUS.ONLINE');
     if (user?.status === 'away') return this.translateService.instant('STATUS.OFFLINE');
     return 'Offline';
   }
 
-
-  /**
-   * Handles search input changes
-   * @param event - The input event
-   */
+  /** Handles search input changes */
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
-    this.searchQuery = value;
-    this.updateTagState(value);
-    this.updateSearchResultsVisibility();
+    this.searchHelper.onSearchInput(value);
   }
 
-
-  /**
-   * Gets filtered channels based on search query
-   * @returns Filtered array of channels
-   */
+  /** Gets filtered channels based on search query */
   get filteredSearchChannels(): Channel[] {
-    const q = this.normalizedSearchQuery;
-    if (!q) return [];
-    return this.getSearchableChannels()
-      .filter(c => (c.name || '').toLowerCase().includes(q))
-      .slice(0, this.searchResultLimit);
+    return this.searchHelper.getFilteredSearchChannels(this.getSearchableChannels());
   }
 
-
-  /**
-   * Gets filtered users based on search query
-   * @returns Filtered array of users
-   */
+  /** Gets filtered users based on search query */
   get filteredSearchUsers(): User[] {
-    const q = this.normalizedSearchQuery;
-    if (!q) return [];
-    if (!this.isEmailQuery() && q.length < 3) return [];
-    if (!this.isEmailQuery() && this.filteredSearchMessages.length > 0) return [];
-    const sourceUsers = this.getSearchUsersSource();
-    if (this.isEmailQuery()) {
-      return sourceUsers
-        .filter(u => (u.email || '').toLowerCase().includes(q))
-        .slice(0, this.searchResultLimit);
-    }
-    return sourceUsers
-      .filter(u => (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q))
-      .slice(0, this.searchResultLimit);
+    return this.searchHelper.getFilteredSearchUsers(this.allUsers, this.currentUserProfile, this.searchService, this.filteredSearchMessages.length > 0);
   }
 
-
-  /**
-   * Gets filtered messages from channels and DMs based on search query
-   * @returns Filtered array of search message results
-   */
+  /** Gets filtered messages from channels and DMs based on search query */
   get filteredSearchMessages(): SearchMessageResult[] {
-    const q = this.normalizedSearchQuery;
-    if (!q) return [];
-    if (this.isEmailQuery()) return [];
-
-    const channelIds = new Set(this.getSearchableChannels().map(c => c.id).filter(Boolean) as string[]);
-
-    const channelMessages = this.allChannelMessages
-      .filter(m => channelIds.has(m.channelId) && !(m as any).parentMessageId)
-      .filter(m => this.messageMatchesQuery(m, q))
-      .map(m => ({
-        type: 'channel',
-        messageId: m.id,
-        content: m.content,
-        senderName: m.senderName,
-        senderProfileImage: (m as any).senderProfileImage,
-        timestamp: m.timestamp,
-        channelId: m.channelId,
-        channelName: this.getChannelNameById(m.channelId)
-      } as SearchMessageResult));
-
-    const directMessages = this.allDirectMessages
-      .filter(dm => this.isCurrentUserInConversation(dm.conversationId) && !(dm as any).parentMessageId)
-      .filter(dm => this.messageMatchesQuery(dm, q))
-      .map(dm => {
-        const otherUserId = this.getOtherUserIdFromConversation(dm.conversationId);
-        return {
-          type: 'dm',
-          messageId: dm.id,
-          content: dm.content,
-          senderName: dm.senderName,
-          senderProfileImage: (dm as any).senderProfileImage,
-          timestamp: dm.timestamp,
-          conversationId: dm.conversationId,
-          otherUserId: otherUserId,
-          otherUserName: otherUserId ? this.getUserNameById(otherUserId) : undefined
-        } as SearchMessageResult;
-      });
-
-    return [...channelMessages, ...directMessages]
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-      .slice(0, this.searchResultLimit);
-  }
-
-
-  /**
-   * Checks if there are any search results
-   * @returns True if any search results exist
-   */
-  get hasSearchResults(): boolean {
-    return this.filteredSearchChannels.length > 0
-      || this.filteredSearchUsers.length > 0
-      || this.filteredSearchMessages.length > 0;
-  }
-
-
-  /**
-   * Gets filtered users for mention dropdown
-   * @returns Filtered array of users for mentions
-   */
-  get filteredMentionUsers(): User[] {
-    if (!this.showTagDropdown || this.tagListType !== 'user') return [];
-    const q = this.tagQuery.trim().toLowerCase();
-    if (!q) return this.allUsers;
-    return this.allUsers.filter(u =>
-      (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q)
+    return this.searchHelper.getFilteredSearchMessages(
+      this.allChannelMessages, this.allDirectMessages, this.getSearchableChannels(),
+      this.currentUserId, this.allUsers, this.currentUserProfile, this.searchService
     );
   }
 
-
-  /**
-   * Gets filtered channels for mention dropdown
-   * @returns Filtered array of channels for mentions
-   */
-  get filteredMentionChannels(): Channel[] {
-    if (!this.showTagDropdown || this.tagListType !== 'channel') return [];
-    const q = this.tagQuery.trim().toLowerCase();
-    const channels = this.getSearchableChannels();
-    if (!q) return channels;
-    return channels.filter(c => (c.name || '').toLowerCase().includes(q));
+  /** Checks if there are any search results */
+  get hasSearchResults(): boolean {
+    return this.filteredSearchChannels.length > 0 || this.filteredSearchUsers.length > 0 || this.filteredSearchMessages.length > 0;
   }
 
+  /** Gets filtered users for mention dropdown */
+  get filteredMentionUsers(): User[] {
+    return this.searchHelper.getFilteredMentionUsers(this.allUsers);
+  }
 
-  /**
-   * Selects a user from mention dropdown and opens their profile
-   * @param user - The user to select
-   */
+  /** Gets filtered channels for mention dropdown */
+  get filteredMentionChannels(): Channel[] {
+    return this.searchHelper.getFilteredMentionChannels(this.getSearchableChannels());
+  }
+
+  /** Selects a user from mention dropdown and opens their profile */
   selectMentionUser(user: User): void {
     if (!user?.uid) return;
-    this.clearSearch();
+    this.searchHelper.clearSearch();
     this.userProfileStateService.openProfile(user);
   }
 
-
-  /**
-   * Selects a channel from mention dropdown and navigates to it
-   * @param channel - The channel to select
-   */
+  /** Selects a channel from mention dropdown and navigates to it */
   selectMentionChannel(channel: Channel): void {
     if (!channel?.id) return;
-    this.clearSearch();
+    this.searchHelper.clearSearch();
     this.router.navigate(['/dashboard/chat/channel', channel.id]);
   }
 
-
-  /**
-   * Selects a channel from search results and navigates to it
-   * @param channel - The channel to select
-   */
+  /** Selects a channel from search results and navigates to it */
   selectSearchChannel(channel: Channel): void {
     if (!channel?.id) return;
-    this.clearSearch();
+    this.searchHelper.clearSearch();
     this.router.navigate(['/dashboard/chat/channel', channel.id]);
   }
 
-
-  /**
-   * Selects a user from search results and navigates to direct message
-   * @param user - The user to select
-   */
+  /** Selects a user from search results and navigates to direct message */
   selectSearchUser(user: User): void {
     if (!user?.uid) return;
-    this.clearSearch();
+    this.searchHelper.clearSearch();
     this.router.navigate(['/dashboard/chat/user', user.uid]);
   }
 
-
-  /**
-   * Selects a message from search results and navigates to its location
-   * @param result - The search message result to select
-   */
+  /** Selects a message from search results and navigates to its location */
   selectSearchMessage(result: SearchMessageResult): void {
     if (result.type === 'channel' && result.channelId) {
-      this.clearSearch();
+      this.searchHelper.clearSearch();
       this.router.navigate(['/dashboard/chat/channel', result.channelId]);
       return;
     }
     if (result.type === 'dm' && result.otherUserId) {
-      this.clearSearch();
+      this.searchHelper.clearSearch();
       this.router.navigate(['/dashboard/chat/user', result.otherUserId]);
     }
   }
 
-
-  /**
-   * Updates tag dropdown state based on search input
-   * @private
-   * @param value - The search input value
-   */
-  private updateTagState(value: string): void {
-    const match = value.trim().match(/^([@#])([^\s]*)$/);
-    if (!match) {
-      this.showTagDropdown = false;
-      this.tagListType = null;
-      this.tagQuery = '';
-      return;
-    }
-    const trigger = match[1];
-    this.tagListType = trigger === '@' ? 'user' : 'channel';
-    this.showTagDropdown = true;
-    this.tagQuery = match[2] || '';
-  }
-
-
-  /**
-   * Updates the visibility of search results dropdown
-   * @private
-   */
-  private updateSearchResultsVisibility(): void {
-    const hasQuery = !!this.normalizedSearchQuery;
-    this.showSearchResults = hasQuery && !this.showTagDropdown;
-  }
-
-
-  /**
-   * Clears all search-related state
-   * @private
-   */
-  private clearSearch(): void {
-    this.searchQuery = '';
-    this.showSearchResults = false;
-    this.showTagDropdown = false;
-    this.tagListType = null;
-    this.tagQuery = '';
-  }
-
-
-  /**
-   * Gets the normalized search query in lowercase
-   * @private
-   * @returns Normalized search query
-   */
-  private get normalizedSearchQuery(): string {
-    return this.searchQuery.trim().toLowerCase();
-  }
-
-
-  /**
-   * Checks if a message matches the search query
-   * @private
-   * @param message - The message to check
-   * @param q - The search query
-   * @returns True if message matches query
-   */
-  private messageMatchesQuery(message: { content: string; senderName?: string }, q: string): boolean {
-    return this.searchService.messageMatchesQuery(message, q);
-  }
-
-
-  /**
-   * Normalizes text for search comparison
-   * @private
-   * @param value - The text to normalize
-   * @returns Normalized text
-   */
-  private normalizeText(value: string): string {
-    return this.searchService.normalizeText(value);
-  }
-
-
-  /**
-   * Checks if the search query is an email query
-   * @private
-   * @returns True if query is email format
-   */
-  private isEmailQuery(): boolean {
-    return this.searchService.isEmailQuery(this.searchQuery);
-  }
-
-
-  /**
-   * Gets the source of users for search
-   * @private
-   * @returns Array of users to search through
-   */
-  private getSearchUsersSource(): User[] {
-    return this.searchService.getSearchUsersSource(this.allUsers, this.currentUserProfile);
-  }
-
-
-  /**
-   * Gets channel name by its ID
-   * @private
-   * @param channelId - The channel ID
-   * @returns Channel name or empty string
-   */
-  private getChannelNameById(channelId: string): string {
-    return this.searchService.getChannelNameById(channelId, this.getSearchableChannels());
-  }
-
-
-  /**
-   * Gets channels that are searchable by current user
-   * @private
-   * @returns Array of searchable channels
-   */
-  private getSearchableChannels(): Channel[] {
-    return this.searchService.getSearchableChannels(this.memberChannels, this.allChannels);
-  }
-
-
-  /**
-   * Checks if current user is part of a conversation
-   * @private
-   * @param conversationId - The conversation ID
-   * @returns True if user is in conversation
-   */
-  private isCurrentUserInConversation(conversationId?: string): boolean {
-    return this.searchService.isCurrentUserInConversation(conversationId, this.currentUserId);
-  }
-
-
-  /**
-   * Gets the other user ID from a conversation
-   * @private
-   * @param conversationId - The conversation ID
-   * @returns Other user's ID or null
-   */
-  private getOtherUserIdFromConversation(conversationId?: string): string | null {
-    return this.searchService.getOtherUserIdFromConversation(conversationId, this.currentUserId);
-  }
-
-
-  /**
-   * Gets user name by user ID
-   * @private
-   * @param uid - The user ID
-   * @returns User name
-   */
-  private getUserNameById(uid: string): string {
-    return this.searchService.getUserNameById(this.allUsers, this.currentUserProfile, uid);
-  }
-
-
-  /**
-   * Formats message content for preview display
-   * @param content - The message content
-   * @returns Formatted preview text
-   */
+  /** Formats message content for preview display */
   formatMessagePreview(content: string): string {
     return this.searchService.formatMessagePreview(content);
   }
 
-
-  /**
-   * Tracking function for channel list in ngFor
-   * @param index - The index of the item
-   * @param channel - The channel object
-   * @returns Unique identifier for tracking
-   */
+  /** Tracking function for channel list in ngFor */
   trackByChannelId(index: number, channel: Channel): string {
-    return channel.id || `${index}`;
+    return this.searchHelper.trackByChannelId(index, channel);
   }
 
-
-  /**
-   * Tracking function for search message list in ngFor
-   * @param index - The index of the item
-   * @param message - The message result object
-   * @returns Unique identifier for tracking
-   */
+  /** Tracking function for search message list in ngFor */
   trackBySearchMessage(index: number, message: SearchMessageResult): string {
-    return message.messageId || `${message.type}-${message.timestamp.getTime()}-${index}`;
+    return this.searchHelper.trackBySearchMessage(index, message);
   }
 
-
-  /**
-   * Replaces the last tag in search input with selected item
-   * @private
-   * @param value - The current search value
-   * @param trigger - The tag trigger character
-   * @param name - The name to insert
-   * @returns Updated search value
-   */
-  private replaceLastTag(value: string, trigger: '@' | '#', name: string): string {
-    return this.searchService.replaceLastTag(value, trigger, name);
+  private getSearchableChannels(): Channel[] {
+    return this.searchService.getSearchableChannels(this.memberChannels, this.allChannels);
   }
 
-
-  /**
-   * Checks if a chat view is currently active based on URL
-   * @private
-   * @param url - The current URL
-   */
   private checkIfChatActive(url: string): void {
     this.isChatActive = url.includes('/channel/') || url.includes('/user/') || this.isNewMessageActive;
   }
 
-
-  /**
-   * Updates viewport-related flags based on window size
-   * @private
-   */
   private updateViewportFlags(): void {
     this.isMobile = window.innerWidth <= 1024;
   }
 
-
-  /**
-   * Navigates back from current view
-   */
+  /** Navigates back from current view */
   goBack(): void {
     this.newMessageStateService.closeNewMessage();
     if (this.isThreadActive) {
@@ -627,136 +288,70 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-
-  /**
-   * Toggles the user menu visibility
-   */
+  /** Toggles the user menu visibility */
   toggleUserMenu(): void {
-    if (this.showProfileView || this.showEditProfileView) {
-      this.showProfileView = false;
-      this.showEditProfileView = false;
-      this.showUserMenu = true;
-      return;
-    }
-    this.showUserMenu = !this.showUserMenu;
+    this.menuHelper.toggleUserMenu();
   }
 
-
-  /**
-   * Closes the user menu
-   */
+  /** Closes the user menu */
   closeUserMenu(): void {
-    this.showUserMenu = false;
+    this.menuHelper.closeUserMenu();
   }
 
-
-  /**
-   * Closes all menus and views
-   */
+  /** Closes all menus and views */
   closeMenus(): void {
-    this.showUserMenu = false;
-    this.showProfileView = false;
-    this.showEditProfileView = false;
+    this.menuHelper.closeMenus();
   }
 
-
-  /**
-   * Opens the profile view
-   */
+  /** Opens the profile view */
   openProfile(): void {
-    this.showUserMenu = false;
-    this.showProfileView = true;
-    this.showEditProfileView = false;
+    this.menuHelper.openProfile();
   }
 
-
-  /**
-   * Closes the profile view and returns to menu
-   */
+  /** Closes the profile view and returns to menu */
   closeProfileView(): void {
-    this.showProfileView = false;
-    this.showEditProfileView = false;
-    this.showUserMenu = true;
+    this.menuHelper.closeProfileView();
   }
 
-
-  /**
-   * Opens the edit profile view
-   */
+  /** Opens the edit profile view */
   openEditProfile(): void {
-    this.editedFullName = this.user?.name || '';
-    this.editNameFocused = false;
-    this.showProfileView = false;
-    this.showEditProfileView = true;
-    this.showUserMenu = false;
+    this.menuHelper.openEditProfile(this.user?.name || '');
   }
 
-
-  /**
-   * Handles focus event on edit name input
-   */
+  /** Handles focus event on edit name input */
   onEditNameFocus(): void {
-    this.editNameFocused = true;
+    this.menuHelper.onEditNameFocus();
   }
 
-
-  /**
-   * Handles blur event on edit name input
-   */
+  /** Handles blur event on edit name input */
   onEditNameBlur(): void {
-    this.editNameFocused = false;
+    this.menuHelper.onEditNameBlur();
   }
 
-
-  /**
-   * Closes edit profile view and returns to profile view
-   */
+  /** Closes edit profile view and returns to profile view */
   closeEditProfileView(): void {
-    this.showEditProfileView = false;
-    this.showProfileView = true;
+    this.menuHelper.closeEditProfileView();
   }
 
-
-  /**
-   * Cancels profile editing
-   */
+  /** Cancels profile editing */
   cancelEditProfile(): void {
-    this.closeEditProfileView();
+    this.menuHelper.cancelEditProfile();
   }
 
-
-  /**
-   * Saves the edited profile information
-   */
+  /** Saves the edited profile information */
   async saveEditProfile(): Promise<void> {
-    const nextName = this.editedFullName.trim();
-    if (!nextName) return;
-
-    const currentUser = this.authService.getCurrentUser();
-    if (currentUser) {
-      await this.userService.updateUserProfile(currentUser.uid, nextName);
-      this.user = { ...this.user, name: nextName };
-    }
-
-    this.closeEditProfileView();
+    await this.menuHelper.saveEditProfile(this.authService, this.userService, (name) => {
+      this.user = { ...this.user, name };
+    });
   }
 
-
-  /**
-   * Opens the settings page
-   */
+  /** Opens the settings page */
   openSettings(): void {
-    this.closeMenus();
-    this.router.navigate(['/settings']);
+    this.menuHelper.openSettings(this.router);
   }
 
-
-  /**
-   * Logs out the current user and navigates to login
-   */
+  /** Logs out the current user and navigates to login */
   async onLogout(): Promise<void> {
-    this.closeMenus();
-    await this.authService.logout();
-    await this.router.navigate(['/login']);
+    await this.menuHelper.onLogout(this.authService, this.router);
   }
 }
