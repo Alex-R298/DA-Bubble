@@ -178,7 +178,7 @@
 
 .btn-channel-info h3 {
   margin: 0;
-  font-size: 1.72rem;
+  font-size: 1.714rem;
   font-weight: 700;
   color: #000000;
   font-family: 'Nunito', sans-serif;
@@ -187,6 +187,22 @@
 .btn-channel-info .btn-icon {
   font-size: 0.875rem;
   color: #666;
+}
+
+.btn-channel-info app-svg-images {
+  width: 24px;
+  height: 24px;
+}
+
+@media (max-width: 480px) {
+  .btn-channel-info h3 {
+    font-size: 1.429rem;
+  }
+
+  .btn-channel-info app-svg-images {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .member-avatars {

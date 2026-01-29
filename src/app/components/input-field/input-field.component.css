@@ -191,6 +191,7 @@
   padding: 0.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 0.25rem;
   max-width: 17.5rem;
@@ -377,5 +378,15 @@
 @media (max-width: 480px) {
   .chat-input-container {
     padding: 1rem 1.5rem;
+  }
+
+  .user-tag-dropdown {
+    position: fixed;
+    width: calc(100% - 5.5rem);
+    bottom: 156px;
+    left: 0;
+    right: 0;
+    margin: 0 4rem;
+    border-radius: 20px 20px 20px 0;
   }
 }

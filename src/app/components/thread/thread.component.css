@@ -1,6 +1,5 @@
 .thread {
   width: var(--thread-width, 34.5rem);
-  border-left: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -146,8 +145,7 @@
 }
 
 .thread-input {
-  border-top: 1px solid #e0e0e0;
-  padding: 1rem;
+  padding-top: 1px;
   background-color: #ffffff;
   position: relative;
   z-index: 20;
@@ -196,5 +194,11 @@
 
   .thread-divider {
     padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .thread-input {
+    padding: 0rem;
   }
 }
