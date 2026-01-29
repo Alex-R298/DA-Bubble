@@ -109,12 +109,12 @@ export class MessageItemEditHelper {
   /**
    * Opens the edit message input with current message content
    * @param currentContent - The current message content
-   * @param editTextarea - Reference to the edit textarea element
+   * @param getEditTextarea - Getter function to retrieve the edit textarea element
    * @param contentFormatter - The content formatter service
    */
   openEditMessageInput(
     currentContent: string,
-    editTextarea: ElementRef<HTMLDivElement> | undefined,
+    getEditTextarea: () => ElementRef<HTMLDivElement> | undefined,
     contentFormatter: ContentFormatterService
   ): void {
     this.showEditMessageInput = true;
@@ -122,10 +122,21 @@ export class MessageItemEditHelper {
     this.editedContent = currentContent;
 
     setTimeout(() => {
-      if (editTextarea?.nativeElement) {
-        editTextarea.nativeElement.innerHTML = contentFormatter.formatContentForEdit(this.editedContent);
+      const editTextarea = getEditTextarea();
+      if (editTextarea?.nativeElement && this.editedContent) {
+        const formattedContent = contentFormatter.formatContentForEdit(this.editedContent);
+        editTextarea.nativeElement.innerHTML = formattedContent;
+        editTextarea.nativeElement.focus();
+
+        // Cursor ans Ende setzen
+        const range = document.createRange();
+        const selection = window.getSelection();
+        range.selectNodeContents(editTextarea.nativeElement);
+        range.collapse(false);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
       }
-    });
+    }, 100);
   }
 
 
