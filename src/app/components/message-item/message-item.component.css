@@ -440,7 +440,7 @@
     height: 11rem;
     box-sizing: border-box;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .thread-spacer .message-spacer {

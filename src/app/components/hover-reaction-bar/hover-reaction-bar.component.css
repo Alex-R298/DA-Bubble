@@ -92,7 +92,7 @@
 .reaction-picker.hover-picker {
     position: absolute;
     bottom: calc(100% + 8px);
-    left: 20%;
+    left: 25%;
     transform: translateX(-50%);
     flex-wrap: wrap;
     width: 150px;
