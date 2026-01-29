@@ -227,7 +227,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
 
   /** Opens the edit message input with current message content */
   openEditMessageInput(): void {
-    this.editHelper.openEditMessageInput(this.getContent(), this.editTextarea, this.contentFormatter);
+    this.editHelper.openEditMessageInput(this.getContent(), () => this.editTextarea, this.contentFormatter);
   }
 
   /** Saves the edited message to the database */

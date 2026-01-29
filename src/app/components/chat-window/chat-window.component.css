@@ -432,6 +432,13 @@
   background: white;
 }
 
+@media (max-width: 480px) {
+
+  .date-separator span{
+    font-size: 16px !important;
+  }
+}
+
 /* Ab 768px: maximale Größe 88px, darunter fließend verkleinern */
 @media (max-width: 1024px) {
 
