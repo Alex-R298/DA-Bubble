@@ -747,6 +747,18 @@
         width: 32px;
         height: 32px;
     }
+
+    .message-header{
+        gap: 0.5rem;
+    }
+
+    .sender-name {
+        font-size: 16px;
+    }
+
+    .message-bubble p {
+        font-size: 16px;
+    }
 }
 
 @media (max-width: 380px) {
