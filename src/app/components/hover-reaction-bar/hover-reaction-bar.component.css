@@ -79,25 +79,38 @@
     bottom: 100%;
     left: 0;
     background: white;
-    border-radius: 0.5rem;
+    border-radius: 20px 20px 0px 20px;
     padding: 0.375rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     display: flex;
     gap: 0.125rem;
     margin-bottom: 0.25rem;
     z-index: 10;
+    border: 1px solid #787DF5;
 }
 
 .reaction-picker.hover-picker {
     position: absolute;
     bottom: calc(100% + 8px);
-    left: 50%;
+    left: 20%;
     transform: translateX(-50%);
     flex-wrap: wrap;
-    min-width: 224px;
+    width: 150px;
     justify-content: center;
-    border-radius: 1rem;
     padding: 0.5rem;
+}
+
+.hover-reaction-bar.own-message-bar .reaction-picker.hover-picker {
+    left: 80%;
+    border-radius: 20px 20px 20px 0px;
+}
+
+.hover-reaction-bar.thread-bar .reaction-picker.hover-picker {
+    left: -3rem;
+}
+
+.hover-reaction-bar.thread-bar.own-message-bar .reaction-picker.hover-picker {
+    left: 90%;
 }
 
 .reaction-option {
