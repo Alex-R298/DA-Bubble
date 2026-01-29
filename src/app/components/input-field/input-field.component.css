@@ -378,4 +378,9 @@
   .chat-input-container {
     padding: 1rem 1.5rem;
   }
+
+  .user-tag-dropdown {
+        right: 1.5rem;
+        width: auto;
+    }
 }
