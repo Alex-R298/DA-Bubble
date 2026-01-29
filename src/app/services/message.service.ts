@@ -20,6 +20,15 @@ export class MessageService {
   private firebaseService = inject(FirebaseService);
   private userService = inject(UserService);
 
+  /**
+   * Creates a new message in a channel.
+   * @param channelId - The ID of the channel to post the message in.
+   * @param senderId - The ID of the message sender.
+   * @param content - The message content.
+   * @param senderName - The display name of the sender.
+   * @param senderProfileImage - Optional profile image URL of the sender.
+   * @returns The created message object.
+   */
   async createMessage(channelId: string, senderId: string, content: string, senderName: string, senderProfileImage?: string): Promise<Message> {
     const messageData = {
       channelId: channelId,
@@ -43,6 +52,11 @@ export class MessageService {
     };
   }
 
+  /**
+   * Returns an observable of all messages in a specific channel.
+   * @param channelId - The ID of the channel to get messages for.
+   * @returns An observable emitting the array of messages.
+   */
   getMessagesByChannelId(channelId: string): Observable<Message[]> {
     return new Observable<Message[]>(observer => {
       const messagesRef = collection(this.firebaseService.db, 'messages');
@@ -92,6 +106,10 @@ export class MessageService {
     });
   }
 
+  /**
+   * Returns an observable of all messages sorted by timestamp.
+   * @returns An observable emitting all messages.
+   */
   getAllMessages(): Observable<Message[]> {
     return new Observable<Message[]>(observer => {
       const messagesRef = collection(this.firebaseService.db, 'messages');
@@ -137,6 +155,11 @@ export class MessageService {
     });
   }
 
+  /**
+   * Edits the content of an existing message.
+   * @param messageId - The ID of the message to edit.
+   * @param newContent - The new content for the message.
+   */
   editMessage(messageId: string, newContent: string): Promise<void> {
     const messageRef = doc(this.firebaseService.db, 'messages', messageId);
     return setDoc(messageRef, {
@@ -146,6 +169,13 @@ export class MessageService {
     }, { merge: true });
   }
 
+  /**
+   * Toggles a reaction on a message for a specific user.
+   * @param messageId - The ID of the message to react to.
+   * @param emoji - The emoji to toggle.
+   * @param userId - The ID of the user toggling the reaction.
+   * @param userName - The display name of the user.
+   */
   async toggleReaction(messageId: string, emoji: string, userId: string, userName: string): Promise<void> {
     const messageRef = doc(this.firebaseService.db, 'messages', messageId);
     const messageDoc = await getDoc(messageRef);
@@ -163,19 +193,16 @@ export class MessageService {
     const userIndex = reaction.users.indexOf(userId);
 
     if (userIndex === -1) {
-      // Add reaction
       reaction.users.push(userId);
       reaction.userNames.push(userName);
       reaction.count = reaction.users.length;
       await updateDoc(messageRef, { [`reactions.${emoji}`]: reaction });
     } else {
-      // Remove reaction
       reaction.users.splice(userIndex, 1);
       reaction.userNames.splice(userIndex, 1);
       reaction.count = reaction.users.length;
 
       if (reaction.count === 0) {
-        // Delete the emoji field completely from Firestore
         await updateDoc(messageRef, { [`reactions.${emoji}`]: deleteField() });
       } else {
         await updateDoc(messageRef, { [`reactions.${emoji}`]: reaction });

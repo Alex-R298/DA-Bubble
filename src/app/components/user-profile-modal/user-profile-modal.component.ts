@@ -35,11 +35,17 @@ export class UserProfileModalComponent {
     editedFullName = '';
     editNameFocused = false;
 
+    /**
+     * Closes the modal and resets the editing state.
+     */
     close(): void {
         this.isEditing = false;
         this.closed.emit();
     }
 
+    /**
+     * Starts the edit mode for the user profile.
+     */
     startEdit(): void {
         if (!this.allowEdit || !this.user) return;
         this.editedFullName = '';
@@ -47,18 +53,31 @@ export class UserProfileModalComponent {
         this.isEditing = true;
     }
 
+    /**
+     * Cancels the edit mode without saving changes.
+     */
     cancelEdit(): void {
         this.isEditing = false;
     }
 
+    /**
+     * Handles focus event on the name input field.
+     */
     onEditNameFocus(): void {
         this.editNameFocused = true;
     }
 
+    /**
+     * Handles blur event on the name input field.
+     */
     onEditNameBlur(): void {
         this.editNameFocused = false;
     }
 
+    /**
+     * Saves the edited profile name and updates the user data.
+     * Only allows editing the current user's own profile.
+     */
     async saveEdit(): Promise<void> {
         if (!this.user) return;
         const nextName = this.editedFullName.trim();
@@ -66,35 +85,42 @@ export class UserProfileModalComponent {
             this.isEditing = false;
             return;
         }
-
-        // Safety: only allow editing own profile.
         const currentUid = this.authService.getCurrentUser()?.uid;
         if (!currentUid || currentUid !== this.user.uid) {
             this.isEditing = false;
             return;
         }
-
-        // Optimistic UI update.
         this.user = { ...this.user, name: nextName };
 
         try {
             await this.userService.updateUserProfile(currentUid, nextName);
         } catch {
-            // If persistence fails (e.g. Firebase disabled), keep the optimistic name.
         }
-
         this.isEditing = false;
     }
 
+    /**
+     * Emits an event to initiate a message with the displayed user.
+     */
     sendMessage(): void {
         if (!this.user) return;
         this.message.emit(this.user);
     }
 
+    /**
+     * Returns the CSS class for the user's online status.
+     * @param user - The user object to check the status for.
+     * @returns The CSS class name for the status indicator.
+     */
     getStatusClass(user: UserProfileModalUser | null): string {
         return user?.status === 'online' ? 'status-online' : 'status-offline';
     }
 
+    /**
+     * Returns the display text for the user's online status.
+     * @param user - The user object to check the status for.
+     * @returns The status text to display.
+     */
     getStatusText(user: UserProfileModalUser | null): string {
         return user?.status === 'online' ? 'Online' : 'Offline';
     }

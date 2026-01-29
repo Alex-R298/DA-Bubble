@@ -45,6 +45,10 @@ export class AuthService {
     });
   }
 
+  /**
+   * Starts monitoring user activity to update online status.
+   * @param uid - The user ID to monitor activity for.
+   */
   private startActivityMonitoring(uid: string): void {
     const activity = ['mousedown', 'keydown', 'scroll', 'touchstart'];
     
@@ -57,6 +61,10 @@ export class AuthService {
     this.resetActivityTimer(uid);
   }
 
+  /**
+   * Resets the activity timer and sets user status to online.
+   * @param uid - The user ID to reset the timer for.
+   */
   private resetActivityTimer(uid: string): void {
     this.userService.updateUserStatus(uid, 'online');
     
@@ -66,6 +74,13 @@ export class AuthService {
     }, 5 * 60 * 1000);
   }
 
+  /**
+   * Registers a new user with email, password, and display name.
+   * @param email - The user's email address.
+   * @param password - The user's password.
+   * @param name - The user's display name.
+   * @returns The created Firebase user object.
+   */
   async register(email: string, password: string, name: string) {
     const userCredential = await createUserWithEmailAndPassword(
       this.firebaseService.auth,
@@ -77,6 +92,12 @@ export class AuthService {
     return userCredential.user;
   }
 
+  /**
+   * Logs in a user with email and password.
+   * @param email - The user's email address.
+   * @param password - The user's password.
+   * @returns The authenticated Firebase user object.
+   */
   async login(email: string, password: string) {
     const userCredential = await signInWithEmailAndPassword(
       this.firebaseService.auth,
@@ -86,18 +107,19 @@ export class AuthService {
     return userCredential.user;
   }
 
+  /**
+   * Logs in a user using Google OAuth authentication.
+   * Creates a user profile if it doesn't exist.
+   * @returns The authenticated Firebase user object.
+   */
   async loginWithGoogle() {
     const provider = new GoogleAuthProvider();
     const userCredential = await signInWithPopup(this.firebaseService.auth, provider);
     const user = userCredential.user;
-
-    // Validate user profile existence; create if absent
     const existingUser = await this.userService.getUserById(user.uid, true);
     if (!existingUser) {
       const displayName = user.displayName || user.email?.split('@')[0] || 'Google User';
       await this.userService.createUserProfile(user.uid, user.email || '', displayName);
-      
-      // Set Google profile image if available
       if (user.photoURL) {
         await this.userService.updateUserAvatar(user.uid, user.photoURL);
       }
@@ -106,6 +128,9 @@ export class AuthService {
     return user;
   }
 
+  /**
+   * Logs out the current user and sets their status to offline.
+   */
   async logout() {
     if (this.currentUserId) {
       await this.userService.updateUserStatus(this.currentUserId, 'offline');
@@ -115,53 +140,78 @@ export class AuthService {
     this.currentUserId = null;
   }
 
+  /**
+   * Returns the currently authenticated Firebase user.
+   * @returns The current Firebase user or null if not authenticated.
+   */
   getCurrentUser() {
     return this.firebaseService.auth.currentUser;
   }
 
+  /**
+   * Sends a password reset email to the specified address.
+   * @param email - The email address to send the reset link to.
+   * @returns An object indicating success or failure with a message.
+   */
   async sendPasswordResetEmail(email: string) {
-  try {
-    await sendPasswordResetEmail(this.firebaseService.auth, email);
-    return { success: true, message: 'Reset-Email wurde gesendet' };
-  } catch (error: any) {
-    console.error('Fehler beim Senden der Reset-Email:', error);
-    return { success: false, message: this.getErrorMessage(error.code) };
+    try {
+      await sendPasswordResetEmail(this.firebaseService.auth, email);
+      return { success: true, message: 'Reset-Email wurde gesendet' };
+    } catch (error: any) {
+      console.error('Fehler beim Senden der Reset-Email:', error);
+      return { success: false, message: this.getErrorMessage(error.code) };
+    }
   }
-}
 
-async confirmPasswordReset(oobCode: string, newPassword: string) {
-  try {
-    await confirmPasswordReset(this.firebaseService.auth, oobCode, newPassword);
-    return { success: true, message: 'Passwort erfolgreich zurückgesetzt' };
-  } catch (error: any) {
-    console.error('Fehler beim Zurücksetzen:', error);
-    return { success: false, message: this.getErrorMessage(error.code) };
+  /**
+   * Confirms a password reset using the provided code and new password.
+   * @param oobCode - The out-of-band code from the reset email.
+   * @param newPassword - The new password to set.
+   * @returns An object indicating success or failure with a message.
+   */
+  async confirmPasswordReset(oobCode: string, newPassword: string) {
+    try {
+      await confirmPasswordReset(this.firebaseService.auth, oobCode, newPassword);
+      return { success: true, message: 'Passwort erfolgreich zurückgesetzt' };
+    } catch (error: any) {
+      console.error('Fehler beim Zurücksetzen:', error);
+      return { success: false, message: this.getErrorMessage(error.code) };
+    }
   }
-}
 
-async verifyResetCode(oobCode: string) {
-  try {
-    const email = await verifyPasswordResetCode(this.firebaseService.auth, oobCode);
-    return { success: true, email };
-  } catch (error) {
-    return { success: false, email: null };
+  /**
+   * Verifies a password reset code and returns the associated email.
+   * @param oobCode - The out-of-band code to verify.
+   * @returns An object with success status and the email if valid.
+   */
+  async verifyResetCode(oobCode: string) {
+    try {
+      const email = await verifyPasswordResetCode(this.firebaseService.auth, oobCode);
+      return { success: true, email };
+    } catch (error) {
+      return { success: false, email: null };
+    }
   }
-}
 
-private getErrorMessage(code: string): string {
-  switch (code) {
-    case 'auth/user-not-found':
-      return 'Keine Benutzer mit dieser E-Mail gefunden';
-    case 'auth/invalid-email':
-      return 'Ungültige E-Mail-Adresse';
-    case 'auth/expired-action-code':
-      return 'Der Reset-Link ist abgelaufen';
-    case 'auth/invalid-action-code':
-      return 'Der Reset-Link ist ungültig oder wurde bereits verwendet';
-    case 'auth/weak-password':
-      return 'Das Passwort muss mindestens 6 Zeichen lang sein';
-    default:
-      return 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.';
+  /**
+   * Returns a user-friendly error message based on the Firebase error code.
+   * @param code - The Firebase error code.
+   * @returns A localized error message string.
+   */
+  private getErrorMessage(code: string): string {
+    switch (code) {
+      case 'auth/user-not-found':
+        return 'Keine Benutzer mit dieser E-Mail gefunden';
+      case 'auth/invalid-email':
+        return 'Ungültige E-Mail-Adresse';
+      case 'auth/expired-action-code':
+        return 'Der Reset-Link ist abgelaufen';
+      case 'auth/invalid-action-code':
+        return 'Der Reset-Link ist ungültig oder wurde bereits verwendet';
+      case 'auth/weak-password':
+        return 'Das Passwort muss mindestens 6 Zeichen lang sein';
+      default:
+        return 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.';
+    }
   }
-}
 }

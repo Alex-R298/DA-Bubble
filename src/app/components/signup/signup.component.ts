@@ -33,6 +33,9 @@ export class SignupComponent implements OnInit, OnDestroy {
   
   private privacySubscription?: Subscription;
 
+  /**
+   * Initializes the component and subscribes to the privacy acceptance status.
+   */
   ngOnInit(): void {
     this.privacySubscription = this.privacyStateService.getPrivacyAcceptedStatus()
       .subscribe(accepted => {
@@ -43,10 +46,18 @@ export class SignupComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Cleans up subscriptions when the component is destroyed.
+   */
   ngOnDestroy(): void {
     this.privacySubscription?.unsubscribe();
   }
 
+  /**
+   * Returns a user-friendly error message based on the Firebase error code.
+   * @param errorCode - The Firebase authentication error code.
+   * @returns An object containing the error title and message.
+   */
   private getErrorMessage(errorCode: string): { title: string; message: string } {
     const errorMessages: { [key: string]: { title: string; message: string } } = {
       'auth/email-already-in-use': {
@@ -77,6 +88,10 @@ export class SignupComponent implements OnInit, OnDestroy {
     };
   }
 
+  /**
+   * Handles the form submission for user registration.
+   * Validates the form data and attempts to register the user via AuthService.
+   */
   async onSubmit(): Promise<void> {
     if (this.displayName && this.email && this.password && this.privacyAccepted) {
       try {
@@ -102,14 +117,23 @@ export class SignupComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Navigates back to the login page.
+   */
   goBack(): void {
     this.router.navigate(['/login']);
   }
 
+  /**
+   * Handles the click on the privacy policy link and sets the return route.
+   */
   onPrivacyLinkClick(): void {
     this.privacyStateService.setReturnRoute('/signup');
   }
 
+  /**
+   * Closes the overlay when triggered.
+   */
   onOverlayClose(): void {
     this.showOverlay = false;
   }

@@ -22,6 +22,15 @@ export class DirectMessageService {
   private firebaseService = inject(FirebaseService);
   private userService = inject(UserService);
 
+  /**
+   * Creates a new direct message in a conversation.
+   * @param conversationId - The ID of the conversation.
+   * @param senderId - The ID of the message sender.
+   * @param content - The message content.
+   * @param senderName - The display name of the sender.
+   * @param senderProfileImage - Optional profile image URL of the sender.
+   * @returns The created direct message object.
+   */
   async createDirectMessage(conversationId: string, senderId: string, content: string, senderName: string, senderProfileImage?: string): Promise<DirectMessage> {
     const messageData = {
       conversationId: conversationId,
@@ -43,6 +52,11 @@ export class DirectMessageService {
     };
   }
 
+  /**
+   * Returns an observable of all messages in a specific conversation.
+   * @param conversationId - The ID of the conversation to get messages for.
+   * @returns An observable emitting the array of direct messages.
+   */
   getMessagesByConversationId(conversationId: string): Observable<DirectMessage[]> {
     return new Observable<DirectMessage[]>(observer => {
       const messagesRef = collection(this.firebaseService.db, 'direct-messages'); // ← Separate Collection!
@@ -88,6 +102,10 @@ export class DirectMessageService {
     });
   }
 
+  /**
+   * Returns an observable of all direct messages sorted by timestamp.
+   * @returns An observable emitting all direct messages.
+   */
   getAllDirectMessages(): Observable<DirectMessage[]> {
     return new Observable<DirectMessage[]>(observer => {
       const messagesRef = collection(this.firebaseService.db, 'direct-messages');
