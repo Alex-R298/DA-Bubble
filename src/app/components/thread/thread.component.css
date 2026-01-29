@@ -195,6 +195,10 @@
   .thread-divider {
     padding: 0 1.5rem;
   }
+
+  .back-button {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {
