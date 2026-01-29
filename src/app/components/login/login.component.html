@@ -57,7 +57,7 @@
           {{ 'LOGIN.LOGIN_BUTTON' | translate }}
         </button>
         
-        <button type="button" routerLink="/dashboard" class="guest-login-button">
+        <button type="button" class="guest-login-button" (click)="onGuestLogin()">
           {{ 'LOGIN.GUEST_LOGIN' | translate }}
         </button>
       </div>

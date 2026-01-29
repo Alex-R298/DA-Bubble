@@ -10,10 +10,6 @@
   gap: 1rem;
 }
 
-:host-context(.thread-open) {
-  --header-user-area-min: max(20rem, var(--thread-width, 34.5rem));
-}
-
 .logo-area {
   min-width: 20rem;
   width: 22.5rem;

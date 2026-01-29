@@ -57,6 +57,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private isNewMessageActive = false;
   currentUserId = '';
 
+  maxSearchWidth: string = '50vw';
+  isThreadOpen = false;
+
   readonly searchHelper = new HeaderSearchHelper();
   readonly menuHelper = new HeaderMenuHelper();
 
@@ -97,6 +100,22 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @HostListener('window:resize')
   onResize(): void {
     this.updateViewportFlags();
+    this.updateSearchWidth();
+  }
+
+  private updateSearchWidth(): void {
+    if (this.isThreadOpen) {
+      if (window.innerWidth <= 1440) {
+        // Thread überlagert: ursprüngliche Breite des Chat-Windows (ohne Thread)
+        this.maxSearchWidth = 'calc(100vw - (var(--layout-padding) * 2) - var(--sidebar-width) - var(--layout-gap))';
+      } else {
+        // Thread offen, aber nicht überlagert: Breite des Chat-Windows mit Thread daneben
+        this.maxSearchWidth = 'calc(100vw - (var(--layout-padding) * 2) - var(--sidebar-width) - var(--layout-gap) - var(--thread-width) - var(--layout-gap))';
+      }
+    } else {
+      // Normal: bis zur User-Area
+      this.maxSearchWidth = 'calc(100% - var(--header-user-area-min) - var(--header-gap, 1rem))';
+    }
   }
 
   private setupAuthSubscription(): void {
@@ -154,6 +173,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private setupThreadSubscription(): void {
     this.threadStateService.selectedMessage$.subscribe((message: Message | null) => {
       this.isThreadActive = !!message;
+      this.isThreadOpen = !!message;
+      this.updateSearchWidth();
     });
   }
 

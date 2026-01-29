@@ -28,6 +28,7 @@ export const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [authGuard],
+    data: { guestAllowed: true },
     children: [
       { path: '', component: ChatWindowComponent },
       { path: 'chat/channel/:id', component: ChatWindowComponent },

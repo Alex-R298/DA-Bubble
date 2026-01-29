@@ -81,12 +81,13 @@ export class LoginComponent {
   async onSubmit(): Promise<void> {
     if (this.email && this.password) {
       try {
+        sessionStorage.removeItem('guestMode');
         await this.authService.login(this.email, this.password);
         this.overlayType = 'success';
         this.overlayTitle = 'Erfolgreich angemeldet';
         this.overlayMessage = 'Sie werden zum Dashboard weitergeleitet...';
         this.showOverlay = true;
-        
+
         setTimeout(() => {
           this.showOverlay = false;
           this.router.navigate(['/dashboard']);
@@ -107,12 +108,13 @@ export class LoginComponent {
    */
   async onGoogleLogin(): Promise<void> {
     try {
+      sessionStorage.removeItem('guestMode');
       await this.authService.loginWithGoogle();
       this.overlayType = 'success';
       this.overlayTitle = 'Erfolgreich angemeldet';
       this.overlayMessage = 'Sie werden zum Dashboard weitergeleitet...';
       this.showOverlay = true;
-      
+
       setTimeout(() => {
         this.showOverlay = false;
         this.router.navigate(['/dashboard']);
@@ -166,6 +168,12 @@ export class LoginComponent {
    */
   onOverlayClose(): void {
     this.showOverlay = false;
+  }
+
+  /** Guest login: set guest flag and navigate to dashboard */
+  onGuestLogin(): void {
+    sessionStorage.setItem('guestMode', 'true');
+    this.router.navigate(['/dashboard']);
   }
 }
 

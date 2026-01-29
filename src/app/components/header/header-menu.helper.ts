@@ -107,6 +107,6 @@ export class HeaderMenuHelper {
   async onLogout(authService: AuthService, router: Router): Promise<void> {
     this.closeMenus();
     await authService.logout();
-    await router.navigate(['/login']);
+    await router.navigate(['/login'], { replaceUrl: true });
   }
 }

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { filter, map, take } from 'rxjs/operators';
 
-export const authGuard = () => {
+export const authGuard = (route: any) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -11,7 +11,13 @@ export const authGuard = () => {
     filter(user => user !== undefined),
     take(1),
     map(user => {
-      return true;
+      if (user) return true;
+
+      const guestAllowed = route?.data?.['guestAllowed'] === true;
+      const isGuest = sessionStorage.getItem('guestMode') === 'true';
+      if (guestAllowed && isGuest) return true;
+
+      return router.createUrlTree(['/login']);
     })
   );
 };

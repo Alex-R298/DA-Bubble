@@ -1,14 +1,14 @@
 import { Injectable, inject } from '@angular/core';
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut, 
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
-  sendPasswordResetEmail,    
-  confirmPasswordReset,       
-  verifyPasswordResetCode  
+  sendPasswordResetEmail,
+  confirmPasswordReset,
+  verifyPasswordResetCode
 } from 'firebase/auth';
 import { FirebaseService } from './firebase.service';
 import { UserService } from './user.service';
@@ -20,10 +20,10 @@ import { BehaviorSubject } from 'rxjs';
 export class AuthService {
   private firebaseService = inject(FirebaseService);
   private userService = inject(UserService);
-  
+
   private authStateSubject = new BehaviorSubject<any>(undefined);
   authState$ = this.authStateSubject.asObservable();
-  
+
   private activityTimeout: any;
   private currentUserId: string | null = null;
 
@@ -31,13 +31,13 @@ export class AuthService {
     onAuthStateChanged(this.firebaseService.auth, async (user) => {
       this.authStateSubject.next(user);
       this.currentUserId = user?.uid || null;
-      
+
       if (user) {
         await this.userService.updateUserStatus(user.uid, 'online');
         this.startActivityMonitoring(user.uid);
       }
     });
-    
+
     window.addEventListener('beforeunload', () => {
       if (this.currentUserId) {
         this.userService.updateUserStatusSync(this.currentUserId, 'offline');
@@ -51,13 +51,13 @@ export class AuthService {
    */
   private startActivityMonitoring(uid: string): void {
     const activity = ['mousedown', 'keydown', 'scroll', 'touchstart'];
-    
+
     activity.forEach(event => {
       document.addEventListener(event, () => {
         this.resetActivityTimer(uid);
       });
     });
-    
+
     this.resetActivityTimer(uid);
   }
 
@@ -67,7 +67,7 @@ export class AuthService {
    */
   private resetActivityTimer(uid: string): void {
     this.userService.updateUserStatus(uid, 'online');
-    
+
     clearTimeout(this.activityTimeout);
     this.activityTimeout = setTimeout(async () => {
       await this.userService.updateUserStatus(uid, 'away');
@@ -135,7 +135,8 @@ export class AuthService {
     if (this.currentUserId) {
       await this.userService.updateUserStatus(this.currentUserId, 'offline');
     }
-    
+    sessionStorage.removeItem('guestMode');
+
     await signOut(this.firebaseService.auth);
     this.currentUserId = null;
   }
