@@ -81,7 +81,8 @@
 .thread-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
+  overflow-x: hidden;
+  padding: 1rem 0;
 }
 
 :host ::ng-deep .message-item {

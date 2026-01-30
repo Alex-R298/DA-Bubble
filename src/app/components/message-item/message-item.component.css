@@ -446,22 +446,26 @@
     overflow: visible;
 }
 
+.message-item-spacer.thread-spacer {
+    max-width: none;
+    width: calc(100% + 0rem);
+}
+
 .thread-spacer .message-spacer {
     width: 100%;
-    height: auto;
-    min-height: 10rem;
+    min-height: 9rem;
     padding: 0.75rem 1rem;
 }
 
 .thread-spacer .edit-textarea {
-    min-height: 5rem;
-    height: 5rem;
+    min-height: 4rem;
+    height: 4rem;
     font-size: 16px;
 }
 
 .thread-spacer .btn-cancel,
 .thread-spacer .btn-save {
-    min-width: 100px;
+    width: 100px;
     height: 40px;
     padding: 0.25rem 0.75rem;
     font-size: 16px;
@@ -475,7 +479,7 @@
     overflow: hidden;
     max-height: 0;
     flex: 1;
-    max-width: 70%;
+    max-width: 85%;
 }
 
 /* .message-item.own-message .message-item-spacer {
