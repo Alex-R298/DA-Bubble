@@ -132,7 +132,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
   }
 
   openThread(message: Message): void {
-    this.threadStateService.openThread(message, this.currentChannel!.id!);
+    if (!message || !this.currentChannel?.id) return;
+    this.threadStateService.openThread(message, this.currentChannel.id);
   }
 
   private loadChannel(): void {
