@@ -86,6 +86,7 @@
 			*ngIf="!showEditMessageInput"
 			[isOwnMessage]="isOwnMessage"
 			[showThreadButton]="showThreadButton"
+			[showCommentButton]="showCommentButton"
 			(reactionToggled)="toggleReaction($event)"
 			(moreVertClicked)="onMoreVertClick()"
 			(threadButtonClicked)="threadClicked.emit()">

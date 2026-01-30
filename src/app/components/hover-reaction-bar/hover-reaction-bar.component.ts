@@ -20,6 +20,9 @@ export class HoverReactionBarComponent {
   /** Controls the visibility of the thread button. */
   @Input() showThreadButton: boolean = false;
 
+  /** Controls the visibility of the comment button separately. */
+  @Input() showCommentButton: boolean = true;
+
   /** Emits when a reaction emoji is toggled. */
   @Output() reactionToggled = new EventEmitter<string>();
 

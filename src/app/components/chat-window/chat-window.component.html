@@ -230,7 +230,8 @@
         <app-message-item
           [message]="message"
           [currentUserId]="currentUserId"
-          [showThreadButton]="!!currentChannel"
+          [showThreadButton]="true"
+          [showCommentButton]="!!currentChannel"
           (threadClicked)="openThread(message)"
           [senderClickable]="true"
           (senderClicked)="openSenderProfile($event)"

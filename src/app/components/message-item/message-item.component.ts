@@ -27,6 +27,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   @Input() isOwnMessageOverride: boolean | null = null;
   @Input() showReactions: boolean = true;
   @Input() showThreadButton: boolean = false;
+  @Input() showCommentButton: boolean = true;
   @Input() senderClickable: boolean = false;
   @Output() reactionToggled = new EventEmitter<{ messageId: string | undefined; emoji: string }>();
   @Output() threadClicked = new EventEmitter<void>();
