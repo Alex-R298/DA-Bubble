@@ -4,6 +4,7 @@
   flex-direction: column;
   height: 100%;
   background-color: #ffffff;
+  border-radius: 1.875rem;
 }
 
 .thread-header {
@@ -12,6 +13,7 @@
   padding: 2.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   height: 6.50rem;
+  border-radius: 1.875rem 1.875rem 0 0;
 }
 
 .back-button {
@@ -149,6 +151,7 @@
   background-color: #ffffff;
   position: relative;
   z-index: 20;
+  border-radius: 1.875rem;
 }
 
 @media (max-width: 1439px) {
