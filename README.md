@@ -1,18 +1,77 @@
 # DA Bubble
 
-## Description
+A real-time messaging and collaboration platform inspired by Slack, built with Angular 18 and Firebase.
 
-DA Bubble is a Slack clone application built with Angular and Firebase, providing real-time messaging and collaboration features.
+![Angular](https://img.shields.io/badge/Angular-18-DD0031?style=flat&logo=angular)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.4-3178C6?style=flat&logo=typescript)
+![Firebase](https://img.shields.io/badge/Firebase-12.7-FFCA28?style=flat&logo=firebase)
 
 ## Table of Contents
 
+- [Features](#features)
+- [Tech Stack](#tech-stack)
 - [Installation](#installation)
 - [Environment Setup](#environment-setup)
 - [Usage](#usage)
+- [Project Structure](#project-structure)
 - [Internationalization](#internationalization)
 - [Security Guidelines](#security-guidelines)
+- [Developers](#developers)
 - [License](#license)
-- [Contact](#contact)
+
+## Features
+
+### Authentication & User Management
+- Email/password registration and login
+- Google OAuth integration
+- Password reset via email verification
+- User profiles with customizable avatars
+- Activity status tracking (online/away/offline)
+
+### Channel Management
+- Create and manage channels with descriptions
+- Add/remove channel members
+- Channel-based messaging with real-time updates
+
+### Direct Messaging
+- Private one-on-one conversations
+- User search for initiating new conversations
+- Separate conversation management
+
+### Messaging Features
+- Create, edit, and delete messages
+- Threaded conversations (reply to specific messages)
+- Emoji reactions (12 emoji options)
+- @mentions for users and #channel references
+- Rich text content formatting
+
+### Search
+- Real-time message search across channels and DMs
+- User search functionality
+- Live filtering as you type
+
+### Multi-Language Support
+- German (DE) - Default
+- English (EN)
+- Spanish (ES)
+- French (FR)
+
+### User Interface
+- Responsive design with collapsible sidebar
+- Avatar selection during signup (6 predefined options)
+- User profile modals with status display
+- Splash screen and intuitive navigation
+
+## Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Frontend | Angular 18 (Standalone Components) |
+| Language | TypeScript 5.4 |
+| Backend | Firebase (Firestore, Auth, Storage) |
+| State Management | RxJS 7.8 |
+| Internationalization | @ngx-translate |
+| Testing | Karma + Jasmine |
 
 ## Installation
 
@@ -30,9 +89,11 @@ npm install
 ng serve
 ```
 
+The application will be available at `http://localhost:4200`
+
 ## Environment Setup
 
-Create a `.env` file based on `.env.example` with the following variables:
+Create a `.env` file based on `.env.example` with your Firebase configuration:
 
 ```
 FIREBASE_API_KEY=YOUR_FIREBASE_API_KEY
@@ -45,68 +106,69 @@ FIREBASE_APP_ID=YOUR_FIREBASE_APP_ID
 
 ## Usage
 
-1. Navigate to `http://localhost:4200` after starting the development server
-2. Create an account or log in with existing credentials
-3. Select a channel or start a direct message conversation
-4. Use the sidebar to navigate between channels and direct messages
+1. Start the development server with `ng serve`
+2. Navigate to `http://localhost:4200`
+3. Create an account or log in with existing credentials
+4. Explore channels or start direct message conversations
+5. Use the sidebar to navigate between channels and DMs
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── components/           # UI Components
+│   │   ├── dashboard/        # Main app layout
+│   │   ├── chat-window/      # Message display & composition
+│   │   ├── sidebar/          # Navigation (channels/DMs)
+│   │   ├── message-item/     # Individual message with reactions
+│   │   ├── thread/           # Thread/reply view
+│   │   ├── login/            # Authentication
+│   │   ├── signup/           # Registration
+│   │   └── header/           # Top navigation
+│   ├── services/             # Business logic
+│   │   ├── auth.service.ts           # Authentication
+│   │   ├── user.service.ts           # User management
+│   │   ├── message.service.ts        # Channel messages
+│   │   ├── direct-message.service.ts # Direct messages
+│   │   ├── channel.service.ts        # Channel management
+│   │   ├── thread.service.ts         # Thread replies
+│   │   └── search.service.ts         # Search functionality
+│   ├── models/               # TypeScript interfaces
+│   ├── guards/               # Route guards (auth)
+│   └── environments/         # Firebase configuration
+├── assets/
+│   ├── avatars/              # Predefined avatar SVGs
+│   ├── fonts/                # Nunito font family
+│   └── i18n/                 # Translation files
+└── styles/                   # Global styles
+```
 
 ## Internationalization
 
-DA Bubble supports multiple languages through ngx-translate integration.
-
-### Supported Languages
-
-| Code | Language | Flag |
-|------|----------|------|
-| DE   | Deutsch (German) | Default |
-| EN   | English | |
-| ES   | Espanol (Spanish) | |
-| FR   | Francais (French) | |
-
-### Language Selection
-
-The language selector is located in the login header. Users can switch languages at any time:
-
-1. Click the language button in the header (displays current language flag and code)
-2. Select the desired language from the dropdown menu
-3. The entire application interface updates immediately
-
-### Language Persistence
-
-- Selected language is stored in `localStorage`
-- Preference persists across browser sessions
-- On first visit, the application attempts to detect browser language
-- Falls back to German (DE) if browser language is not supported
-
-### Translation Files
-
 Translation files are located in `src/assets/i18n/`:
 
-```
-src/assets/i18n/
-  de.json    # German translations (default)
-  en.json    # English translations
-  es.json    # Spanish translations
-  fr.json    # French translations
-```
+| Language | File | Status |
+|----------|------|--------|
+| German | de.json | Default |
+| English | en.json | Supported |
+| Spanish | es.json | Supported |
+| French | fr.json | Supported |
 
-### Adding New Translations
+### Language Selection
+- Access the language selector in the login header
+- Preference is saved in localStorage and persists across sessions
+- Falls back to browser language detection if supported
 
-To add translations for a new component:
+### Adding Translations
 
-1. Add translation keys to all language files in `src/assets/i18n/`
-2. Import `TranslateModule` in your component
-3. Use the `translate` pipe in templates: `{{ 'KEY.SUBKEY' | translate }}`
-4. For dynamic translations in TypeScript, inject `TranslateService` and use `instant()` or `get()`
-
-Example template usage:
+Use the `translate` pipe in templates:
 
 ```html
 <h1>{{ 'LOGIN.TITLE' | translate }}</h1>
-<input [placeholder]="'LOGIN.EMAIL_PLACEHOLDER' | translate" />
 ```
 
-Example TypeScript usage:
+Or inject `TranslateService` in TypeScript:
 
 ```typescript
 import { TranslateService } from '@ngx-translate/core';
@@ -125,10 +187,16 @@ getMessage(): string {
 - Validate all user input on client and server side
 - Follow principle of least privilege for Firebase rules
 
+## Developers
+
+This project was developed by:
+
+| Developer | GitHub |
+|-----------|--------|
+| Alex | [Alex-R298](https://github.com/Alex-R298) |
+| Tarik | [ttariik](https://github.com/ttariik) |
+| Dking | [dkingtran](https://github.com/dkingtran) |
+
 ## License
 
 This project is licensed under the MIT License.
-
-## Contact
-
-For questions or support, contact the development team.
