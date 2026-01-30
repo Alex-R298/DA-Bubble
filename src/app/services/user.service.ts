@@ -151,11 +151,16 @@ export class UserService {
    * @param status - The new status value
    */
   async updateUserStatus(uid: string, status: 'online' | 'offline' | 'away'): Promise<void> {
-    const userDoc = doc(this.firebaseService.db, 'users', uid);
-    await updateDoc(userDoc, {
-      status: status,
-      lastSeen: new Date()
-    });
+    if (!uid) return;
+    try {
+      const userDoc = doc(this.firebaseService.db, 'users', uid);
+      await updateDoc(userDoc, {
+        status: status,
+        lastSeen: new Date()
+      });
+    } catch (error) {
+      console.error(`Failed to update status to ${status} for user ${uid}:`, error);
+    }
   }
 
   /**

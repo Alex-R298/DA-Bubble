@@ -26,6 +26,8 @@ export class AuthService {
 
   private activityTimeout: any;
   private currentUserId: string | null = null;
+  private activityHandler: (() => void) | null = null;
+  private isLoggedOut = false;
 
   constructor() {
     onAuthStateChanged(this.firebaseService.auth, async (user) => {
@@ -33,6 +35,7 @@ export class AuthService {
       this.currentUserId = user?.uid || null;
 
       if (user) {
+        this.isLoggedOut = false;
         await this.userService.updateUserStatus(user.uid, 'online');
         this.startActivityMonitoring(user.uid);
       }
@@ -50,15 +53,34 @@ export class AuthService {
    * @param uid - The user ID to monitor activity for.
    */
   private startActivityMonitoring(uid: string): void {
-    const activity = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+    this.stopActivityMonitoring();
 
-    activity.forEach(event => {
-      document.addEventListener(event, () => {
+    this.activityHandler = () => {
+      if (!this.isLoggedOut) {
         this.resetActivityTimer(uid);
-      });
+      }
+    };
+
+    const activity = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+    activity.forEach(event => {
+      document.addEventListener(event, this.activityHandler!);
     });
 
     this.resetActivityTimer(uid);
+  }
+
+  /**
+   * Stops activity monitoring by removing event listeners.
+   */
+  private stopActivityMonitoring(): void {
+    if (this.activityHandler) {
+      const activity = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+      activity.forEach(event => {
+        document.removeEventListener(event, this.activityHandler!);
+      });
+      this.activityHandler = null;
+    }
+    clearTimeout(this.activityTimeout);
   }
 
   /**
@@ -66,11 +88,15 @@ export class AuthService {
    * @param uid - The user ID to reset the timer for.
    */
   private resetActivityTimer(uid: string): void {
+    if (this.isLoggedOut) return;
+
     this.userService.updateUserStatus(uid, 'online');
 
     clearTimeout(this.activityTimeout);
     this.activityTimeout = setTimeout(async () => {
-      await this.userService.updateUserStatus(uid, 'away');
+      if (!this.isLoggedOut) {
+        await this.userService.updateUserStatus(uid, 'away');
+      }
     }, 5 * 60 * 1000);
   }
 
@@ -132,11 +158,20 @@ export class AuthService {
    * Logs out the current user and sets their status to offline.
    */
   async logout() {
-    if (this.currentUserId) {
-      await this.userService.updateUserStatus(this.currentUserId, 'offline');
-    }
-    sessionStorage.removeItem('guestMode');
+    this.isLoggedOut = true;
+    this.stopActivityMonitoring();
 
+    const uid = this.currentUserId || this.firebaseService.auth.currentUser?.uid;
+
+    if (uid) {
+      try {
+        await this.userService.updateUserStatus(uid, 'offline');
+      } catch (error) {
+        console.error('Failed to set offline status:', error);
+      }
+    }
+
+    sessionStorage.removeItem('guestMode');
     await signOut(this.firebaseService.auth);
     this.currentUserId = null;
   }
