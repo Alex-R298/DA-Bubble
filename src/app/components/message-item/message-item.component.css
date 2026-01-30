@@ -744,10 +744,10 @@
     }
 
     .edit-message-container.thread-edit {
-        left: 1rem;
+        left: 3.5rem;
         right: 1rem;
         width: auto;
-        max-width: calc(100% - 2rem);
+        max-width: calc(100% - 4rem);
     }
 
     .edit-message {
@@ -810,11 +810,6 @@
         height: 55px;
     }
 
-    .edit-message-container.thread-edit {
-        left: 0.5rem;
-        right: 0.5rem;
-        max-width: calc(100% - 1rem);
-    }
 
     .edit-message {
         height: 40px;

@@ -126,3 +126,14 @@
 .reaction-option:hover {
     background: #f0f0f0;
 }
+
+/* Bottom position for picker when near top of viewport */
+.reaction-picker.hover-picker.picker-bottom {
+    bottom: auto;
+    top: calc(100% + 8px);
+    border-radius: 20px 0px 20px 20px;
+}
+
+.hover-reaction-bar.own-message-bar .reaction-picker.hover-picker.picker-bottom {
+    border-radius: 0px 20px 20px 20px;
+}

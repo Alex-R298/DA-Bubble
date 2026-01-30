@@ -32,6 +32,9 @@ export class HoverReactionBarComponent {
   /** Controls the visibility of the emoji reaction picker. */
   showReactionPicker = false;
 
+  /** Position of the picker: 'top' or 'bottom'. */
+  pickerPosition: 'top' | 'bottom' = 'top';
+
   /** List of available emoji reactions for selection. */
   availableReactions: string[] = ['😀', '😂', '😍', '🤔', '👍', '👎', '❤️', '🎉', '😢', '😱', '🙏', '🔥'];
 
@@ -59,9 +62,46 @@ export class HoverReactionBarComponent {
 
   /**
    * Toggles the visibility of the emoji reaction picker.
+   * Calculates whether to show picker above or below based on available space.
    */
   toggleReactionPicker(): void {
+    if (!this.showReactionPicker) {
+      this.calculatePickerPosition();
+    }
     this.showReactionPicker = !this.showReactionPicker;
+  }
+
+  /**
+   * Calculates whether the picker should appear above or below.
+   * Finds the scrollable container and checks space relative to it.
+   */
+  private calculatePickerPosition(): void {
+    const element = this.elementRef.nativeElement;
+    const rect = element.getBoundingClientRect();
+    const scrollContainer = this.findScrollableParent(element);
+
+    if (scrollContainer) {
+      const containerRect = scrollContainer.getBoundingClientRect();
+      const spaceAboveInContainer = rect.top - containerRect.top;
+      this.pickerPosition = spaceAboveInContainer < 120 ? 'bottom' : 'top';
+    } else {
+      this.pickerPosition = rect.top < 200 ? 'bottom' : 'top';
+    }
+  }
+
+  /**
+   * Finds the nearest scrollable parent container.
+   */
+  private findScrollableParent(element: HTMLElement): HTMLElement | null {
+    let parent = element.parentElement;
+    while (parent) {
+      const style = getComputedStyle(parent);
+      if (style.overflowY === 'auto' || style.overflowY === 'scroll') {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+    return null;
   }
 
   /**

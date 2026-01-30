@@ -16,7 +16,7 @@
 	<button *ngIf="isOwnMessage" (mousedown)="onMoreVertClick()">
 		<app-svg-images [iconName]="'more_vert'" [width]="'4'" [height]="'16'"></app-svg-images>
 	</button>
-	<div class="reaction-picker hover-picker" *ngIf="showReactionPicker">
+	<div class="reaction-picker hover-picker" [class.picker-bottom]="pickerPosition === 'bottom'" *ngIf="showReactionPicker">
 		<button
 			type="button"
 			class="reaction-option"
