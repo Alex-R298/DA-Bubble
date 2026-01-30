@@ -154,10 +154,10 @@ export class UserService {
     if (!uid) return;
     try {
       const userDoc = doc(this.firebaseService.db, 'users', uid);
-      await updateDoc(userDoc, {
+      await setDoc(userDoc, {
         status: status,
         lastSeen: new Date()
-      });
+      }, { merge: true });
     } catch (error) {
       // Status update failed silently
     }
@@ -171,10 +171,10 @@ export class UserService {
    */
   updateUserStatusSync(uid: string, status: 'online' | 'offline' | 'away'): void {
     const userDoc = doc(this.firebaseService.db, 'users', uid);
-    updateDoc(userDoc, {
+    setDoc(userDoc, {
       status: status,
       lastSeen: new Date()
-    }).catch(() => { /* Status update failed silently */ });
+    }, { merge: true }).catch(() => { /* Status update failed silently */ });
   }
 
   /**
