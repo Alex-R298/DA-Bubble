@@ -73,7 +73,7 @@ export class DirectMessageService {
                   senderProfileImage = user.profileImageUrl;
                 }
               } catch (error) {
-                console.log('Could not load avatar for DM user:', data['senderId']);
+                // Avatar loading failed silently
               }
             }
 
@@ -122,7 +122,7 @@ export class DirectMessageService {
                   senderProfileImage = user.profileImageUrl;
                 }
               } catch (error) {
-                console.log('Could not load avatar for DM user:', data['senderId']);
+                // Avatar loading failed silently
               }
             }
 

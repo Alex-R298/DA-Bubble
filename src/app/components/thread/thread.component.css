@@ -5,6 +5,7 @@
   height: 100%;
   background-color: #ffffff;
   border-radius: 1.875rem;
+  overflow: hidden;
 }
 
 .thread-header {

@@ -238,7 +238,7 @@
   margin-bottom: 0.5rem;
   width: 350px;
   max-height: 1000px;
-  z-index: 10;
+  z-index: 100;
   animation: dropdownSlideIn 0.2s ease-out;
 }
 

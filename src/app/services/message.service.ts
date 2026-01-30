@@ -44,8 +44,6 @@ export class MessageService {
       messageData
     );
 
-    console.log('Message erstellt in Channel:', channelId, 'ID:', docRef.id);
-
     return {
       id: docRef.id,
       ...messageData
@@ -74,7 +72,7 @@ export class MessageService {
                     senderProfileImage = user.profileImageUrl;
                   }
                 } catch (error) {
-                  console.log('Could not load avatar for user:', data['senderId']);
+                  // Avatar loading failed silently
                 }
               }
 
@@ -126,7 +124,7 @@ export class MessageService {
                   senderProfileImage = user.profileImageUrl;
                 }
               } catch (error) {
-                console.log('Could not load avatar for user:', data['senderId']);
+                // Avatar loading failed silently
               }
             }
 

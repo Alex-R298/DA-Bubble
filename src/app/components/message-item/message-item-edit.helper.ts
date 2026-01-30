@@ -154,7 +154,7 @@ export class MessageItemEditHelper {
       message.isEdited = true;
       this.showEditMessageInput = false;
     } catch (error) {
-      console.error('Error editing message:', error);
+      // Edit failed silently
     }
   }
 }

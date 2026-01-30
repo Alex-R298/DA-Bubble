@@ -11,6 +11,7 @@ import { MessageItemComponent } from '../message-item/message-item.component';
 import { Subscription } from 'rxjs';
 import { ChannelService, Channel } from '../../services/channel.service';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
+import { UserProfileStateService } from '../../services/user-profile-state.service';
 
 @Component({
   selector: 'app-thread',
@@ -33,6 +34,7 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
   private channelService = inject(ChannelService);
   private messageService = inject(MessageService);
   private router = inject(Router);
+  private userProfileStateService = inject(UserProfileStateService);
   private subscription?: Subscription;
   private channelsSubscription?: Subscription;
   currentUserId: string = '';
@@ -157,7 +159,7 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
         userName
       );
     } catch (error) {
-      console.error('Error toggling reaction:', error);
+      // Reaction toggle failed silently
     }
   }
 
@@ -171,5 +173,29 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
     if (channel?.id) {
       await this.router.navigate(['/dashboard/chat/channel', channel.id]);
     }
+  }
+
+  /**
+   * Opens the user profile for a mentioned user.
+   * @param userIdOrName - The user ID or name of the mentioned user.
+   */
+  async openMentionProfile(userIdOrName: string): Promise<void> {
+    if (!userIdOrName) return;
+
+    let user = await this.userService.getUserById(userIdOrName);
+
+    if (!user) {
+      user = await this.userService.getUserByName(userIdOrName);
+    }
+
+    if (!user) return;
+
+    this.userProfileStateService.openProfile({
+      uid: user.uid,
+      name: user.name,
+      email: user.email,
+      profileImageUrl: user.profileImageUrl,
+      status: user.status
+    });
   }
 }

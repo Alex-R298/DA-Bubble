@@ -71,7 +71,6 @@ export class InputFieldComponent implements OnInit, AfterViewInit {
         const userName = target.getAttribute('data-name');
         const uid = target.getAttribute('data-uid');
         if (uid) {
-          console.log('Mention clicked, opening profile for uid:', uid);
           this.userProfileClicked.emit(uid);
         }
       }

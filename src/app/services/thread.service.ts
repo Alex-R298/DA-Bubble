@@ -74,7 +74,7 @@ export class ThreadService {
           return user.profileImageUrl;
         }
       } catch (error) {
-        console.log('Could not load avatar for thread reply:', data['senderId']);
+        // Avatar loading failed silently
       }
     }
     

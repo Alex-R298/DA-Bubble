@@ -167,7 +167,7 @@ export class AuthService {
       try {
         await this.userService.updateUserStatus(uid, 'offline');
       } catch (error) {
-        console.error('Failed to set offline status:', error);
+        // Status update failed silently
       }
     }
 
@@ -194,7 +194,6 @@ export class AuthService {
       await sendPasswordResetEmail(this.firebaseService.auth, email);
       return { success: true, message: 'Reset-Email wurde gesendet' };
     } catch (error: any) {
-      console.error('Fehler beim Senden der Reset-Email:', error);
       return { success: false, message: this.getErrorMessage(error.code) };
     }
   }
@@ -210,7 +209,6 @@ export class AuthService {
       await confirmPasswordReset(this.firebaseService.auth, oobCode, newPassword);
       return { success: true, message: 'Passwort erfolgreich zurückgesetzt' };
     } catch (error: any) {
-      console.error('Fehler beim Zurücksetzen:', error);
       return { success: false, message: this.getErrorMessage(error.code) };
     }
   }

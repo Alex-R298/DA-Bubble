@@ -159,7 +159,7 @@ export class UserService {
         lastSeen: new Date()
       });
     } catch (error) {
-      console.error(`Failed to update status to ${status} for user ${uid}:`, error);
+      // Status update failed silently
     }
   }
 
@@ -174,7 +174,7 @@ export class UserService {
     updateDoc(userDoc, {
       status: status,
       lastSeen: new Date()
-    }).catch(err => console.error('Status update failed:', err));
+    }).catch(() => { /* Status update failed silently */ });
   }
 
   /**

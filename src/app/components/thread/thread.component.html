@@ -17,6 +17,7 @@
       [currentUserId]="currentUserId"
       [showReactions]="true"
       (reactionToggled)="onReactionToggled($event)"
+      (mentionClicked)="openMentionProfile($event)"
       (channelClicked)="navigateToChannel($event)"
       class="original-message">
     </app-message-item>
@@ -35,6 +36,7 @@
       [currentUserId]="currentUserId"
       [showReactions]="true"
       (reactionToggled)="onReactionToggled($event)"
+      (mentionClicked)="openMentionProfile($event)"
       (channelClicked)="navigateToChannel($event)">
     </app-message-item>
     
