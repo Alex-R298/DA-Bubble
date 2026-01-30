@@ -281,12 +281,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   /** Tracking function for channel list in ngFor */
   trackByChannelId(index: number, channel: Channel): string {
-    return this.searchHelper.trackByChannelId(index, channel);
+    return channel.id || `${index}`;
   }
 
   /** Tracking function for search message list in ngFor */
   trackBySearchMessage(index: number, message: SearchMessageResult): string {
-    return this.searchHelper.trackBySearchMessage(index, message);
+    return message.messageId || `${message.type}-${message.timestamp?.getTime()}-${index}`;
   }
 
   private getSearchableChannels(): Channel[] {

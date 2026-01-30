@@ -17,13 +17,14 @@ export class SearchService {
     }
 
     /**
-     * Normalizes text by removing HTML tags and extra whitespace.
+     * Normalizes text by removing HTML tags, non-alphanumeric characters, and extra whitespace.
      * @param value - The text to normalize.
      * @returns The normalized lowercase text.
      */
     normalizeText(value: string): string {
         return value
             .replace(/<[^>]+>/g, ' ')
+            .replace(/[^\w\s]/g, ' ')
             .replace(/\s+/g, ' ')
             .trim()
             .toLowerCase();
@@ -36,9 +37,10 @@ export class SearchService {
      * @returns True if the message content or sender name matches the query.
      */
     messageMatchesQuery(message: { content: string; senderName?: string }, q: string): boolean {
+        const normalizedQ = this.normalizeText(q);
         const content = this.normalizeText(message.content || '');
         const sender = (message.senderName || '').toLowerCase();
-        return content.includes(q) || sender.includes(q);
+        return content.includes(normalizedQ) || sender.includes(normalizedQ);
     }
 
     /**

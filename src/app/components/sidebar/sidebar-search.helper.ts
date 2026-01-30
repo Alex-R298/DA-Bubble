@@ -86,7 +86,7 @@ export class SidebarSearchHelper {
     const channelIds = new Set(searchableChannels.map(c => c.id).filter(Boolean) as string[]);
 
     const channelMessages = allChannelMessages
-      .filter(m => channelIds.has(m.channelId) && !(m as any).parentMessageId)
+      .filter(m => channelIds.has(m.channelId))
       .filter(m => searchService.messageMatchesQuery(m, q))
       .map(m => ({
         type: 'channel',

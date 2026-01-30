@@ -109,7 +109,12 @@
               *ngFor="let channel of filteredSearchChannels; trackBy: trackByChannelId"
               (mousedown)="selectSearchChannel(channel)"
             >
-              <span class="search-option-prefix">#</span>
+              <app-svg-images
+                [iconName]="'tag'"
+                [width]="'1.3rem'"
+                [height]="'1.3rem'"
+                [className]="'search-option-prefix-icon'"
+              ></app-svg-images>
               <span class="search-option-title">{{ channel.name }}</span>
             </button>
           </div>

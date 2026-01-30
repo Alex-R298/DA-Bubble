@@ -4,6 +4,7 @@
     max-height: auto;
     overflow: auto;
     --ui-panel-gap: 0.5rem;
+    font-family: inherit !important;
 }
 
 .search-options {
@@ -31,6 +32,7 @@
 .search-option.ui-mention-item {
     display: flex;
     align-items: center;
+    font-family: inherit;
     gap: 0.75rem;
     width: 100%;
     max-width: 100%;
@@ -45,10 +47,11 @@
     background: #ECEEFE;
 }
 
-.search-option-prefix {
+.search-option-prefix-icon {
     font-weight: 700;
     color: #444DF2;
     margin-right: 0.35rem;
+    flex: 0 0 auto;
 }
 
 .search-option-avatar {
@@ -70,7 +73,6 @@
 .search-option-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 2rem;
     width: 100%;
     min-width: 0;
@@ -78,7 +80,7 @@
 
 .search-option-title {
     font-size: 1.3rem;
-    color: #111;
+    color: black;
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -106,4 +108,10 @@
     padding: 0.75rem 1.5rem;
     color: #777;
     font-size: 1.15rem;
+}
+
+@media (max-width: 480px) {
+    .search-option-context {
+        display: none;
+    }
 }

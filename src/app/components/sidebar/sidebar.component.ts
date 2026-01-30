@@ -313,12 +313,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   /** TrackBy function for channel lists */
   trackByChannelId(index: number, channel: Channel): string {
-    return this.searchHelper.trackByChannelId(index, channel);
+    return channel.id || `${index}`;
   }
 
   /** TrackBy function for search message results */
   trackBySearchMessage(index: number, message: SearchMessageResult): string {
-    return this.searchHelper.trackBySearchMessage(index, message);
+    return message.messageId || `${message.type}-${message.timestamp?.getTime()}-${index}`;
   }
 
   private getSearchableChannels(): Channel[] {
