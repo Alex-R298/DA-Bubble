@@ -141,7 +141,6 @@
     border-radius: 20px;
     font-size: 0.8125rem;
     font-family: 'Nunito', sans-serif;
-    color: #444DF2;
     cursor: pointer;
     transition: background 0.2s, border-color 0.2s;
     height: 34px;
@@ -612,6 +611,43 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    position: relative;
+}
+
+.edit-emoji-picker {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    background: white;
+    border-radius: 20px;
+    padding: 0.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.125rem;
+    width: 180px;
+    border: 1px solid #787DF5;
+    z-index: 10;
+}
+
+.edit-emoji-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.25rem;
+    padding: 0.25rem;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.2s;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-emoji-btn:hover {
+    background: #ECEEFE;
 }
 
 .right-actions {

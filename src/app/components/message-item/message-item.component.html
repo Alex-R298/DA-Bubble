@@ -115,9 +115,19 @@
 				></div>
 				<div class="edit-message-actions">
 					<div class="left-actions">
-						<button class="btn-emoji">
-						<app-svg-images [iconName]="'smiley'" [width]="'20'" [height]="'20'"></app-svg-images>
-					</button>
+						<button class="btn-emoji" (click)="toggleEditEmojiPicker()">
+							<app-svg-images [iconName]="'smiley'" [width]="'20'" [height]="'20'"></app-svg-images>
+						</button>
+						<div class="edit-emoji-picker" *ngIf="showEditEmojiPicker">
+							<button
+								type="button"
+								class="edit-emoji-btn"
+								*ngFor="let emoji of editEmojis"
+								(click)="insertEditEmoji(emoji)"
+							>
+								{{ emoji }}
+							</button>
+						</div>
 					</div>
 					<div class="right-actions">
 					<button class="btn-cancel" (click)="hideEditMessageInput()">

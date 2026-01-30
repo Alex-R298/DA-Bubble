@@ -49,6 +49,8 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   private channelsSubscription?: Subscription;
   readonly reactionsHelper = new MessageItemReactionsHelper();
   readonly editHelper = new MessageItemEditHelper();
+  showEditEmojiPicker = false;
+  editEmojis: string[] = ['😀', '😂', '😍', '🤔', '👍', '👎', '❤️', '🎉', '😢', '😱', '🙏', '🔥'];
 
   get showEditMessage() { return this.editHelper.showEditMessage; }
   get showEditMessageInput() { return this.editHelper.showEditMessageInput; }
@@ -287,5 +289,33 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     const senderId = this.message?.senderId;
     if (!senderId) return;
     this.senderClicked.emit(senderId);
+  }
+
+  /** Toggles the edit emoji picker visibility */
+  toggleEditEmojiPicker(): void {
+    this.showEditEmojiPicker = !this.showEditEmojiPicker;
+  }
+
+  /** Inserts an emoji into the edit textarea at cursor position */
+  insertEditEmoji(emoji: string): void {
+    const textarea = this.editTextarea?.nativeElement;
+    if (!textarea) return;
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      if (textarea.contains(range.commonAncestorContainer)) {
+        range.deleteContents();
+        range.insertNode(document.createTextNode(emoji));
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } else {
+        textarea.innerHTML += emoji;
+      }
+    } else {
+      textarea.innerHTML += emoji;
+    }
+    this.editHelper.editedContent = textarea.innerHTML;
+    this.showEditEmojiPicker = false;
   }
 }

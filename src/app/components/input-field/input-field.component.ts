@@ -37,7 +37,7 @@ export class InputFieldComponent implements OnInit, AfterViewInit {
   users: any[] = [];
   allChannels: Channel[] = [];
   showEmojiPicker: boolean = false;
-  emojis: string[] = ['😀', '😅', '😂', '😍', '🤝', '👍', '🎉', '🔥', '✅', '❓'];
+  emojis: string[] = ['😀', '😂', '😍', '🤔', '👍', '👎', '❤️', '🎉', '😢', '😱', '🙏', '🔥'];
   selectedUserIds: string[] = [];
   selectedChannelIds: string[] = [];
   showTagList: boolean = false;
