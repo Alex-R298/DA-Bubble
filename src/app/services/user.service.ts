@@ -41,7 +41,7 @@ export class UserService {
       email: email,
       name: name,
       profileImageUrl: '',
-      status: 'offline',
+      status: 'online',
       createdAt: new Date()
     };
     await setDoc(userDoc, userData);
