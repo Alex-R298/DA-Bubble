@@ -14,7 +14,6 @@
     position: absolute;
     bottom: calc(100% + 0.5rem);
     left: auto;
-    right: var(--message-side-padding, 1rem);
     background: white;
     border-radius: 20px 20px 20px 0;
     padding: 1rem;
@@ -25,6 +24,12 @@
     overflow-y: auto;
     z-index: 1000;
     animation: dropdownSlideIn 0.2s ease-out;
+}
+
+.user-tag-dropdown.dropdown-bottom {
+    bottom: auto;
+    top: calc(30% + 0.5rem);
+    border-radius: 0px 20px 20px 20px;
 }
 
 .user-list {
@@ -124,9 +129,8 @@
     .user-tag-dropdown {
         position: fixed;
         width: 100%;
-        bottom: 0;
         left: 0;
         right: 0;
-        border-radius: 20px 20px 0 0;
+        border-radius: 20px 20px 20px 0px;
     }
 }

@@ -23,6 +23,7 @@ export class UserTagDropdownComponent {
   @Input() tagListType: 'user' | 'channel' | null = null;
   @Input() users: TagUser[] = [];
   @Input() channels: Channel[] = [];
+  @Input() dropdownPosition: 'top' | 'bottom' = 'top';
 
   @Output() userSelected = new EventEmitter<TagUser>();
   @Output() channelSelected = new EventEmitter<Channel>();

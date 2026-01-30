@@ -11,6 +11,10 @@
     position: relative;
 }
 
+.message-item.edit-mode {
+    z-index: 100;
+}
+
 .message-item:hover {
     background-color: #ECEEFE;
 }

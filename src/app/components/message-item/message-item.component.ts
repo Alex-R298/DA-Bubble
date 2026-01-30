@@ -52,6 +52,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   readonly editHelper = new MessageItemEditHelper();
   showEditEmojiPicker = false;
   editEmojis: string[] = ['😀', '😂', '😍', '🤔', '👍', '👎', '❤️', '🎉', '😢', '😱', '🙏', '🔥'];
+  dropdownPosition: 'top' | 'bottom' = 'top';
 
   get showEditMessage() { return this.editHelper.showEditMessage; }
   get showEditMessageInput() { return this.editHelper.showEditMessageInput; }
@@ -195,7 +196,11 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
 
   /** Handles input events in the edit textarea and detects tag triggers */
   onEditInput(event: Event): void {
+    const wasShowingTagList = this.editHelper.showTagList;
     this.editHelper.onEditInput(event, this.contentFormatter);
+    if (!wasShowingTagList && this.editHelper.showTagList) {
+      this.calculateDropdownPosition();
+    }
   }
 
   /** Inserts a user tag at the current cursor position */
@@ -318,5 +323,35 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     }
     this.editHelper.editedContent = textarea.innerHTML;
     this.showEditEmojiPicker = false;
+  }
+
+  /** Calculates whether the dropdown should appear above or below */
+  private calculateDropdownPosition(): void {
+    const textarea = this.editTextarea?.nativeElement;
+    if (!textarea) return;
+
+    const rect = textarea.getBoundingClientRect();
+    const scrollContainer = this.findScrollableParent(textarea);
+
+    if (scrollContainer) {
+      const containerRect = scrollContainer.getBoundingClientRect();
+      const spaceAboveInContainer = rect.top - containerRect.top;
+      this.dropdownPosition = spaceAboveInContainer < 320 ? 'bottom' : 'top';
+    } else {
+      this.dropdownPosition = rect.top < 320 ? 'bottom' : 'top';
+    }
+  }
+
+  /** Finds the nearest scrollable parent container */
+  private findScrollableParent(element: HTMLElement): HTMLElement | null {
+    let parent = element.parentElement;
+    while (parent) {
+      const style = getComputedStyle(parent);
+      if (style.overflowY === 'auto' || style.overflowY === 'scroll') {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+    return null;
   }
 }

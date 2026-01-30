@@ -1,4 +1,4 @@
-<div class="user-tag-dropdown" *ngIf="showTagList && tagListType === 'user'">
+<div class="user-tag-dropdown" [class.dropdown-bottom]="dropdownPosition === 'bottom'" *ngIf="showTagList && tagListType === 'user'">
 	<ul class="user-list">
 		<li class="user-item"
 			*ngFor="let user of users"
@@ -13,7 +13,7 @@
 	<div *ngIf="!users.length" class="empty-state">Keine Benutzer gefunden</div>
 </div>
 
-<div class="user-tag-dropdown" *ngIf="showTagList && tagListType === 'channel'">
+<div class="user-tag-dropdown" [class.dropdown-bottom]="dropdownPosition === 'bottom'" *ngIf="showTagList && tagListType === 'channel'">
 	<ul class="channel-list">
 		<li class="channel-item"
 			*ngFor="let channel of channels"
