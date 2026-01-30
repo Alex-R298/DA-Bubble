@@ -166,6 +166,7 @@
   align-items: center;
   justify-content: center;
   color: inherit;
+  margin-right: 0.5rem;
 }
 
 .section-title {
@@ -454,6 +455,16 @@
 
   .sidebar-search-container .ui-mention-dropdown {
     width: 100%;
+  }
+
+  .channel-item {
+    margin: 0 1.5rem;
+    width: auto;
+  }
+
+  .user-item {
+    margin: 0 1.5rem;
+    width: auto;
   }
 }
 
