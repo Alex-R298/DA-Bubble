@@ -33,6 +33,7 @@
           name="email"
           [(ngModel)]="email"
           required
+          autocomplete="email"
           [placeholder]="'SIGNUP.EMAIL_PLACEHOLDER' | translate"
           class="form-input"
         />
@@ -48,6 +49,7 @@
           name="password"
           [(ngModel)]="password"
           required
+          autocomplete="new-password"
           [placeholder]="'SIGNUP.PASSWORD_PLACEHOLDER' | translate"
           class="form-input"
         />

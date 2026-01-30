@@ -16,6 +16,7 @@
           name="email"
           [(ngModel)]="email"
           required
+          autocomplete="email"
           [placeholder]="'LOGIN.EMAIL_PLACEHOLDER' | translate"
           class="form-input"
         />
@@ -31,6 +32,7 @@
           name="password"
           [(ngModel)]="password"
           required
+          autocomplete="current-password"
           [placeholder]="'LOGIN.PASSWORD_PLACEHOLDER' | translate"
           class="form-input"
         />
@@ -42,7 +44,7 @@
         <span>{{ 'LOGIN.OR' | translate }}</span>
       </div>
       
-      <button type="button" (click)="onGoogleLogin()" class="google-login-button">
+      <button type="button" (click)="onGoogleLogin()" class="google-login-button" autocomplete="off">
         <app-svg-images 
           iconName="google" 
           [width]="'20'" 
@@ -57,7 +59,7 @@
           {{ 'LOGIN.LOGIN_BUTTON' | translate }}
         </button>
         
-        <button type="button" class="guest-login-button" (click)="onGuestLogin()">
+        <button type="button" class="guest-login-button" (click)="onGuestLogin()" autocomplete="off">
           {{ 'LOGIN.GUEST_LOGIN' | translate }}
         </button>
       </div>
