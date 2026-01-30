@@ -226,12 +226,14 @@
         </div>
 
         <div class="profile-avatar-section ui-avatar-center">
-          <app-svg-images
-            class="profile-avatar ui-avatar"
-            [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
-            [width]="'100%'"
-            [height]="'100%'">
-          </app-svg-images>
+          <button type="button" class="avatar-button" (click)="openAvatarModal()" aria-label="Change Avatar">
+            <app-svg-images
+              class="profile-avatar ui-avatar"
+              [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
+              [width]="'100%'"
+              [height]="'100%'">
+            </app-svg-images>
+          </button>
         </div>
 
         <div class="profile-name-row display-flex-column">
@@ -303,8 +305,10 @@
   </div>
 </header>
 
+<app-avatar-modal *ngIf="showAvatarModal" (closed)="closeAvatarModal()"></app-avatar-modal>
+
 <div
   class="menu-overlay"
-  *ngIf="showUserMenu || showProfileView || showEditProfileView"
+  *ngIf="showUserMenu || showProfileView || showEditProfileView || showAvatarModal"
   (click)="closeMenus()"
 ></div>

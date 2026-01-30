@@ -9,6 +9,7 @@ export class HeaderMenuHelper {
   showUserMenu = false;
   showProfileView = false;
   showEditProfileView = false;
+  showAvatarModal = false;
   editedFullName = '';
   editNameFocused = false;
 
@@ -33,6 +34,7 @@ export class HeaderMenuHelper {
     this.showUserMenu = false;
     this.showProfileView = false;
     this.showEditProfileView = false;
+    this.showAvatarModal = false;
   }
 
   /** Opens the profile view */
@@ -108,5 +110,15 @@ export class HeaderMenuHelper {
     this.closeMenus();
     await authService.logout();
     await router.navigate(['/login'], { replaceUrl: true });
+  }
+
+  /** Opens the avatar modal */
+  openAvatarModal(): void {
+    this.showAvatarModal = true;
+  }
+
+  /** Closes the avatar modal */
+  closeAvatarModal(): void {
+    this.showAvatarModal = false;
   }
 }

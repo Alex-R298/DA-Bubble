@@ -1,0 +1,75 @@
+<div class="avatar-modal-overlay" (click)="close()">
+  <div class="avatar-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ 'CHOOSE_AVATAR.TITLE' | translate }}</h2>
+      <button type="button" class="close-btn" (click)="close()" aria-label="Close">
+        <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
+      </button>
+    </div>
+
+    <div class="avatar-preview">
+      <div class="avatar-circle">
+        <app-svg-images
+          *ngIf="selectedAvatar === null"
+          iconName="person_filled"
+          [width]="'100%'"
+          [height]="'100%'"
+          className="selected-avatar-svg">
+        </app-svg-images>
+        <app-svg-images
+          *ngIf="selectedAvatar !== null"
+          [iconName]="avatars[selectedAvatar]"
+          [width]="'100%'"
+          [height]="'100%'"
+          className="selected-avatar-svg">
+        </app-svg-images>
+      </div>
+    </div>
+
+    <p class="avatar-instruction">{{ 'CHOOSE_AVATAR.SELECT_FROM_LIST' | translate }}</p>
+
+    <div class="avatars-grid">
+      <div
+        class="avatar-option"
+        [class.selected]="selectedAvatar === 0"
+        (click)="selectAvatar(0)">
+        <app-svg-images iconName="steffen-hoffmann" [width]="'100%'" [height]="'100%'"></app-svg-images>
+      </div>
+      <div 
+        class="avatar-option"
+        [class.selected]="selectedAvatar === 1"
+        (click)="selectAvatar(1)">
+        <app-svg-images iconName="sofia-mueller" [width]="'100%'" [height]="'100%'"></app-svg-images>
+      </div>
+      <div 
+        class="avatar-option"
+        [class.selected]="selectedAvatar === 2"
+        (click)="selectAvatar(2)">
+        <app-svg-images iconName="noah-braun" [width]="'100%'" [height]="'100%'"></app-svg-images>
+      </div>
+      <div 
+        class="avatar-option"
+        [class.selected]="selectedAvatar === 3"
+        (click)="selectAvatar(3)">
+        <app-svg-images iconName="frederik-beck" [width]="'100%'" [height]="'100%'"></app-svg-images>
+      </div>
+      <div 
+        class="avatar-option"
+        [class.selected]="selectedAvatar === 4"
+        (click)="selectAvatar(4)">
+        <app-svg-images iconName="elise-roth" [width]="'100%'" [height]="'100%'"></app-svg-images>
+      </div>
+      <div 
+        class="avatar-option"
+        [class.selected]="selectedAvatar === 5"
+        (click)="selectAvatar(5)">
+        <app-svg-images iconName="elias-neumann" [width]="'100%'" [height]="'100%'"></app-svg-images>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" (click)="close()">{{ 'HEADER.CANCEL' | translate }}</button>
+      <button class="btn-primary" (click)="onSave()" [disabled]="selectedAvatar === null">{{ 'HEADER.SAVE' | translate }}</button>
+    </div>
+  </div>
+</div>

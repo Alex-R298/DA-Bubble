@@ -220,3 +220,23 @@
   left: 2rem;
   top: calc(100% - 0.5rem);
 }
+
+.avatar-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  width: clamp(10rem, 20vw, 12.5rem);
+  height: auto;
+}
+
+.avatar-button:hover {
+  transform: scale(1.05);
+}
+
+.avatar-button:focus {
+  outline: 2px solid #444DF2;
+  outline-offset: 2px;
+}

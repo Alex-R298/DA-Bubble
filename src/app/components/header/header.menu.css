@@ -16,6 +16,7 @@
     --ui-panel-width: min(28.125rem, 90vw);
     --ui-panel-padding: clamp(1.5rem, 3vw, 2.8125rem) clamp(1.25rem, 3vw, 2.5rem);
     --ui-panel-gap: clamp(1.25rem, 3vw, 2.375rem);
+    --ui-avatar-size: 12.5rem;
     z-index: 1020;
 }
 
@@ -98,7 +99,7 @@
 }
 
 .profile-username {
-    font-size: 2.286rem;
+    font-size: clamp(1.7rem, 5vw, 2.286rem);
     font-weight: 700;
     color: black;
 }
@@ -194,4 +195,14 @@
 
 .dropdown-item span {
     font-size: 1.3rem;
+}
+
+@media (max-width: 480px) {
+    .profile-view {
+        position: fixed;
+        top: 6rem;
+        left: 1rem;
+        right: 1rem;
+        --ui-panel-width: calc(100vw - 2rem);
+    }
 }

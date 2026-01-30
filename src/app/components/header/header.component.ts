@@ -16,11 +16,12 @@ import { NewMessageStateService } from '../../services/new-message-state.service
 import { ThreadStateService } from '../../services/thread-state.service';
 import { HeaderSearchHelper, SearchMessageResult } from './header-search.helper';
 import { HeaderMenuHelper } from './header-menu.helper';
+import { AvatarModalComponent } from '../avatar-modal/avatar-modal.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, SvgImagesComponent, TranslateModule],
+  imports: [CommonModule, FormsModule, SvgImagesComponent, TranslateModule, AvatarModalComponent],
   templateUrl: './header.component.html',
   styleUrls: ['../../shared/styles/shared-ui.css', '../../shared/styles/shared-search.css', './header.component.css', './header.menu.css']
 })
@@ -71,6 +72,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   get showUserMenu() { return this.menuHelper.showUserMenu; }
   get showProfileView() { return this.menuHelper.showProfileView; }
   get showEditProfileView() { return this.menuHelper.showEditProfileView; }
+  get showAvatarModal() { return this.menuHelper.showAvatarModal; }
   get editedFullName() { return this.menuHelper.editedFullName; }
   set editedFullName(v: string) { this.menuHelper.editedFullName = v; }
   get editNameFocused() { return this.menuHelper.editNameFocused; }
@@ -374,5 +376,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   /** Logs out the current user and navigates to login */
   async onLogout(): Promise<void> {
     await this.menuHelper.onLogout(this.authService, this.router);
+  }
+
+  /** Opens the avatar modal */
+  openAvatarModal(): void {
+    this.menuHelper.openAvatarModal();
+  }
+
+  /** Closes the avatar modal */
+  closeAvatarModal(): void {
+    this.menuHelper.closeAvatarModal();
   }
 }
