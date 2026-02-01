@@ -85,6 +85,12 @@ export class SidebarChannelModalHelper {
     const currentUser = authService.getCurrentUser();
     if (!currentUser) return false;
 
+    const desiredName = this.newChannelName.trim();
+    if (!desiredName) return false;
+    const normalizedDesiredName = desiredName.toLowerCase();
+    const hasDuplicate = channels.some(c => (c?.name || '').trim().toLowerCase() === normalizedDesiredName);
+    if (hasDuplicate) return false;
+
     let memberUids: string[] = [];
 
     if (this.addPeopleSelection === 'all' && this.selectedSourceChannelId) {
@@ -97,7 +103,7 @@ export class SidebarChannelModalHelper {
     }
 
     await channelService.createChannel(
-      this.newChannelName,
+      desiredName,
       this.newChannelDescription,
       currentUser.uid,
       memberUids

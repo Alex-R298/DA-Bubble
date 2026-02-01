@@ -182,15 +182,15 @@
           </div>
 
           <ng-container *ngIf="channelsExpanded">
-            <ul class="channel-list display-flex-column" *ngIf="channels.length; else noChannels">
+            <ul class="channel-list display-flex-column" *ngIf="memberChannels.length; else noChannels">
               <li class="channel-item"
-                  *ngFor="let channel of channels"
+                  *ngFor="let channel of memberChannels"
                   [class.active]="selectedChannelId === channel.id"
-                  [class.has-unread]="unreadChannels.has(channel.id)"
+                  [class.has-unread]="channel.id ? unreadChannels.has(channel.id) : false"
                   (click)="selectChannel(channel)">
                 <app-svg-images [iconName]="'tag'" [width]="'17'" [height]="'16'" [className]="'icon-colored channel-tag-icon'"></app-svg-images>
                 <span class="channel-name">{{ channel.name }}</span>
-                <span class="unread-dot" *ngIf="unreadChannels.has(channel.id)"></span>
+                <span class="unread-dot" *ngIf="channel.id ? unreadChannels.has(channel.id) : false"></span>
               </li>
             </ul>
             <ng-template #noChannels>
@@ -304,23 +304,25 @@
         </div>
 
         <div class="add-people-options">
-          <button
-            type="button"
-            class="radio-option"
-            *ngFor="let channel of channels"
-            (click)="setAddPeopleSelection('all', channel)"
-          >
-            <app-svg-images
-              [iconName]="addPeopleSelection === 'all' && selectedSourceChannelId === channel.id ? 'radio_checked' : 'radio_unchecked'"
-              [width]="'20'"
-              [height]="'20'"
-            ></app-svg-images>
-            <span>
-              Alle Mitglieder von
-              <span class="channel-name-inline">{{ channel.name }}</span>
-              hinzufügen
-            </span>
-          </button>
+          <ng-container *ngIf="memberChannels.length">
+            <button
+              type="button"
+              class="radio-option"
+              *ngFor="let channel of memberChannels"
+              (click)="setAddPeopleSelection('all', channel)"
+            >
+              <app-svg-images
+                [iconName]="addPeopleSelection === 'all' && selectedSourceChannelId === channel.id ? 'radio_checked' : 'radio_unchecked'"
+                [width]="'20'"
+                [height]="'20'"
+              ></app-svg-images>
+              <span>
+                Alle Mitglieder von
+                <span class="channel-name-inline">{{ channel.name }}</span>
+                hinzufügen
+              </span>
+            </button>
+          </ng-container>
 
           <button type="button" class="radio-option" (click)="setAddPeopleSelection('specific')">
             <app-svg-images

@@ -231,14 +231,12 @@
         </div>
 
         <div class="profile-avatar-section ui-avatar-center">
-          <button type="button" class="avatar-button" (click)="openAvatarModal()" aria-label="Change Avatar">
-            <app-svg-images
-              class="profile-avatar ui-avatar"
-              [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
-              [width]="'100%'"
-              [height]="'100%'">
-            </app-svg-images>
-          </button>
+          <app-svg-images
+            class="profile-avatar ui-avatar"
+            [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
+            [width]="'100%'"
+            [height]="'100%'">
+          </app-svg-images>
         </div>
 
         <div class="profile-name-row display-flex-column">
@@ -272,12 +270,17 @@
         </div>
 
         <div class="profile-avatar-section ui-avatar-center">
-          <app-svg-images
-            class="profile-avatar ui-avatar"
-            [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
-            [width]="'100%'"
-            [height]="'100%'">
-          </app-svg-images>
+          <div class="avatar-edit-wrapper">
+            <app-svg-images
+              class="profile-avatar ui-avatar"
+              [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
+              [width]="'100%'"
+              [height]="'100%'">
+            </app-svg-images>
+            <button type="button" class="avatar-edit-button" (click)="openAvatarModal()" aria-label="Profilbild ändern">
+              <app-svg-images [iconName]="'edit_square'" [width]="'16'" [height]="'16'"></app-svg-images>
+            </button>
+          </div>
         </div>
 
         <div class="edit-field display-flex-column">

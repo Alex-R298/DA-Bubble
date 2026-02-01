@@ -12,6 +12,7 @@ import {
 } from 'firebase/auth';
 import { FirebaseService } from './firebase.service';
 import { UserService } from './user.service';
+import { ChannelService } from './channel.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -20,6 +21,7 @@ import { BehaviorSubject } from 'rxjs';
 export class AuthService {
   private firebaseService = inject(FirebaseService);
   private userService = inject(UserService);
+  private channelService = inject(ChannelService);
 
   private authStateSubject = new BehaviorSubject<any>(undefined);
   authState$ = this.authStateSubject.asObservable();
@@ -115,6 +117,11 @@ export class AuthService {
     );
 
     await this.userService.createUserProfile(userCredential.user.uid, email, name);
+    try {
+      await this.channelService.addMemberToChannelByName('Entwicklerteam', userCredential.user.uid);
+    } catch {
+      // ignore
+    }
     return userCredential.user;
   }
 
@@ -148,6 +155,11 @@ export class AuthService {
       await this.userService.createUserProfile(user.uid, user.email || '', displayName);
       if (user.photoURL) {
         await this.userService.updateUserAvatar(user.uid, user.photoURL);
+      }
+      try {
+        await this.channelService.addMemberToChannelByName('Entwicklerteam', user.uid);
+      } catch {
+        // ignore
       }
     }
 

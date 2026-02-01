@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { doc, collection, addDoc, onSnapshot, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { doc, collection, addDoc, onSnapshot, getDoc, updateDoc, arrayUnion, arrayRemove, query, where, getDocs } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
 import { Observable } from 'rxjs';
 
@@ -137,6 +137,24 @@ export class ChannelService {
     const channelDoc = doc(this.firebaseService.db, 'channels', channelId);
     await updateDoc(channelDoc, {
       members: arrayRemove(memberUid)
+    });
+  }
+
+  /**
+   * Adds a member to the first channel matching the given name.
+   * @param channelName - The channel name to match (case-insensitive).
+   * @param memberUid - The user ID to add.
+   */
+  async addMemberToChannelByName(channelName: string, memberUid: string): Promise<void> {
+    const name = channelName?.trim();
+    if (!name || !memberUid) return;
+    const channelsRef = collection(this.firebaseService.db, 'channels');
+    const q = query(channelsRef, where('name', '==', name));
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) return;
+    const channelDoc = snapshot.docs[0];
+    await updateDoc(channelDoc.ref, {
+      members: arrayUnion(memberUid)
     });
   }
 }

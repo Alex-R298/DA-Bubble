@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
+import { AvatarModalComponent } from '../avatar-modal/avatar-modal.component';
 
 export type UserProfileModalUser = {
     uid: string;
@@ -16,7 +17,7 @@ export type UserProfileModalUser = {
 @Component({
     selector: 'app-user-profile-modal',
     standalone: true,
-    imports: [CommonModule, FormsModule, SvgImagesComponent],
+    imports: [CommonModule, FormsModule, SvgImagesComponent, AvatarModalComponent],
     templateUrl: './user-profile-modal.component.html',
     styleUrls: ['../../shared/styles/shared-ui.css', './user-profile-modal.component.css']
 })
@@ -34,12 +35,14 @@ export class UserProfileModalComponent {
     isEditing = false;
     editedFullName = '';
     editNameFocused = false;
+    showAvatarModal = false;
 
     /**
      * Closes the modal and resets the editing state.
      */
     close(): void {
         this.isEditing = false;
+        this.showAvatarModal = false;
         this.closed.emit();
     }
 
@@ -58,6 +61,17 @@ export class UserProfileModalComponent {
      */
     cancelEdit(): void {
         this.isEditing = false;
+    }
+
+    /** Opens the avatar selection modal */
+    openAvatarModal(): void {
+        if (!this.allowEdit) return;
+        this.showAvatarModal = true;
+    }
+
+    /** Closes the avatar selection modal */
+    closeAvatarModal(): void {
+        this.showAvatarModal = false;
     }
 
     /**

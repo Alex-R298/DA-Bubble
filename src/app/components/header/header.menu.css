@@ -16,7 +16,7 @@
     --ui-panel-width: min(28.125rem, 90vw);
     --ui-panel-padding: clamp(1.5rem, 3vw, 2.8125rem) clamp(1.25rem, 3vw, 2.5rem);
     --ui-panel-gap: clamp(1.25rem, 3vw, 2.375rem);
-    --ui-avatar-size: 12.5rem;
+    --ui-avatar-size: 14.3rem;
     z-index: 1020;
 }
 
@@ -86,7 +86,39 @@
 }
 
 .profile-avatar {
-    --ui-avatar-size: clamp(8.75rem, 20vw, 12.5rem);
+    --ui-avatar-size: clamp(8.75rem, 20vw, 14.3rem);
+}
+
+.avatar-edit-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar-edit-button {
+    position: absolute;
+    right: 0.25rem;
+    bottom: 0.25rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: 1px solid #E0E0E0;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.avatar-edit-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+.avatar-edit-button:focus {
+    outline: 2px solid #444DF2;
+    outline-offset: 2px;
 }
 
 .profile-name-row {

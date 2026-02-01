@@ -74,11 +74,22 @@
         </div>
 
         <div class="profile-avatar-section ui-avatar-center">
-          <img
-            class="profile-avatar ui-avatar"
-            [src]="user.profileImageUrl || 'assets/avatars/avatar-1.png'"
-            alt="Profilbild"
-          />
+          <div class="avatar-edit-wrapper">
+            <app-svg-images
+              class="profile-avatar ui-avatar"
+              [iconName]="user.profileImageUrl || 'steffen-hoffmann'"
+              [width]="'100%'"
+              [height]="'100%'">
+            </app-svg-images>
+            <button
+              *ngIf="allowEdit"
+              type="button"
+              class="avatar-edit-button"
+              (click)="openAvatarModal()"
+              aria-label="Profilbild ändern">
+              <app-svg-images [iconName]="'edit_square'" [width]="'16'" [height]="'16'"></app-svg-images>
+            </button>
+          </div>
         </div>
 
         <div class="edit-field">
@@ -107,3 +118,5 @@
     </div>
   </div>
 </ng-container>
+
+<app-avatar-modal *ngIf="showAvatarModal" (closed)="closeAvatarModal()"></app-avatar-modal>
