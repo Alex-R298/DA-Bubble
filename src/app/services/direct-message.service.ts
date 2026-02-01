@@ -176,8 +176,6 @@ export class DirectMessageService {
     }
 
     const reaction = reactions[emoji];
-    
-    // Ensure users and userNames are arrays
     if (!Array.isArray(reaction.users)) {
       reaction.users = [];
     }
@@ -188,13 +186,11 @@ export class DirectMessageService {
     const userIndex = reaction.users.indexOf(userId);
 
     if (userIndex === -1) {
-      // User hasn't reacted yet - add reaction
       reaction.users.push(userId);
       reaction.userNames.push(userName);
       reaction.count = reaction.users.length;
       await updateDoc(messageRef, { [`reactions.${emoji}`]: reaction });
     } else {
-      // User already reacted - remove reaction
       reaction.users.splice(userIndex, 1);
       reaction.userNames.splice(userIndex, 1);
       reaction.count = reaction.users.length;
@@ -205,5 +201,53 @@ export class DirectMessageService {
         await updateDoc(messageRef, { [`reactions.${emoji}`]: reaction });
       }
     }
+  }
+
+  /**
+   * Returns a realtime observable for a single direct message by ID.
+   * @param messageId - The ID of the message to observe.
+   * @returns An observable emitting the message or null.
+   */
+  getMessageById(messageId: string): Observable<any | null> {
+    return new Observable<any | null>(observer => {
+      const messageRef = doc(this.firebaseService.db, 'direct-messages', messageId);
+
+      const unsubscribe = onSnapshot(messageRef, async (docSnap) => {
+        if (!docSnap.exists()) {
+          observer.next(null);
+          return;
+        }
+
+        const data = docSnap.data();
+        let senderProfileImage = data['senderProfileImage'] || '';
+        if (!senderProfileImage && data['senderId']) {
+          try {
+            const user = await this.userService.getUserById(data['senderId']);
+            if (user && user.profileImageUrl) {
+              senderProfileImage = user.profileImageUrl;
+            }
+          } catch (error) {
+            // Avatar loading failed silently
+          }
+        }
+
+        observer.next({
+          id: docSnap.id,
+          conversationId: data['conversationId'],
+          senderId: data['senderId'],
+          content: data['content'],
+          senderName: data['senderName'],
+          senderProfileImage: senderProfileImage,
+          timestamp: data['timestamp'] ? data['timestamp'].toDate() : new Date(),
+          parentMessageId: data['parentMessageId'],
+          replies: data['replies'] || [],
+          lastReplyTimestamp: data['lastReplyTimestamp'] ? data['lastReplyTimestamp'].toDate() : null,
+          reactions: data['reactions'] || {},
+          isEdited: data['isEdited'] || false
+        });
+      });
+
+      return () => unsubscribe();
+    });
   }
 }

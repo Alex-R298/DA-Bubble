@@ -46,14 +46,17 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   private channelService = inject(ChannelService);
   users: any[] = [];
   channels: Channel[] = [];
+  senderProfileImage: string = '';
   private usersSubscription?: Subscription;
   private channelsSubscription?: Subscription;
+  private senderSubscription?: Subscription;
   readonly reactionsHelper = new MessageItemReactionsHelper();
   readonly editHelper = new MessageItemEditHelper();
   showEditEmojiPicker = false;
   editEmojis: string[] = ['😀', '😂', '😍', '🤔', '👍', '👎', '❤️', '🎉', '😢', '😱', '🙏', '🔥'];
   dropdownPosition: 'top' | 'bottom' = 'top';
   tooltipLeftIndex: number = -1;
+  tooltipBottomIndex: number = -1;
 
   get showEditMessage() { return this.editHelper.showEditMessage; }
   get showEditMessageInput() { return this.editHelper.showEditMessageInput; }
@@ -74,6 +77,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   ngOnInit(): void {
     this.subscribeToUsers();
     this.subscribeToChannels();
+    this.subscribeToSenderProfile();
     this.updateFormattedContent();
   }
 
@@ -82,6 +86,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     if (changes['message']) {
       this.updateFormattedContent();
       this.reactionsHelper.updateCachedReactions(this.message, this.currentUserId);
+      this.subscribeToSenderProfile();
     }
   }
 
@@ -89,6 +94,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   ngOnDestroy(): void {
     this.usersSubscription?.unsubscribe();
     this.channelsSubscription?.unsubscribe();
+    this.senderSubscription?.unsubscribe();
   }
 
   /** Attaches click listeners to mention tags after view is checked */
@@ -117,6 +123,19 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   private subscribeToChannels(): void {
     this.channelsSubscription = this.channelService.getAllChannels().subscribe(channels => {
       this.channels = channels;
+    });
+  }
+
+  /** Subscribes to realtime updates of the message sender's profile image */
+  private subscribeToSenderProfile(): void {
+    this.senderSubscription?.unsubscribe();
+    const senderId = this.message?.senderId;
+    if (!senderId) return;
+    
+    this.senderSubscription = this.userService.getUserByIdRealtime(senderId).subscribe(user => {
+      if (user?.profileImageUrl) {
+        this.senderProfileImage = user.profileImageUrl;
+      }
     });
   }
 
@@ -163,7 +182,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
 
   /** Gets the avatar source URL for the message sender */
   getAvatarSrc(): string {
-    return this.message?.senderProfileImage || this.message?.profileImageUrl || 'assets/avatars/avatar-1.png';
+    return this.senderProfileImage || this.message?.senderProfileImage || this.message?.profileImageUrl || 'assets/avatars/avatar-1.png';
   }
 
   /** Gets the sender's name or 'Unknown' if not available */
@@ -279,16 +298,31 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     return this.reactionsHelper.getReactionTooltipText(reaction, this.message?.senderName);
   }
 
-  /** Checks if tooltip should be positioned to the left based on available space */
+  /** Checks if tooltip should be positioned to the left/bottom based on available space */
   checkTooltipPosition(wrapper: HTMLElement, index: number): void {
     const rect = wrapper.getBoundingClientRect();
-    const tooltipWidth = 170; // approximate tooltip width
-    const spaceOnRight = window.innerWidth - rect.right;
+    const tooltipWidth = 180; // approximate tooltip width
+    const tooltipHeight = 130; // approximate tooltip height
     
-    if (spaceOnRight < tooltipWidth) {
+    // For own messages (right-aligned), always show tooltip to the left
+    if (this.isOwnMessage) {
       this.tooltipLeftIndex = index;
     } else {
-      this.tooltipLeftIndex = -1;
+      // Check horizontal space - use viewport width
+      const spaceOnRight = window.innerWidth - rect.right;
+      if (spaceOnRight < tooltipWidth) {
+        this.tooltipLeftIndex = index;
+      } else {
+        this.tooltipLeftIndex = -1;
+      }
+    }
+    
+    // Check vertical space - use element position from top of viewport
+    const spaceAbove = rect.top;
+    if (spaceAbove < tooltipHeight) {
+      this.tooltipBottomIndex = index;
+    } else {
+      this.tooltipBottomIndex = -1;
     }
   }
 

@@ -9,7 +9,7 @@
 	<div class="thread-area">
 		<app-thread [parentMessageId]="selectedMessageId" [channelId]="selectedChannelId"
 			[conversationId]="selectedConversationId" [isDirectMessage]="isDirectMessage"
-			[parentMessage]="selectedMessage" (threadClosed)="closeThread()">
+			(threadClosed)="closeThread()">
 		</app-thread>
 	</div>
 	}

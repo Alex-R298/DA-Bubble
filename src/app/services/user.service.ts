@@ -87,6 +87,27 @@ export class UserService {
   }
 
   /**
+   * Subscribes to realtime updates of a specific user by ID
+   * @param uid - The user's unique ID
+   * @returns Observable stream of the user profile
+   */
+  getUserByIdRealtime(uid: string): Observable<User | null> {
+    return new Observable(observer => {
+      const userDoc = doc(this.firebaseService.db, 'users', uid);
+      const unsubscribe = onSnapshot(userDoc, (docSnap) => {
+        if (docSnap.exists()) {
+          const user = this.mapDocumentToUser(docSnap.data());
+          this.userCache.set(uid, { user, timestamp: Date.now() });
+          observer.next(user);
+        } else {
+          observer.next(null);
+        }
+      });
+      return () => unsubscribe();
+    });
+  }
+
+  /**
    * Retrieves a cached user if valid
    * @param uid - The user's unique ID
    * @returns The cached user or null if expired/not found

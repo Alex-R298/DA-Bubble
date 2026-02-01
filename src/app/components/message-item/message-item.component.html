@@ -41,7 +41,7 @@
 						</ng-container>
 						{{ reaction.count }}
 					</button>
-					<div class="reaction-tooltip" [class.tooltip-left]="tooltipLeftIndex === i">
+					<div class="reaction-tooltip" [class.tooltip-left]="tooltipLeftIndex === i" [class.tooltip-bottom]="tooltipBottomIndex === i">
 						<ng-container [ngSwitch]="reaction.emoji">
 							<app-svg-images *ngSwitchCase="'check'" [iconName]="'green_mack'" [width]="'40'" [height]="'40'" class="tooltip-emoji-icon"></app-svg-images>
 							<app-svg-images *ngSwitchCase="'✅'" [iconName]="'green_mack'" [width]="'40'" [height]="'40'" class="tooltip-emoji-icon"></app-svg-images>

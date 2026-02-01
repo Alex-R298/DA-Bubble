@@ -223,4 +223,52 @@ export class MessageService {
       }
     }
   }
+
+  /**
+   * Returns a realtime observable for a single message by ID.
+   * @param messageId - The ID of the message to observe.
+   * @returns An observable emitting the message or null.
+   */
+  getMessageById(messageId: string): Observable<any | null> {
+    return new Observable<any | null>(observer => {
+      const messageRef = doc(this.firebaseService.db, 'messages', messageId);
+
+      const unsubscribe = onSnapshot(messageRef, async (docSnap) => {
+        if (!docSnap.exists()) {
+          observer.next(null);
+          return;
+        }
+
+        const data = docSnap.data();
+        let senderProfileImage = data['senderProfileImage'] || '';
+        if (!senderProfileImage && data['senderId']) {
+          try {
+            const user = await this.userService.getUserById(data['senderId']);
+            if (user && user.profileImageUrl) {
+              senderProfileImage = user.profileImageUrl;
+            }
+          } catch (error) {
+            // Avatar loading failed silently
+          }
+        }
+
+        observer.next({
+          id: docSnap.id,
+          channelId: data['channelId'],
+          senderId: data['senderId'],
+          content: data['content'],
+          senderName: data['senderName'],
+          senderProfileImage: senderProfileImage,
+          timestamp: data['timestamp'] ? data['timestamp'].toDate() : new Date(),
+          parentMessageId: data['parentMessageId'],
+          replies: data['replies'] || [],
+          lastReplyTimestamp: data['lastReplyTimestamp'] ? data['lastReplyTimestamp'].toDate() : null,
+          reactions: data['reactions'] || {},
+          isEdited: data['isEdited'] || false
+        });
+      });
+
+      return () => unsubscribe();
+    });
+  }
 }

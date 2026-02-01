@@ -247,6 +247,16 @@
     border-radius: 30px 30px 0 30px;
 }
 
+.reaction-tooltip.tooltip-bottom {
+    bottom: auto;
+    top: 100%;
+    border-radius: 0 30px 30px 30px;
+}
+
+.reaction-tooltip.tooltip-left.tooltip-bottom {
+    border-radius: 30px 0 30px 30px;
+}
+
 .reaction-badge-wrapper:hover .reaction-tooltip {
     opacity: 1;
     visibility: visible;

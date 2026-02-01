@@ -26,9 +26,9 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
   @Input() channelId: string = '';
   @Input() conversationId: string = '';
   @Input() isDirectMessage: boolean = false;
-  @Input() parentMessage: Message | null = null;
   @Output() threadClosed = new EventEmitter<void>();
 
+  parentMessage: Message | null = null;
   threadMessages: Message[] = [];
 
   private threadService = inject(ThreadService);
@@ -40,6 +40,7 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
   private router = inject(Router);
   private userProfileStateService = inject(UserProfileStateService);
   private subscription?: Subscription;
+  private parentMessageSubscription?: Subscription;
   private channelsSubscription?: Subscription;
   currentUserId: string = '';
   private currentUserName: string = '';
@@ -85,6 +86,7 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
    */
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
+    this.parentMessageSubscription?.unsubscribe();
     this.channelsSubscription?.unsubscribe();
   }
 
@@ -118,13 +120,25 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
    */
   private loadThreadMessages(): void {
     this.subscription?.unsubscribe();
+    this.parentMessageSubscription?.unsubscribe();
     
+    // Load parent message reactively
     if (this.isDirectMessage) {
+      this.parentMessageSubscription = this.directMessageService.getMessageById(this.parentMessageId)
+        .subscribe(message => {
+          this.parentMessage = message;
+        });
+      
       this.subscription = this.threadService.getDirectMessageThreadMessages(this.parentMessageId)
         .subscribe(messages => {
           this.threadMessages = messages;
         });
     } else {
+      this.parentMessageSubscription = this.messageService.getMessageById(this.parentMessageId)
+        .subscribe(message => {
+          this.parentMessage = message;
+        });
+      
       this.subscription = this.threadService.getThreadMessages(this.parentMessageId)
         .subscribe(messages => {
           this.threadMessages = messages;
@@ -175,10 +189,10 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
     if (!event.messageId || !this.currentUserId) return;
 
     try {
-      let userName = this.currentUserName;
-      if (!userName) {
+      // Always fetch userName if not available
+      if (!this.currentUserName) {
         const currentUser = await this.userService.getUserById(this.currentUserId);
-        userName = currentUser?.name || 'Unbekannt';
+        this.currentUserName = currentUser?.name || 'Unbekannt';
       }
 
       if (this.isDirectMessage) {
@@ -186,14 +200,14 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
           event.messageId,
           event.emoji,
           this.currentUserId,
-          userName
+          this.currentUserName
         );
       } else {
         await this.messageService.toggleReaction(
           event.messageId,
           event.emoji,
           this.currentUserId,
-          userName
+          this.currentUserName
         );
       }
     } catch (error) {
