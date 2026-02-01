@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { collection, addDoc, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, doc, getDoc, updateDoc, deleteField } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
 import { UserService } from './user.service';
 import { Observable } from 'rxjs';
@@ -62,8 +62,10 @@ export class DirectMessageService {
       const messagesRef = collection(this.firebaseService.db, 'direct-messages'); // ← Separate Collection!
 
       const unsubscribe = onSnapshot(messagesRef, async (snapshot) => {
+        const allDocs = snapshot.docs;
+        
         const messages = await Promise.all(
-          snapshot.docs.map(async doc => {
+          allDocs.map(async doc => {
             const data = doc.data();
             let senderProfileImage = data['senderProfileImage'] || '';
             if (!senderProfileImage && data['senderId']) {
@@ -77,6 +79,9 @@ export class DirectMessageService {
               }
             }
 
+            // Count actual replies by checking which messages have this message as parent
+            const actualReplies = allDocs.filter(d => d.data()['parentMessageId'] === doc.id);
+
             return {
               id: doc.id,
               conversationId: data['conversationId'],
@@ -86,7 +91,8 @@ export class DirectMessageService {
               senderProfileImage: senderProfileImage,
               timestamp: data['timestamp'].toDate(),
               parentMessageId: data['parentMessageId'],
-              replies: data['replies'] || []
+              replies: actualReplies.map(r => r.id),
+              reactions: data['reactions'] || {}
             };
           })
         );
@@ -135,7 +141,8 @@ export class DirectMessageService {
               senderProfileImage: senderProfileImage,
               timestamp: data['timestamp']?.toDate() || new Date(),
               parentMessageId: data['parentMessageId'],
-              replies: data['replies'] || []
+              replies: data['replies'] || [],
+              reactions: data['reactions'] || {}
             };
           })
         );
@@ -146,5 +153,57 @@ export class DirectMessageService {
 
       return () => unsubscribe();
     });
+  }
+
+  /**
+   * Toggles a reaction on a direct message for a specific user.
+   * @param messageId - The ID of the direct message to react to.
+   * @param emoji - The emoji to toggle.
+   * @param userId - The ID of the user toggling the reaction.
+   * @param userName - The display name of the user.
+   */
+  async toggleReaction(messageId: string, emoji: string, userId: string, userName: string): Promise<void> {
+    const messageRef = doc(this.firebaseService.db, 'direct-messages', messageId);
+    const messageDoc = await getDoc(messageRef);
+  
+    if (!messageDoc.exists()) return;
+
+    const data = messageDoc.data();
+    const reactions = data['reactions'] || {};
+
+    if (!reactions[emoji]) {
+      reactions[emoji] = { users: [], userNames: [], count: 0 };
+    }
+
+    const reaction = reactions[emoji];
+    
+    // Ensure users and userNames are arrays
+    if (!Array.isArray(reaction.users)) {
+      reaction.users = [];
+    }
+    if (!Array.isArray(reaction.userNames)) {
+      reaction.userNames = [];
+    }
+    
+    const userIndex = reaction.users.indexOf(userId);
+
+    if (userIndex === -1) {
+      // User hasn't reacted yet - add reaction
+      reaction.users.push(userId);
+      reaction.userNames.push(userName);
+      reaction.count = reaction.users.length;
+      await updateDoc(messageRef, { [`reactions.${emoji}`]: reaction });
+    } else {
+      // User already reacted - remove reaction
+      reaction.users.splice(userIndex, 1);
+      reaction.userNames.splice(userIndex, 1);
+      reaction.count = reaction.users.length;
+
+      if (reaction.count === 0) {
+        await updateDoc(messageRef, { [`reactions.${emoji}`]: deleteField() });
+      } else {
+        await updateDoc(messageRef, { [`reactions.${emoji}`]: reaction });
+      }
+    }
   }
 }

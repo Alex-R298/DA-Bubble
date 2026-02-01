@@ -231,7 +231,7 @@
           [message]="message"
           [currentUserId]="currentUserId"
           [showThreadButton]="true"
-          [showCommentButton]="!!currentChannel"
+          [showCommentButton]="true"
           (threadClicked)="openThread(message)"
           [senderClickable]="true"
           (senderClicked)="openSenderProfile($event)"
@@ -246,6 +246,7 @@
 
   <div class="input-container">
     <app-input-field 
+      #inputField
       [channelName]="currentChannel?.name" 
       [recipientName]="currentDMUser?.name"
       (messageSent)="onMessageSent($event)"

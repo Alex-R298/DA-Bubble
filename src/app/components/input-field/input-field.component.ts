@@ -90,6 +90,15 @@ export class InputFieldComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Sets focus to the message input field.
+   */
+  focus(): void {
+    setTimeout(() => {
+      this.messageInput?.nativeElement?.focus();
+    }, 0);
+  }
+
+  /**
    * Sends the current message and resets the input field.
    */
   sendMessage(): void {

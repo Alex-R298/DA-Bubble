@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Input, Output, EventEmitter, OnChanges, ViewChild } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { InputFieldComponent } from '../input-field/input-field.component';
@@ -7,6 +7,7 @@ import { ThreadService } from '../../services/thread.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { MessageService } from '../../services/message.service';
+import { DirectMessageService } from '../../services/direct-message.service';
 import { MessageItemComponent } from '../message-item/message-item.component';
 import { Subscription } from 'rxjs';
 import { ChannelService, Channel } from '../../services/channel.service';
@@ -23,6 +24,8 @@ import { UserProfileStateService } from '../../services/user-profile-state.servi
 export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
   @Input() parentMessageId: string = '';
   @Input() channelId: string = '';
+  @Input() conversationId: string = '';
+  @Input() isDirectMessage: boolean = false;
   @Input() parentMessage: Message | null = null;
   @Output() threadClosed = new EventEmitter<void>();
 
@@ -33,6 +36,7 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
   private userService = inject(UserService);
   private channelService = inject(ChannelService);
   private messageService = inject(MessageService);
+  private directMessageService = inject(DirectMessageService);
   private router = inject(Router);
   private userProfileStateService = inject(UserProfileStateService);
   private subscription?: Subscription;
@@ -42,6 +46,7 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
   private currentUserProfileImage: string = '';
   currentChannel: Channel | null = null;
   private allChannels: Channel[] = [];
+  @ViewChild('inputField') private inputField?: InputFieldComponent;
 
   /**
    * Initializes the component by loading user data, channel info, and thread messages.
@@ -53,6 +58,7 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
     if (this.parentMessageId) {
       this.loadThreadMessages();
     }
+    this.focusInputField();
   }
 
   /**
@@ -111,10 +117,19 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
    * Subscribes to and loads all messages in the current thread.
    */
   private loadThreadMessages(): void {
-    this.subscription = this.threadService.getThreadMessages(this.parentMessageId)
-      .subscribe(messages => {
-        this.threadMessages = messages;
-      });
+    this.subscription?.unsubscribe();
+    
+    if (this.isDirectMessage) {
+      this.subscription = this.threadService.getDirectMessageThreadMessages(this.parentMessageId)
+        .subscribe(messages => {
+          this.threadMessages = messages;
+        });
+    } else {
+      this.subscription = this.threadService.getThreadMessages(this.parentMessageId)
+        .subscribe(messages => {
+          this.threadMessages = messages;
+        });
+    }
   }
 
   /**
@@ -124,14 +139,25 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
   async onReplySent(content: string): Promise<void> {
     if (!content.trim() || !this.parentMessageId) return;
 
-    await this.threadService.addThreadReply(
-      this.parentMessageId,
-      this.channelId,
-      this.currentUserId,
-      this.currentUserName,
-      content.trim(),
-      this.currentUserProfileImage
-    );
+    if (this.isDirectMessage) {
+      await this.threadService.addDirectMessageThreadReply(
+        this.parentMessageId,
+        this.conversationId,
+        this.currentUserId,
+        this.currentUserName,
+        content.trim(),
+        this.currentUserProfileImage
+      );
+    } else {
+      await this.threadService.addThreadReply(
+        this.parentMessageId,
+        this.channelId,
+        this.currentUserId,
+        this.currentUserName,
+        content.trim(),
+        this.currentUserProfileImage
+      );
+    }
   }
 
   /**
@@ -149,15 +175,27 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
     if (!event.messageId || !this.currentUserId) return;
 
     try {
-      const currentUser = await this.userService.getUserById(this.currentUserId);
-      const userName = currentUser?.name || 'Unbekannt';
+      let userName = this.currentUserName;
+      if (!userName) {
+        const currentUser = await this.userService.getUserById(this.currentUserId);
+        userName = currentUser?.name || 'Unbekannt';
+      }
 
-      await this.messageService.toggleReaction(
-        event.messageId,
-        event.emoji,
-        this.currentUserId,
-        userName
-      );
+      if (this.isDirectMessage) {
+        await this.directMessageService.toggleReaction(
+          event.messageId,
+          event.emoji,
+          this.currentUserId,
+          userName
+        );
+      } else {
+        await this.messageService.toggleReaction(
+          event.messageId,
+          event.emoji,
+          this.currentUserId,
+          userName
+        );
+      }
     } catch (error) {
       // Reaction toggle failed silently
     }
@@ -197,5 +235,14 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
       profileImageUrl: user.profileImageUrl,
       status: user.status
     });
+  }
+
+  /**
+   * Sets focus to the input field after a short delay to ensure DOM is ready.
+   */
+  private focusInputField(): void {
+    setTimeout(() => {
+      this.inputField?.focus();
+    }, 100);
   }
 }

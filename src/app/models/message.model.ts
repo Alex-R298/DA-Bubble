@@ -1,7 +1,8 @@
 
 export interface Message {
   id?: string;
-  channelId: string;
+  channelId?: string;
+  conversationId?: string;
   senderId: string;
   senderName?: string;
   content: string;

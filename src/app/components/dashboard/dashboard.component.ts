@@ -26,6 +26,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   selectedMessageId: string = '';
   selectedChannelId: string = '';
+  selectedConversationId: string = '';
+  isDirectMessage: boolean = false;
   currentUserName: string = '';
   selectedMessage: Message | null = null;
 
@@ -54,6 +56,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.threadStateService.channelId$.subscribe((channelId) => {
       this.selectedChannelId = channelId;
+    });
+
+    this.threadStateService.conversationId$.subscribe((conversationId) => {
+      this.selectedConversationId = conversationId;
+    });
+
+    this.threadStateService.isDirectMessage$.subscribe((isDM) => {
+      this.isDirectMessage = isDM;
     });
 
     this.threadStateService.selectedMessage$.subscribe((message) => {

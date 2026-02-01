@@ -13,6 +13,7 @@ export interface BasicReaction {
  */
 export interface ReactionWithUsers extends BasicReaction {
   userNames: string[];
+  users: string[];
 }
 
 
@@ -192,7 +193,8 @@ export class MessageItemReactionsHelper {
       emoji,
       count: safeCount,
       hasReacted: currentUserId ? safeUsers.includes(currentUserId) : false,
-      userNames: safeUserNames
+      userNames: safeUserNames,
+      users: safeUsers
     };
   }
 
@@ -272,22 +274,15 @@ export class MessageItemReactionsHelper {
 
 
   /**
-   * Gets a user name to display for a reaction
+   * Gets all user names to display for a reaction
    * @param reaction - The reaction object with user information
-   * @returns User name to display
+   * @returns Formatted string with all user names
    */
   getReactionUserName(reaction: ReactionWithUsers): string {
-    if (reaction.hasReacted && reaction.userNames && reaction.userNames.length > 0) {
-      const otherName = reaction.userNames.find(name => name !== 'Du');
-      if (otherName) {
-        return otherName;
-      }
-      return 'Du';
+    if (!reaction.userNames || reaction.userNames.length === 0) {
+      return 'Jemand';
     }
-    if (reaction.userNames && reaction.userNames.length > 0) {
-      return reaction.userNames[0];
-    }
-    return 'Jemand';
+    return reaction.userNames.join(', ');
   }
 
 
@@ -297,10 +292,7 @@ export class MessageItemReactionsHelper {
    * @returns True if Du suffix should be displayed
    */
   showDuSuffix(reaction: ReactionWithUsers): boolean {
-    if (!reaction.hasReacted) return false;
-    if (!reaction.userNames || reaction.userNames.length === 0) return false;
-    const otherName = reaction.userNames.find(name => name !== 'Du');
-    return !!otherName;
+    return reaction.hasReacted;
   }
 
 

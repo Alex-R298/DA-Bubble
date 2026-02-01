@@ -60,8 +60,10 @@ export class MessageService {
       const messagesRef = collection(this.firebaseService.db, 'messages');
 
       const unsubscribe = onSnapshot(messagesRef, async (snapshot) => {
+        const allDocs = snapshot.docs;
+        
         const messages = await Promise.all(
-          snapshot.docs
+          allDocs
             .map(async doc => {
               const data = doc.data();
               let senderProfileImage = data['senderProfileImage'] || '';
@@ -76,6 +78,9 @@ export class MessageService {
                 }
               }
 
+              // Count actual replies by checking which messages have this message as parent
+              const actualReplies = allDocs.filter(d => d.data()['parentMessageId'] === doc.id);
+
               return {
                 id: doc.id,
                 channelId: data['channelId'],
@@ -85,7 +90,7 @@ export class MessageService {
                 senderProfileImage: senderProfileImage,
                 timestamp: data['timestamp'] ? data['timestamp'].toDate() : new Date(),
                 parentMessageId: data['parentMessageId'],
-                replies: data['replies'] || [],
+                replies: actualReplies.map(r => r.id),
                 lastReplyTimestamp: data['lastReplyTimestamp'] ? data['lastReplyTimestamp'].toDate() : null,
                 reactions: data['reactions'] || {},
                 isEdited: data['isEdited'] || false
@@ -188,14 +193,25 @@ export class MessageService {
     }
 
     const reaction = reactions[emoji];
+    
+    // Ensure users and userNames are arrays
+    if (!Array.isArray(reaction.users)) {
+      reaction.users = [];
+    }
+    if (!Array.isArray(reaction.userNames)) {
+      reaction.userNames = [];
+    }
+    
     const userIndex = reaction.users.indexOf(userId);
 
     if (userIndex === -1) {
+      // User hasn't reacted yet - add reaction
       reaction.users.push(userId);
       reaction.userNames.push(userName);
       reaction.count = reaction.users.length;
       await updateDoc(messageRef, { [`reactions.${emoji}`]: reaction });
     } else {
+      // User already reacted - remove reaction
       reaction.users.splice(userIndex, 1);
       reaction.userNames.splice(userIndex, 1);
       reaction.count = reaction.users.length;

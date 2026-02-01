@@ -240,6 +240,13 @@
     min-width: 150px;
 }
 
+.reaction-tooltip.tooltip-left {
+    left: auto;
+    right: 50%;
+    transform: translateX(0);
+    border-radius: 30px 30px 0 30px;
+}
+
 .reaction-badge-wrapper:hover .reaction-tooltip {
     opacity: 1;
     visibility: visible;
@@ -258,6 +265,20 @@
     display: flex;
     align-items: center;
     gap: 0.25rem;
+}
+
+.tooltip-names-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+}
+
+.tooltip-name-item {
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    white-space: nowrap;
 }
 
 .tooltip-name {

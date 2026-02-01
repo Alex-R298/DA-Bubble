@@ -22,7 +22,9 @@
 			<div class="message-reactions" *ngIf="showReactions">
 				<div
 					class="reaction-badge-wrapper"
-					*ngFor="let reaction of getVisibleReactions(); trackBy: trackByEmoji"
+					*ngFor="let reaction of getVisibleReactions(); let i = index; trackBy: trackByEmoji"
+					#reactionWrapper
+					(mouseenter)="checkTooltipPosition(reactionWrapper, i)"
 				>
 					<button
 						type="button"
@@ -39,7 +41,7 @@
 						</ng-container>
 						{{ reaction.count }}
 					</button>
-					<div class="reaction-tooltip">
+					<div class="reaction-tooltip" [class.tooltip-left]="tooltipLeftIndex === i">
 						<ng-container [ngSwitch]="reaction.emoji">
 							<app-svg-images *ngSwitchCase="'check'" [iconName]="'green_mack'" [width]="'40'" [height]="'40'" class="tooltip-emoji-icon"></app-svg-images>
 							<app-svg-images *ngSwitchCase="'✅'" [iconName]="'green_mack'" [width]="'40'" [height]="'40'" class="tooltip-emoji-icon"></app-svg-images>
@@ -47,11 +49,12 @@
 							<app-svg-images *ngSwitchCase="'🚀'" [iconName]="'nice'" [width]="'40'" [height]="'40'" class="tooltip-emoji-icon"></app-svg-images>
 							<span *ngSwitchDefault class="tooltip-emoji">{{ reaction.emoji }}</span>
 						</ng-container>
-						<span class="tooltip-name-row">
-							<span class="tooltip-name">{{ getReactionUserName(reaction) }}</span>
-							<span class="tooltip-du" *ngIf="showDuSuffix(reaction)">(du)</span>
-						</span>
-						<span class="tooltip-text">hat reagiert</span>
+						<div class="tooltip-names-list">
+							<span class="tooltip-name-item" *ngFor="let userName of reaction.userNames; let i = index">
+								{{ userName }}<span *ngIf="reaction.users[i] === currentUserId"> (du)</span>
+							</span>
+						</div>
+						<span class="tooltip-text">{{ reaction.count === 1 ? 'hat' : 'haben' }} reagiert</span>
 					</div>
 				</div>
 				<button

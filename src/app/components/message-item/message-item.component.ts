@@ -53,6 +53,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   showEditEmojiPicker = false;
   editEmojis: string[] = ['😀', '😂', '😍', '🤔', '👍', '👎', '❤️', '🎉', '😢', '😱', '🙏', '🔥'];
   dropdownPosition: 'top' | 'bottom' = 'top';
+  tooltipLeftIndex: number = -1;
 
   get showEditMessage() { return this.editHelper.showEditMessage; }
   get showEditMessageInput() { return this.editHelper.showEditMessageInput; }
@@ -278,6 +279,19 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     return this.reactionsHelper.getReactionTooltipText(reaction, this.message?.senderName);
   }
 
+  /** Checks if tooltip should be positioned to the left based on available space */
+  checkTooltipPosition(wrapper: HTMLElement, index: number): void {
+    const rect = wrapper.getBoundingClientRect();
+    const tooltipWidth = 170; // approximate tooltip width
+    const spaceOnRight = window.innerWidth - rect.right;
+    
+    if (spaceOnRight < tooltipWidth) {
+      this.tooltipLeftIndex = index;
+    } else {
+      this.tooltipLeftIndex = -1;
+    }
+  }
+
   /** Tracking function for ngFor to improve performance */
   trackByEmoji = (index: number, reaction: { emoji: string }): string => {
     return reaction.emoji;
@@ -286,6 +300,28 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   /** Toggles a reaction for the current message */
   toggleReaction(emoji: string): void {
     this.reactionToggled.emit({ messageId: this.message?.id, emoji });
+  }
+
+  /** Checks if the given user name belongs to the current user */
+  isCurrentUserName(userName: string): boolean {
+    const currentName = this.message?.senderName;
+    // Check if the userName matches the current user by comparing with message reactions
+    const reactions = this.message?.reactions;
+    if (!reactions) return false;
+    
+    // Find the user index in any reaction and compare with currentUserId
+    for (const [emoji, reaction] of Object.entries(reactions)) {
+      if (reaction && typeof reaction === 'object') {
+        const r = reaction as any;
+        if (r.userNames && r.users) {
+          const nameIndex = r.userNames.indexOf(userName);
+          if (nameIndex !== -1 && r.users[nameIndex] === this.currentUserId) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   /** Handles click events on the sender's name */

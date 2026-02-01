@@ -44,6 +44,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('recipientInputEl') private recipientInputEl?: ElementRef<HTMLInputElement>;
+  @ViewChild('inputField') private inputField?: InputFieldComponent;
 
   currentChannel: any | null = null;
   currentDMUser: any | null = null;
@@ -128,12 +129,24 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
         this.openUserProfile(user);
       })
     );
+
+    this.subscriptions.push(
+      this.threadStateService.threadClosed$.subscribe(() => {
+        this.focusInputField();
+      })
+    );
     this.loadChannel();
   }
 
   openThread(message: Message): void {
-    if (!message || !this.currentChannel?.id) return;
-    this.threadStateService.openThread(message, this.currentChannel.id);
+    if (!message) return;
+    
+    if (this.currentChannel?.id) {
+      this.threadStateService.openThread(message, this.currentChannel.id);
+    } else if (this.currentDMUser) {
+      const conversationId = this.createConversationId(this.currentUserId, this.currentDMUser.uid);
+      this.threadStateService.openDirectMessageThread(message, conversationId);
+    }
   }
 
   private loadChannel(): void {
@@ -163,6 +176,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
               }
               this.messages = messages;
             });
+          
+          this.focusInputField();
 
         } else if (userId) {
           this.newMessageStateService.closeNewMessage();
@@ -187,6 +202,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
                 this.messages = messages;
               });
           }
+          
+          this.focusInputField();
         } else {
           // No route params selected (e.g. /dashboard)
           this.currentChannel = null;
@@ -577,15 +594,27 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     if (!event.messageId || !this.currentUserId) return;
 
     try {
-      const currentUser = await this.userService.getUserById(this.currentUserId);
-      const userName = currentUser?.name || 'Unbekannt';
+      let userName = this.currentUserProfile?.name;
+      if (!userName) {
+        const currentUser = await this.userService.getUserById(this.currentUserId);
+        userName = currentUser?.name || 'Unbekannt';
+      }
 
-      await this.messageService.toggleReaction(
-        event.messageId,
-        event.emoji,
-        this.currentUserId,
-        userName
-      );
+      if (this.currentDMUser) {
+        await this.directMessageService.toggleReaction(
+          event.messageId,
+          event.emoji,
+          this.currentUserId,
+          userName
+        );
+      } else {
+        await this.messageService.toggleReaction(
+          event.messageId,
+          event.emoji,
+          this.currentUserId,
+          userName
+        );
+      }
     } catch (error) {
       console.error('Error toggling reaction:', error);
     }
@@ -597,5 +626,14 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
     if (channel?.id) {
       await this.router.navigate(['/dashboard/chat/channel', channel.id]);
     }
+  }
+
+  /**
+   * Sets focus to the input field after a short delay to ensure DOM is ready.
+   */
+  private focusInputField(): void {
+    setTimeout(() => {
+      this.inputField?.focus();
+    }, 100);
   }
 }
