@@ -371,3 +371,22 @@
     height: 300px;
   }
 }
+
+.validation-message {
+  color: #ff3333;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 100%;
+}
+
+.input-error {
+  border: 1px solid #ff3333 !important;
+}
+
+/* Adjust input-group bottom margin when error message is present */
+.input-group:has(+ .validation-message) {
+  margin-bottom: 0;
+}
