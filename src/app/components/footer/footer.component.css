@@ -60,3 +60,20 @@
 .footer-nav a:active {
   transform: translateY(0);
 }
+
+@media (max-width: 768px) {
+  .app-footer {
+    margin-bottom: 16px;
+  }
+
+  .footer-nav {
+    gap: 8px;
+    padding: 4px;
+  }
+
+  .footer-nav a {
+    font-size: 16px;
+    min-width: auto;
+    padding: 6px 10px;
+  }
+}

@@ -328,8 +328,9 @@
 }
 
 @media (max-width: 768px) {
-  .signup-container {
-    padding: 1.5rem;
+  .signup-card {
+    width: 100%;
+    padding: 2rem 1.5rem;
   }
 
   .back-button {
@@ -337,11 +338,6 @@
     left: 1.5rem;
     width: 3rem;
     height: 3rem;
-  }
-
-  .signup-card {
-    width: 100%;
-    padding: 2rem 1.5rem;
   }
 
   .signup-title {
@@ -369,6 +365,29 @@
   .decorative-curve {
     width: 300px;
     height: 300px;
+  }
+}
+
+/* Small height devices like iPhone SE - scrollable layout */
+@media (max-height: 700px) {
+  .signup-container {
+    padding: 1.5rem;
+    padding-top: 5rem;
+    min-height: auto;
+    overflow-y: auto;
+    align-items: flex-start;
+  }
+
+  .back-button {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
+  }
+
+  .signup-card {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
   }
 }
 

@@ -158,10 +158,6 @@
 }
 
 @media (max-width: 768px) {
-  .header-login {
-    padding: 1.5rem 1.5rem;
-  }
-
   .header-text {
     display: none;
   }
@@ -186,5 +182,14 @@
   .language-dropdown {
     right: 0;
     min-width: 140px;
+  }
+}
+
+/* Small height devices - fixed header */
+@media (max-height: 700px) {
+  .header-login {
+    position: fixed;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #ECEEFE 0%, #E8EAFE 100%);
   }
 }
