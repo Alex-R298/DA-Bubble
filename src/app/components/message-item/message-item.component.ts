@@ -47,6 +47,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   users: any[] = [];
   channels: Channel[] = [];
   senderProfileImage: string = '';
+  senderName: string = '';
   private usersSubscription?: Subscription;
   private channelsSubscription?: Subscription;
   private senderSubscription?: Subscription;
@@ -131,10 +132,13 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     this.senderSubscription?.unsubscribe();
     const senderId = this.message?.senderId;
     if (!senderId) return;
-    
+
     this.senderSubscription = this.userService.getUserByIdRealtime(senderId).subscribe(user => {
       if (user?.profileImageUrl) {
         this.senderProfileImage = user.profileImageUrl;
+      }
+      if (user?.name) {
+        this.senderName = user.name;
       }
     });
   }
@@ -187,7 +191,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
 
   /** Gets the sender's name or 'Unknown' if not available */
   getSenderName(): string {
-    return this.message?.senderName || this.message?.sender || 'Unknown';
+    return this.senderName || this.message?.senderName || this.message?.sender || 'Unknown';
   }
 
   /** Gets the message content text */
@@ -303,7 +307,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     const rect = wrapper.getBoundingClientRect();
     const tooltipWidth = 180; // approximate tooltip width
     const tooltipHeight = 130; // approximate tooltip height
-    
+
     // For own messages (right-aligned), always show tooltip to the left
     if (this.isOwnMessage) {
       this.tooltipLeftIndex = index;
@@ -316,7 +320,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
         this.tooltipLeftIndex = -1;
       }
     }
-    
+
     // Check vertical space - use element position from top of viewport
     const spaceAbove = rect.top;
     if (spaceAbove < tooltipHeight) {
@@ -329,7 +333,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   /** Tracking function for ngFor to improve performance */
   trackByEmoji = (index: number, reaction: { emoji: string }): string => {
     return reaction.emoji;
-}
+  }
 
   /** Toggles a reaction for the current message */
   toggleReaction(emoji: string): void {
@@ -342,7 +346,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     // Check if the userName matches the current user by comparing with message reactions
     const reactions = this.message?.reactions;
     if (!reactions) return false;
-    
+
     // Find the user index in any reaction and compare with currentUserId
     for (const [emoji, reaction] of Object.entries(reactions)) {
       if (reaction && typeof reaction === 'object') {

@@ -75,7 +75,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
   get showNewChannelModal() { return this.channelModalHelper.showNewChannelModal; }
   get showAddPeopleModal() { return this.channelModalHelper.showAddPeopleModal; }
   get newChannelName() { return this.channelModalHelper.newChannelName; }
-  set newChannelName(v: string) { this.channelModalHelper.newChannelName = v; }
+  set newChannelName(v: string) {
+    this.channelModalHelper.newChannelName = v;
+    this.channelModalHelper.newChannelError = null;
+    const name = (v || '').trim();
+    if (name) {
+      const normalized = name.toLowerCase();
+      const hasDuplicate = this.allChannels.some(c => ((c?.name || '').trim().toLowerCase() === normalized));
+      if (hasDuplicate) {
+        this.channelModalHelper.newChannelError = 'Ein Channel mit diesem Namen existiert bereits!';
+      }
+    }
+  }
   get newChannelDescription() { return this.channelModalHelper.newChannelDescription; }
   set newChannelDescription(v: string) { this.channelModalHelper.newChannelDescription = v; }
   get addPeopleSelection() { return this.channelModalHelper.addPeopleSelection; }

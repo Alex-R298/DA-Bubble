@@ -181,7 +181,7 @@
 .edit-field {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 0;
 }
 
 .edit-field-label {
@@ -191,6 +191,7 @@
     font-size: 1.29rem;
     font-weight: 700;
     color: black;
+    margin-bottom: 1rem;
 }
 
 .edit-actions {

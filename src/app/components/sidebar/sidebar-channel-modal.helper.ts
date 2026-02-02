@@ -7,6 +7,7 @@ export class SidebarChannelModalHelper {
   showAddPeopleModal = false;
   newChannelName = '';
   newChannelDescription = '';
+  newChannelError: string | null = null;
   addPeopleSelection: 'all' | 'specific' | null = null;
   addPeopleQuery = '';
   selectedAddPeople: any[] = [];
@@ -18,6 +19,7 @@ export class SidebarChannelModalHelper {
     this.showAddPeopleModal = false;
     this.newChannelName = '';
     this.newChannelDescription = '';
+    this.newChannelError = null;
     this.addPeopleSelection = null;
     this.addPeopleQuery = '';
     this.selectedAddPeople = [];
@@ -27,11 +29,16 @@ export class SidebarChannelModalHelper {
   /** Closes the new channel modal */
   closeNewChannelModal(): void {
     this.showNewChannelModal = false;
+    this.newChannelError = null;
   }
 
   /** Opens the modal for adding people to the new channel */
   openAddPeopleModal(): boolean {
-    if (!this.newChannelName.trim()) return false;
+    this.newChannelError = null;
+    if (!this.newChannelName.trim()) {
+      this.newChannelError = 'Bitte Channelnamen eingeben';
+      return false;
+    }
     this.showNewChannelModal = false;
     this.showAddPeopleModal = true;
     this.addPeopleSelection = null;
@@ -44,6 +51,7 @@ export class SidebarChannelModalHelper {
   /** Closes the add people modal */
   closeAddPeopleModal(): void {
     this.showAddPeopleModal = false;
+    this.newChannelError = null;
   }
 
   /** Sets the member selection mode for the new channel */
@@ -63,9 +71,19 @@ export class SidebarChannelModalHelper {
     const query = this.addPeopleQuery.trim().toLowerCase();
     if (!query) return [];
     const selectedIds = new Set(this.selectedAddPeople.map(u => u.uid));
-    return users
-      .filter(u => !selectedIds.has(u.uid))
-      .filter(u => (u.name || '').toLowerCase().includes(query) || (u.email || '').toLowerCase().includes(query));
+    const candidates = users.filter(u => !selectedIds.has(u.uid));
+
+    // Prefer name matches. For short queries (1-2 chars) only match names to avoid noisy email matches.
+    const nameMatches = candidates.filter(u => (u.name || '').toLowerCase().includes(query));
+    if (query.length < 3) {
+      return nameMatches;
+    }
+
+    // For longer queries, include email matches as well (but avoid duplicates).
+    const emailMatches = candidates
+      .filter(u => (u.email || '').toLowerCase().includes(query) && !nameMatches.includes(u));
+
+    return [...nameMatches, ...emailMatches];
   }
 
   /** Adds a user to the selected members list */
@@ -89,7 +107,10 @@ export class SidebarChannelModalHelper {
     if (!desiredName) return false;
     const normalizedDesiredName = desiredName.toLowerCase();
     const hasDuplicate = channels.some(c => (c?.name || '').trim().toLowerCase() === normalizedDesiredName);
-    if (hasDuplicate) return false;
+    if (hasDuplicate) {
+      this.newChannelError = 'Ein Channel mit diesem Namen existiert bereits!';
+      return false;
+    }
 
     let memberUids: string[] = [];
 

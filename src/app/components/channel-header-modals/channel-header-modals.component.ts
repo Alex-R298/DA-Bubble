@@ -293,14 +293,18 @@ export class ChannelHeaderModalsComponent implements OnChanges, OnDestroy {
     const q = this.addMemberQuery.trim().toLowerCase();
     if (!q) return [];
     const selected = new Set(this.selectedUsers.map((s) => s.uid));
-    return this.selectableUsers
-      .filter((u) => !selected.has(u.uid))
-      .filter(
-        (u) =>
-          (u.name ?? '').toLowerCase().includes(q) ||
-          (u.email ?? '').toLowerCase().includes(q),
-      )
-      .slice(0, 8);
+    const candidates = this.selectableUsers.filter((u) => !selected.has(u.uid));
+
+    // Prefer name matches. For short queries (1-2 chars) only match names to avoid noisy email matches.
+    const nameMatches = candidates.filter((u) => (u.name ?? '').toLowerCase().includes(q));
+    if (q.length < 3) return nameMatches.slice(0, 8);
+
+    // For longer queries include email matches as well, but keep nameMatches first and avoid duplicates
+    const emailMatches = candidates.filter(
+      (u) => (u.email ?? '').toLowerCase().includes(q) && !nameMatches.includes(u),
+    );
+
+    return [...nameMatches, ...emailMatches].slice(0, 8);
   }
 
   /**

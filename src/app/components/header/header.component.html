@@ -273,7 +273,7 @@
           <div class="avatar-edit-wrapper">
             <app-svg-images
               class="profile-avatar ui-avatar"
-              [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
+              [iconName]="menuHelper.pendingAvatar || user?.profileImageUrl || 'steffen-hoffmann'"
               [width]="'100%'"
               [height]="'100%'">
             </app-svg-images>
@@ -302,6 +302,7 @@
             (focus)="onEditNameFocus()"
             (blur)="onEditNameBlur()"
           />
+          <div *ngIf="menuHelper.nameError" class="input-error">{{ menuHelper.nameError }}</div>
         </div>
 
         <div class="edit-actions display-jc-center">
@@ -313,7 +314,7 @@
   </div>
 </header>
 
-<app-avatar-modal *ngIf="showAvatarModal" (closed)="closeAvatarModal()"></app-avatar-modal>
+<app-avatar-modal *ngIf="showAvatarModal" (saved)="menuHelper.setPendingAvatar($event)" (closed)="closeAvatarModal()"></app-avatar-modal>
 
 <div
   class="menu-overlay"

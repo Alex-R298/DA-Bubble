@@ -12,6 +12,8 @@ export class HeaderMenuHelper {
   showAvatarModal = false;
   editedFullName = '';
   editNameFocused = false;
+  nameError: string | null = null;
+  pendingAvatar: string | null = null;
 
   /** Toggles the user menu visibility */
   toggleUserMenu(): void {
@@ -60,6 +62,11 @@ export class HeaderMenuHelper {
     this.showUserMenu = false;
   }
 
+  /** Set pending avatar chosen in avatar modal (not persisted yet) */
+  setPendingAvatar(avatarUrl: string): void {
+    this.pendingAvatar = avatarUrl;
+  }
+
   /** Handles focus event on edit name input */
   onEditNameFocus(): void {
     this.editNameFocused = true;
@@ -85,15 +92,28 @@ export class HeaderMenuHelper {
   async saveEditProfile(
     authService: AuthService,
     userService: UserService,
-    updateUserCallback: (name: string) => void
+    updateUserCallback: (name: string, avatar?: string) => void
   ): Promise<void> {
+    this.nameError = null;
     const nextName = this.editedFullName.trim();
-    if (!nextName) return;
+    if (!nextName) {
+      this.nameError = 'Bitte einen Namen eingeben!';
+      return;
+    }
 
     const currentUser = authService.getCurrentUser();
     if (currentUser) {
       await userService.updateUserProfile(currentUser.uid, nextName);
-      updateUserCallback(nextName);
+      if (this.pendingAvatar) {
+        await userService.updateUserAvatar(currentUser.uid, this.pendingAvatar);
+        const sentAvatar = this.pendingAvatar;
+        this.pendingAvatar = null;
+        userService.clearUserCache();
+        updateUserCallback(nextName, sentAvatar);
+      } else {
+        userService.clearUserCache();
+        updateUserCallback(nextName);
+      }
     }
 
     this.closeEditProfileView();

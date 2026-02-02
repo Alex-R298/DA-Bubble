@@ -332,6 +332,29 @@
   color: #000;
 }
 
+/* Add-people modal: cap height and make middle content scrollable */
+.add-people-modal {
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.add-people-modal>.modal-header {
+  flex: 0 0 auto;
+}
+
+.add-people-modal>.modal-actions {
+  flex: 0 0 auto;
+}
+
+/* Everything between header and actions should scroll when content overflows */
+.add-people-modal> :not(.modal-header):not(.modal-actions) {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 0 1rem;
+}
+
 .hash {
   width: 1.2rem;
 }

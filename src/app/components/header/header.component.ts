@@ -363,8 +363,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   /** Saves the edited profile information */
   async saveEditProfile(): Promise<void> {
-    await this.menuHelper.saveEditProfile(this.authService, this.userService, (name) => {
+    await this.menuHelper.saveEditProfile(this.authService, this.userService, (name, avatar) => {
       this.user = { ...this.user, name };
+      if (avatar) this.user = { ...this.user, profileImageUrl: avatar };
     });
   }
 

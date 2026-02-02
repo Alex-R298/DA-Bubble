@@ -235,10 +235,11 @@
 }
 
 .suggestions {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: calc(100% + 6px);
+    /* keep suggestions in the document flow so the modal can grow with it
+       instead of using absolute positioning */
+    position: static;
+    width: 100%;
+    margin-top: 6px;
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
@@ -290,6 +291,12 @@
     max-width: calc(100vw - 32px);
     width: min(520px, calc(100vw - 32px));
     box-sizing: border-box;
+}
+
+/* Limit members/add-members modal height on desktop to 600px */
+.modal.members,
+.modal.add-members {
+    max-height: 600px;
 }
 
 .modal.channel-info {

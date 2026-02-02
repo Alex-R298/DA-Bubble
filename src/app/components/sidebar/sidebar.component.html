@@ -279,6 +279,7 @@
              <app-svg-images class="hash ui-input-prefix" [iconName]="'tag'" [width]="'100%'" [height]="'100%'" [className]="'icon-colored'"></app-svg-images>
              <input class="ui-input-rounded" type="text" id="channelName" [(ngModel)]="newChannelName" [placeholder]="'SIDEBAR.CHANNEL_NAME_PLACEHOLDER' | translate" />
            </div>
+           <div *ngIf="channelModalHelper.newChannelError" class="input-error">{{ channelModalHelper.newChannelError }}</div>
         </div>
 
         <div class="form-group">
@@ -287,7 +288,7 @@
         </div>
 
         <div class="modal-actions ui-actions">
-          <button class="ui-btn-primary" (click)="openAddPeopleModal()" [disabled]="!newChannelName.trim()">{{ 'SIDEBAR.CREATE' | translate }}</button>
+          <button class="ui-btn-primary" (click)="openAddPeopleModal()" [disabled]="!newChannelName.trim() || channelModalHelper.newChannelError">{{ 'SIDEBAR.CREATE' | translate }}</button>
         </div>
       </div>
     </div>
@@ -302,6 +303,7 @@
             <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
           </button>
         </div>
+        <div *ngIf="channelModalHelper.newChannelError" class="input-error" style="padding:0 1rem">{{ channelModalHelper.newChannelError }}</div>
 
         <div class="add-people-options">
           <ng-container *ngIf="memberChannels.length">

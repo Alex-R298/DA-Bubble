@@ -14,7 +14,7 @@
         <div class="profile-avatar-section ui-avatar-center">
           <app-svg-images
             class="profile-avatar ui-avatar"
-            [iconName]="user.profileImageUrl || 'steffen-hoffmann'"
+            [iconName]="pendingAvatar || user.profileImageUrl || 'steffen-hoffmann'"
             [width]="'100%'"
             [height]="'100%'">
           </app-svg-images>
@@ -108,6 +108,7 @@
             (focus)="onEditNameFocus()"
             (blur)="onEditNameBlur()"
           />
+          <div *ngIf="nameError" class="input-error">{{ nameError }}</div>
         </div>
 
         <div class="edit-actions">
@@ -119,4 +120,4 @@
   </div>
 </ng-container>
 
-<app-avatar-modal *ngIf="showAvatarModal" (closed)="closeAvatarModal()"></app-avatar-modal>
+<app-avatar-modal *ngIf="showAvatarModal" (saved)="onAvatarSaved($event)" (closed)="closeAvatarModal()"></app-avatar-modal>

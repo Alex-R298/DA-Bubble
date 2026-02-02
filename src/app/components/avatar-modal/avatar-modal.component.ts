@@ -1,7 +1,5 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserService } from '../../services/user.service';
-import { AuthService } from '../../services/auth.service';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -10,13 +8,11 @@ import { TranslateModule } from '@ngx-translate/core';
     standalone: true,
     imports: [CommonModule, SvgImagesComponent, TranslateModule],
     templateUrl: './avatar-modal.component.html',
-    styleUrl: './avatar-modal.component.css',
+    styleUrls: ['./avatar-modal.component.css'],
 })
 export class AvatarModalComponent {
-    private userService = inject(UserService);
-    private authService = inject(AuthService);
-
     @Output() closed = new EventEmitter<void>();
+    @Output() saved = new EventEmitter<string>();
 
     selectedAvatar: number | null = null;
 
@@ -29,34 +25,24 @@ export class AvatarModalComponent {
         'elias-neumann',
     ];
 
-    /**
-     * Selects an avatar by its index
-     * @param index - The index of the avatar in the avatars array
-     */
+    /** Selects an avatar by its index */
     selectAvatar(index: number): void {
         this.selectedAvatar = index;
     }
 
     /**
-     * Saves the selected avatar and closes the modal
+     * Emits the chosen avatar to the parent but does NOT persist it here.
+     * Persistence happens when the parent finally saves the profile.
      */
-    async onSave(): Promise<void> {
+    onSave(): void {
         if (this.selectedAvatar !== null) {
             const selectedAvatarUrl = this.avatars[this.selectedAvatar];
-            const currentUser = this.authService.getCurrentUser();
-            if (currentUser) {
-                await this.userService.updateUserAvatar(
-                    currentUser.uid,
-                    selectedAvatarUrl,
-                );
-            }
+            this.saved.emit(selectedAvatarUrl);
         }
         this.closed.emit();
     }
 
-    /**
-     * Closes the modal without saving
-     */
+    /** Closes the modal without saving */
     close(): void {
         this.closed.emit();
     }

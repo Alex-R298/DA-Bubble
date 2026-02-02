@@ -36,6 +36,8 @@ export class UserProfileModalComponent {
     editedFullName = '';
     editNameFocused = false;
     showAvatarModal = false;
+    nameError: string | null = null;
+    pendingAvatar: string | null = null;
 
     /**
      * Closes the modal and resets the editing state.
@@ -51,8 +53,10 @@ export class UserProfileModalComponent {
      */
     startEdit(): void {
         if (!this.allowEdit || !this.user) return;
-        this.editedFullName = '';
+        this.editedFullName = this.user.name || '';
         this.editNameFocused = false;
+        this.nameError = null;
+        this.pendingAvatar = null;
         this.isEditing = true;
     }
 
@@ -72,6 +76,14 @@ export class UserProfileModalComponent {
     /** Closes the avatar selection modal */
     closeAvatarModal(): void {
         this.showAvatarModal = false;
+    }
+
+    /** Receives selected avatar from AvatarModal but does not persist here */
+    onAvatarSaved(avatarUrl: string): void {
+        this.pendingAvatar = avatarUrl;
+        if (this.user) {
+            this.user = { ...this.user, profileImageUrl: avatarUrl };
+        }
     }
 
     /**
@@ -94,9 +106,10 @@ export class UserProfileModalComponent {
      */
     async saveEdit(): Promise<void> {
         if (!this.user) return;
+        this.nameError = null;
         const nextName = this.editedFullName.trim();
         if (!nextName) {
-            this.isEditing = false;
+            this.nameError = 'Bitte einen Namen eingeben!';
             return;
         }
         const currentUid = this.authService.getCurrentUser()?.uid;
@@ -108,6 +121,12 @@ export class UserProfileModalComponent {
 
         try {
             await this.userService.updateUserProfile(currentUid, nextName);
+            if (this.pendingAvatar) {
+                await this.userService.updateUserAvatar(currentUid, this.pendingAvatar);
+                this.user = { ...this.user, profileImageUrl: this.pendingAvatar };
+                this.pendingAvatar = null;
+            }
+            this.userService.clearUserCache();
         } catch {
         }
         this.isEditing = false;

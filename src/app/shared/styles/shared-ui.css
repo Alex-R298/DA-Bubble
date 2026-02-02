@@ -432,9 +432,21 @@
     transition: 80ms ease-in;
 }
 
+.input-error {
+    color: #8b0000;
+    margin-top: 0.5rem;
+    margin-left: 1rem;
+    font-size: 0.95rem;
+}
+
 .display-flex-column {
     display: flex;
     flex-direction: column;
+}
+
+/* When an error message immediately follows an edit-field, reduce the gap only there */
+.edit-field+.input-error {
+    margin-top: 0.125rem;
 }
 
 .display-flex-row {
