@@ -6,13 +6,14 @@ import { AuthService } from '../../services/auth.service';
 import { PrivacyStateService } from '../../services/privacy-state.service';
 import { SvgImagesComponent } from '../svg-images/svg-images.component';
 import { OverlayComponent } from '../overlay/overlay.component';
+import { HeaderSignupComponent } from '../header-signup/header-signup.component';
 import { Subscription } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SvgImagesComponent, OverlayComponent, TranslateModule],
+  imports: [CommonModule, FormsModule, RouterModule, SvgImagesComponent, OverlayComponent, TranslateModule, HeaderSignupComponent],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
