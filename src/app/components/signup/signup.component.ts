@@ -23,14 +23,15 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   displayName: string = '';
   email: string = '';
+  confirmEmail: string = '';
   password: string = '';
   privacyAccepted: boolean = false;
-  
+
   showOverlay: boolean = false;
   overlayType: 'error' | 'success' = 'error';
   overlayTitle: string = '';
   overlayMessage: string = '';
-  
+
   private privacySubscription?: Subscription;
 
   /**
@@ -88,23 +89,56 @@ export class SignupComponent implements OnInit, OnDestroy {
     };
   }
 
+
+  /**
+   * Checks if the email and confirmEmail fields match.
+   * @returns True if emails match, false otherwise.
+   */
+  checkEmailsMatch(): boolean {
+    return this.email === this.confirmEmail;
+  }
+
   /**
    * Handles the form submission for user registration.
    * Validates the form data and attempts to register the user via AuthService.
    */
   async onSubmit(): Promise<void> {
-    if (this.displayName && this.email && this.password && this.privacyAccepted) {
+    if (this.displayName.length < 3) {
+      this.overlayType = 'error';
+      this.overlayTitle = 'Name zu kurz';
+      this.overlayMessage = 'Der Name muss mindestens 3 Zeichen lang sein.';
+      this.showOverlay = true;
+      return;
+    }
+
+    if (!this.checkEmailsMatch()) {
+      this.overlayType = 'error';
+      this.overlayTitle = 'E-Mails stimmen nicht überein';
+      this.overlayMessage = 'Die eingegebenen E-Mail-Adressen stimmen nicht überein. Bitte überprüfen Sie Ihre Eingaben.';
+      this.showOverlay = true;
+      return;
+    }
+
+    if (this.password.length < 6) {
+      this.overlayType = 'error';
+      this.overlayTitle = 'Passwort zu schwach';
+      this.overlayMessage = 'Das Passwort muss mindestens 6 Zeichen lang sein.';
+      this.showOverlay = true;
+      return;
+    }
+
+    if (this.privacyAccepted) {
       try {
         await this.authService.register(this.email, this.password, this.displayName);
         this.overlayType = 'success';
         this.overlayTitle = 'Registrierung erfolgreich';
         this.overlayMessage = 'Ihr Konto wurde erfolgreich erstellt. Sie werden weitergeleitet...';
         this.showOverlay = true;
-        
+
         setTimeout(() => {
           this.showOverlay = false;
-          this.router.navigate(['/choose-avatar'], { 
-            state: { userName: this.displayName } 
+          this.router.navigate(['/choose-avatar'], {
+            state: { userName: this.displayName }
           });
         }, 1500);
       } catch (error: any) {
