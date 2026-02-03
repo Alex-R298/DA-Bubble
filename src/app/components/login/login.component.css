@@ -116,7 +116,7 @@
   background: #f7fafc;
   border: 2px solid #e2e8f0;
   border-radius: 16px;
-  font-size: 1rem;
+  font-size: 14px;
   font-weight: 400;
   color: #2d3748;
   box-sizing: border-box;
@@ -321,11 +321,11 @@
   }
 
   .login-subtitle {
-    font-size: 0.9375rem;
+    font-size: 16px;
   }
 
   .form-input {
-    font-size: 1rem;
+    font-size: 14px;
     padding: 0.875rem 0.875rem 0.875rem 3rem;
   }
 
@@ -335,7 +335,7 @@
 
   .primary-login-button,
   .guest-login-button {
-    font-size: 1rem;
+    font-size: 16px;
     padding: 1rem;
   }
 
