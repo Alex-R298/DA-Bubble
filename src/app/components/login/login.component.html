@@ -65,6 +65,11 @@
       </div>
     </form>
   </div>
+
+  <div class="mobile-auth-cta">
+    <p class="mobile-auth-text">{{ 'HEADER_LOGIN.NEW_TO_DABUBBLE' | translate }}</p>
+    <a routerLink="/signup" class="mobile-auth-button">{{ 'HEADER_LOGIN.CREATE_ACCOUNT' | translate }}</a>
+  </div>
   
   <app-overlay 
     [isVisible]="showOverlay"

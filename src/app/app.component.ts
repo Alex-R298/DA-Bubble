@@ -12,7 +12,7 @@ import { TranslationService } from './services/translate.service';
   standalone: true,
   imports: [RouterOutlet, FooterComponent, HeaderComponent, NgIf],
   template: `
-    <div class="app-wrapper" [class.auth-gradient]="useAuthGradient" [class.thread-open]="isThreadOpen">
+    <div class="app-wrapper" [class.auth-gradient]="useAuthGradient" [class.thread-open]="isThreadOpen" [class.auth-form-page]="isAuthFormPage">
       <app-header *ngIf="showHeader"></app-header>
       <main class="app-main">
         <router-outlet></router-outlet>
@@ -36,12 +36,52 @@ import { TranslationService } from './services/translate.service';
       min-height: 0;
       overflow: hidden;
     }
+
+    @media (max-width: 768px) {
+      .app-wrapper.auth-gradient {
+        height: 100dvh;
+        min-height: 100vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .app-wrapper.auth-gradient .app-main {
+        overflow: visible;
+        flex: 0 0 auto;
+        min-height: auto;
+        padding-bottom: calc(56px + env(safe-area-inset-bottom));
+      }
+
+      .app-wrapper.auth-form-page .app-main {
+        padding-bottom: 0;
+      }
+    }
+
+    @media (max-height: 880px) {
+      .app-wrapper.auth-gradient {
+        height: 100dvh;
+        min-height: 100vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .app-wrapper.auth-gradient .app-main {
+        overflow: visible;
+        flex: 0 0 auto;
+        min-height: auto;
+      }
+
+      .app-wrapper.auth-form-page .app-main {
+        padding-bottom: 0;
+      }
+    }
   `]
 })
 export class AppComponent implements OnDestroy {
   showHeader = true;
   showFooter = true;
   useAuthGradient = false;
+  isAuthFormPage = false;
 
   isThreadOpen = false;
 
@@ -89,6 +129,9 @@ export class AppComponent implements OnDestroy {
 
     const authGradientOn = ['/', '/login', '/signup', '/forgot-password'];
     this.useAuthGradient = this.matchesAnyPath(path, authGradientOn);
+
+    const authFormPages = ['/login', '/signup'];
+    this.isAuthFormPage = this.matchesAnyPath(path, authFormPages);
 
     // Login/Register pages (in this project: login + signup + root login)
     const hideHeaderOn = ['/', '/login', '/signup', '/forgot-password', '/reset-password', '/choose-avatar', '/imprint', '/privacy-policy'];

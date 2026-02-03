@@ -9,6 +9,9 @@
   justify-content: center;
   gap: 16px;
   padding: 8px;
+  position: sticky;
+  bottom: 0;
+  background: transparent;
 }
 
 .footer-nav a {
@@ -63,17 +66,36 @@
 
 @media (max-width: 768px) {
   .app-footer {
-    margin-bottom: 16px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 20;
   }
 
   .footer-nav {
     gap: 8px;
-    padding: 4px;
+    padding: 16px;
+    background: transparent;
   }
 
   .footer-nav a {
     font-size: 16px;
     min-width: auto;
     padding: 6px 10px;
+  }
+}
+
+@media (max-height: 960px) {
+  .app-footer {
+    position: static;
+    margin-bottom: 40px;
+    padding-bottom: 0;
+  }
+
+  .footer-nav {
+    position: static;
   }
 }

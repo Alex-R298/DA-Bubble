@@ -14,7 +14,7 @@
 
 .privacy-container>.back-button {
   position: absolute;
-  top: 2rem;
+  top: 1.5rem;
   left: 1.5rem;
   display: flex;
   align-items: center;
@@ -239,7 +239,7 @@
   }
 
   .privacy-title {
-    font-size: clamp(1.6rem, 5vw, 2rem);
+    font-size: clamp(1.56rem, 5vw, 2rem);
   }
 
   .privacy-section h2 {

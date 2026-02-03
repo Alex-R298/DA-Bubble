@@ -14,7 +14,7 @@
 
 .imprint-container>.back-button {
   position: absolute;
-  top: 2rem;
+  top: 1.5rem;
   /* default: near page edge for small viewports */
   left: 1.5rem;
   display: flex;
@@ -239,7 +239,7 @@
   }
 
   .imprint-title {
-    font-size: clamp(1.6rem, 5vw, 2rem);
+    font-size: clamp(1.56rem, 5vw, 2rem);
   }
 
   .imprint-section h2 {

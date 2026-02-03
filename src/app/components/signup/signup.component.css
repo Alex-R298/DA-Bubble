@@ -12,7 +12,6 @@
 }
 
 
-
 .decorative-curve {
   position: absolute;
   bottom: -10%;
@@ -307,6 +306,16 @@
 }
 
 @media (max-width: 768px) {
+  .signup-container {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: auto;
+    overflow: visible;
+    padding: 1.5rem 1.5rem 2rem;
+    gap: 1.5rem;
+  }
+
   .signup-card {
     width: 100%;
     padding: 2rem 1.5rem;
@@ -340,18 +349,17 @@
   }
 }
 
-/* Small height devices like iPhone SE - scrollable layout */
-@media (max-height: 700px) {
+/* Small height devices - scrollable layout */
+@media (max-height: 880px) {
   .signup-container {
     padding: 1.5rem;
-    padding-top: 5rem;
-    min-height: auto;
-    overflow-y: auto;
-    align-items: flex-start;
+    padding-top: 2rem;
+    min-height: 100dvh;
+    justify-content: center;
+    align-items: center;
   }
 
   .signup-card {
-    margin-top: 1.5rem;
     margin-bottom: 1rem;
   }
 }
