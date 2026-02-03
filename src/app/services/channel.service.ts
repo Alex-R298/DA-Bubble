@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { doc, collection, addDoc, onSnapshot, getDoc, updateDoc, arrayUnion, arrayRemove, query, where, getDocs } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 
 export interface Channel {
   id?: string;
@@ -17,6 +17,7 @@ export interface Channel {
 })
 export class ChannelService {
   private firebaseService = inject(FirebaseService);
+  private allChannels$: Observable<Channel[]> | null = null;
 
   /**
    * Creates a new channel with the specified name, description, and members.
@@ -49,29 +50,33 @@ export class ChannelService {
 
   /**
    * Returns an observable that emits all channels in real-time.
+   * Uses shareReplay to prevent multiple Firestore listeners.
    * @returns An observable of the channel array.
    */
   getAllChannels(): Observable<Channel[]> {
-    return new Observable<Channel[]>(observer => {
-      const channelsRef = collection(this.firebaseService.db, 'channels');
+    if (!this.allChannels$) {
+      this.allChannels$ = new Observable<Channel[]>(observer => {
+        const channelsRef = collection(this.firebaseService.db, 'channels');
 
-      const unsubscribe = onSnapshot(channelsRef, (snapshot) => {
-        const channels = snapshot.docs.map(doc => {
-          const data = doc.data();
-          return {
-            name: data['name'],
-            description: data['description'],
-            createdAt: data['createdAt'].toDate(),
-            createdById: data['createdById'],
-            members: data['members'],
-            id: doc.id
-          };
+        const unsubscribe = onSnapshot(channelsRef, (snapshot) => {
+          const channels = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+              name: data['name'],
+              description: data['description'],
+              createdAt: data['createdAt'].toDate(),
+              createdById: data['createdById'],
+              members: data['members'],
+              id: doc.id
+            };
+          });
+          observer.next(channels);
         });
-        observer.next(channels);
-      });
 
-      return () => unsubscribe();
-    });
+        return () => unsubscribe();
+      }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    }
+    return this.allChannels$;
   }
 
   /**

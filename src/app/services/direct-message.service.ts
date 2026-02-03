@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { collection, addDoc, onSnapshot, doc, getDoc, updateDoc, deleteField } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, doc, getDoc, updateDoc, deleteField, query, where } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
 import { UserService } from './user.service';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 
 export interface DirectMessage {
   id?: string;
@@ -21,6 +21,18 @@ export interface DirectMessage {
 export class DirectMessageService {
   private firebaseService = inject(FirebaseService);
   private userService = inject(UserService);
+
+  // Cache for profile images to avoid repeated lookups
+  private profileImageCache = new Map<string, string>();
+
+  // Shared observable for all direct messages to prevent multiple subscriptions
+  private allDirectMessages$: Observable<DirectMessage[]> | null = null;
+
+  // Cache for conversation-specific message subscriptions - prevents multiple listeners
+  private conversationMessagesCache = new Map<string, Observable<DirectMessage[]>>();
+
+  // Cache for individual message subscriptions - prevents multiple listeners
+  private messageByIdCache = new Map<string, Observable<any | null>>();
 
   /**
    * Creates a new direct message in a conversation.
@@ -54,82 +66,122 @@ export class DirectMessageService {
 
   /**
    * Returns an observable of all messages in a specific conversation.
+   * Uses caching to prevent multiple Firestore listeners for the same conversation.
    * @param conversationId - The ID of the conversation to get messages for.
    * @returns An observable emitting the array of direct messages.
    */
   getMessagesByConversationId(conversationId: string): Observable<DirectMessage[]> {
-    return new Observable<DirectMessage[]>(observer => {
-      const messagesRef = collection(this.firebaseService.db, 'direct-messages'); // ← Separate Collection!
+    // Return cached subscription if exists
+    if (this.conversationMessagesCache.has(conversationId)) {
+      return this.conversationMessagesCache.get(conversationId)!;
+    }
 
-      const unsubscribe = onSnapshot(messagesRef, async (snapshot) => {
+    const subscription$ = new Observable<DirectMessage[]>(observer => {
+      const messagesRef = collection(this.firebaseService.db, 'direct-messages');
+      // Optimized query: Only load messages for this conversation
+      const conversationQuery = query(messagesRef, where('conversationId', '==', conversationId));
+
+      const unsubscribe = onSnapshot(conversationQuery, async (snapshot) => {
         const allDocs = snapshot.docs;
-        
-        const messages = await Promise.all(
-          allDocs.map(async doc => {
-            const data = doc.data();
-            let senderProfileImage = data['senderProfileImage'] || '';
-            if (!senderProfileImage && data['senderId']) {
-              try {
-                const user = await this.userService.getUserById(data['senderId']);
-                if (user && user.profileImageUrl) {
-                  senderProfileImage = user.profileImageUrl;
-                }
-              } catch (error) {
-                // Avatar loading failed silently
-              }
-            }
 
-            // Count actual replies by checking which messages have this message as parent
+        // Collect all unique sender IDs that need profile images
+        const sendersNeedingImages = new Set<string>();
+        allDocs.forEach(doc => {
+          const data = doc.data();
+          const senderId = data['senderId'];
+          if (senderId && !data['senderProfileImage'] && !this.profileImageCache.has(senderId)) {
+            sendersNeedingImages.add(senderId);
+          }
+        });
+
+        // Batch-load all missing profile images
+        if (sendersNeedingImages.size > 0) {
+          await Promise.all(
+            Array.from(sendersNeedingImages).map(async senderId => {
+              try {
+                const user = await this.userService.getUserById(senderId);
+                if (user?.profileImageUrl) {
+                  this.profileImageCache.set(senderId, user.profileImageUrl);
+                }
+              } catch { /* ignore */ }
+            })
+          );
+        }
+
+        const messages = allDocs
+          .filter(doc => !doc.data()['parentMessageId']) // Only main messages
+          .map(doc => {
+            const data = doc.data();
+            const senderId = data['senderId'];
+            const senderProfileImage = data['senderProfileImage'] || this.profileImageCache.get(senderId) || '';
+
+            // Count actual replies
             const actualReplies = allDocs.filter(d => d.data()['parentMessageId'] === doc.id);
 
             return {
               id: doc.id,
               conversationId: data['conversationId'],
-              senderId: data['senderId'],
+              senderId: senderId,
               content: data['content'],
               senderName: data['senderName'],
               senderProfileImage: senderProfileImage,
-              timestamp: data['timestamp'].toDate(),
+              timestamp: data['timestamp']?.toDate() || new Date(),
               parentMessageId: data['parentMessageId'],
               replies: actualReplies.map(r => r.id),
               reactions: data['reactions'] || {}
             };
           })
-        );
-
-        const filteredMessages = messages
-          .filter(message => message.conversationId === conversationId && !message.parentMessageId)
           .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
 
-        observer.next(filteredMessages);
+        observer.next(messages);
       });
 
-      return () => unsubscribe();
-    });
+      return () => {
+        unsubscribe();
+        this.conversationMessagesCache.delete(conversationId);
+      };
+    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+    this.conversationMessagesCache.set(conversationId, subscription$);
+    return subscription$;
   }
 
   /**
-   * Returns an observable of all direct messages sorted by timestamp.
+   * Returns a shared observable of all direct messages sorted by timestamp.
+   * Uses caching and shareReplay to prevent multiple Firestore subscriptions.
    * @returns An observable emitting all direct messages.
    */
   getAllDirectMessages(): Observable<DirectMessage[]> {
-    return new Observable<DirectMessage[]>(observer => {
-      const messagesRef = collection(this.firebaseService.db, 'direct-messages');
+    if (!this.allDirectMessages$) {
+      this.allDirectMessages$ = new Observable<DirectMessage[]>(observer => {
+        const messagesRef = collection(this.firebaseService.db, 'direct-messages');
 
-      const unsubscribe = onSnapshot(messagesRef, async (snapshot) => {
-        const messages = await Promise.all(
-          snapshot.docs.map(async doc => {
+        const unsubscribe = onSnapshot(messagesRef, async (snapshot) => {
+          // Batch collect all unique sender IDs that need profile images
+          const sendersNeedingImages = new Set<string>();
+          snapshot.docs.forEach(doc => {
+            const data = doc.data();
+            if (!data['senderProfileImage'] && data['senderId'] && !this.profileImageCache.has(data['senderId'])) {
+              sendersNeedingImages.add(data['senderId']);
+            }
+          });
+
+          // Fetch missing profile images in parallel (limited batch)
+          const imageFetches = Array.from(sendersNeedingImages).slice(0, 20).map(async senderId => {
+            try {
+              const user = await this.userService.getUserById(senderId);
+              if (user?.profileImageUrl) {
+                this.profileImageCache.set(senderId, user.profileImageUrl);
+              }
+            } catch { /* ignore */ }
+          });
+          await Promise.all(imageFetches);
+
+          const messages = snapshot.docs.map(doc => {
             const data = doc.data();
             let senderProfileImage = data['senderProfileImage'] || '';
             if (!senderProfileImage && data['senderId']) {
-              try {
-                const user = await this.userService.getUserById(data['senderId']);
-                if (user && user.profileImageUrl) {
-                  senderProfileImage = user.profileImageUrl;
-                }
-              } catch (error) {
-                // Avatar loading failed silently
-              }
+              senderProfileImage = this.profileImageCache.get(data['senderId']) || '';
             }
 
             return {
@@ -144,15 +196,16 @@ export class DirectMessageService {
               replies: data['replies'] || [],
               reactions: data['reactions'] || {}
             };
-          })
-        );
+          });
 
-        const sorted = messages.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-        observer.next(sorted);
-      });
+          const sorted = messages.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+          observer.next(sorted);
+        });
 
-      return () => unsubscribe();
-    });
+        return () => unsubscribe();
+      }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    }
+    return this.allDirectMessages$;
   }
 
   /**
@@ -205,11 +258,16 @@ export class DirectMessageService {
 
   /**
    * Returns a realtime observable for a single direct message by ID.
+   * Uses caching to prevent multiple Firestore listeners for the same message.
    * @param messageId - The ID of the message to observe.
    * @returns An observable emitting the message or null.
    */
   getMessageById(messageId: string): Observable<any | null> {
-    return new Observable<any | null>(observer => {
+    if (this.messageByIdCache.has(messageId)) {
+      return this.messageByIdCache.get(messageId)!;
+    }
+
+    const subscription$ = new Observable<any | null>(observer => {
       const messageRef = doc(this.firebaseService.db, 'direct-messages', messageId);
 
       const unsubscribe = onSnapshot(messageRef, async (docSnap) => {
@@ -227,7 +285,6 @@ export class DirectMessageService {
               senderProfileImage = user.profileImageUrl;
             }
           } catch (error) {
-            // Avatar loading failed silently
           }
         }
 
@@ -247,7 +304,13 @@ export class DirectMessageService {
         });
       });
 
-      return () => unsubscribe();
-    });
+      return () => {
+        unsubscribe();
+        this.messageByIdCache.delete(messageId);
+      };
+    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+    this.messageByIdCache.set(messageId, subscription$);
+    return subscription$;
   }
 }

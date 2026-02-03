@@ -3,6 +3,8 @@ import { Channel } from '../../services/channel.service';
 import { Message } from '../../services/message.service';
 import { DirectMessage } from '../../services/direct-message.service';
 import { SearchService } from '../../services/search.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 export type SearchMessageResult = {
   type: 'channel' | 'dm';
@@ -18,7 +20,10 @@ export type SearchMessageResult = {
   otherUserName?: string;
 };
 
-/** Helper class for handling search functionality in the sidebar component */
+/** 
+ * Helper class for handling search functionality in the sidebar component
+ * Includes debouncing and result caching to prevent excessive filtering operations
+ */
 export class SidebarSearchHelper {
   searchQuery = '';
   showSearchResults = false;
@@ -26,125 +31,221 @@ export class SidebarSearchHelper {
   tagListType: 'user' | 'channel' | null = null;
   tagQuery = '';
   private readonly searchResultLimit = 6;
+  private readonly DEBOUNCE_MS = 300;
+  
+  private searchSubject = new Subject<string>();
+  private debouncedQuery = '';
+  private isInitialized = false;
+  private cachedChannels: Channel[] = [];
+  private cachedUsers: User[] = [];
+  private cachedMessages: SearchMessageResult[] = [];
+  private cachedMentionUsers: User[] = [];
+  private cachedMentionChannels: Channel[] = [];
+  private onDebouncedSearch: (() => void) | null = null;
 
-  /** Gets the normalized search query in lowercase */
-  get normalizedSearchQuery(): string {
-    return this.searchQuery.trim().toLowerCase();
+  constructor() {
+    this.initDebounce();
   }
 
-  /** Handles search input changes */
+  /** Set callback to be called when debounced search should trigger recalculation */
+  setSearchCallback(callback: () => void): void {
+    this.onDebouncedSearch = callback;
+  }
+
+  private initDebounce(): void {
+    if (this.isInitialized) return;
+    this.isInitialized = true;
+    
+    this.searchSubject.pipe(
+      debounceTime(this.DEBOUNCE_MS),
+      distinctUntilChanged()
+    ).subscribe(query => {
+      this.debouncedQuery = query;
+      this.updateSearchResultsVisibility();
+      // Trigger recalculation via callback
+      if (this.onDebouncedSearch) {
+        this.onDebouncedSearch();
+      }
+    });
+  }
+
+  /** Gets the normalized search query in lowercase (uses debounced value) */
+  get normalizedSearchQuery(): string {
+    return this.debouncedQuery.trim().toLowerCase();
+  }
+
+  /** Handles search input changes with debouncing */
   onSearchInput(value: string): void {
     this.searchQuery = value;
     this.updateTagState(value);
-    this.updateSearchResultsVisibility();
+    if (!value.trim()) {
+      this.debouncedQuery = '';
+      this.showSearchResults = false;
+      this.clearCachedResults();
+    } else {
+      this.searchSubject.next(value);
+    }
   }
 
-  /** Gets filtered channels based on search query */
-  getFilteredSearchChannels(searchableChannels: Channel[]): Channel[] {
-    const q = this.normalizedSearchQuery;
-    if (!q) return [];
-    return searchableChannels
-      .filter(c => (c.name || '').toLowerCase().includes(q))
-      .slice(0, this.searchResultLimit);
+  /** Clear all cached results */
+  private clearCachedResults(): void {
+    this.cachedChannels = [];
+    this.cachedUsers = [];
+    this.cachedMessages = [];
   }
 
-  /** Gets filtered users based on search query */
-  getFilteredSearchUsers(
+  /** Recalculate and cache all search results - call this from the component when debounce triggers */
+  updateSearchResults(
+    searchableChannels: Channel[],
     allUsers: User[],
     currentUserProfile: User | null,
-    searchService: SearchService,
-    hasMessages: boolean
-  ): User[] {
-    const q = this.normalizedSearchQuery;
-    if (!q) return [];
-    const isEmail = searchService.isEmailQuery(this.searchQuery);
-    if (!isEmail && q.length < 3) return [];
-    if (!isEmail && hasMessages) return [];
-    const sourceUsers = searchService.getSearchUsersSource(allUsers, currentUserProfile);
-    if (isEmail) {
-      return sourceUsers.filter(u => (u.email || '').toLowerCase().includes(q)).slice(0, this.searchResultLimit);
-    }
-    return sourceUsers
-      .filter(u => (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q))
-      .slice(0, this.searchResultLimit);
-  }
-
-  /** Gets filtered messages from channels and DMs based on search query */
-  getFilteredSearchMessages(
     allChannelMessages: Message[],
     allDirectMessages: DirectMessage[],
-    searchableChannels: Channel[],
     currentUserId: string,
-    allUsers: User[],
-    currentUserProfile: User | null,
     searchService: SearchService
-  ): SearchMessageResult[] {
+  ): void {
     const q = this.normalizedSearchQuery;
-    if (!q) return [];
-    if (searchService.isEmailQuery(this.searchQuery)) return [];
+    
+    // Update cached channels
+    if (!q) {
+      this.cachedChannels = [];
+    } else {
+      this.cachedChannels = searchableChannels
+        .filter(c => (c.name || '').toLowerCase().includes(q))
+        .slice(0, this.searchResultLimit);
+    }
+    if (!q || searchService.isEmailQuery(this.searchQuery)) {
+      this.cachedMessages = [];
+    } else {
+      const channelIds = new Set(searchableChannels.map(c => c.id).filter(Boolean) as string[]);
 
-    const channelIds = new Set(searchableChannels.map(c => c.id).filter(Boolean) as string[]);
+      const channelMessages = allChannelMessages
+        .filter(m => channelIds.has(m.channelId))
+        .filter(m => searchService.messageMatchesQuery(m, q))
+        .map(m => ({
+          type: 'channel',
+          messageId: m.id,
+          content: m.content,
+          senderName: m.senderName,
+          senderProfileImage: (m as any).senderProfileImage,
+          timestamp: m.timestamp,
+          channelId: m.channelId,
+          channelName: searchService.getChannelNameById(m.channelId, searchableChannels)
+        } as SearchMessageResult));
 
-    const channelMessages = allChannelMessages
-      .filter(m => channelIds.has(m.channelId))
-      .filter(m => searchService.messageMatchesQuery(m, q))
-      .map(m => ({
-        type: 'channel',
-        messageId: m.id,
-        content: m.content,
-        senderName: m.senderName,
-        senderProfileImage: (m as any).senderProfileImage,
-        timestamp: m.timestamp,
-        channelId: m.channelId,
-        channelName: searchService.getChannelNameById(m.channelId, searchableChannels)
-      } as SearchMessageResult));
+      const directMessages = allDirectMessages
+        .filter(dm => searchService.isCurrentUserInConversation(dm.conversationId, currentUserId) && !(dm as any).parentMessageId)
+        .filter(dm => searchService.messageMatchesQuery(dm, q))
+        .map(dm => {
+          const otherUserId = searchService.getOtherUserIdFromConversation(dm.conversationId, currentUserId);
+          return {
+            type: 'dm',
+            messageId: dm.id,
+            content: dm.content,
+            senderName: dm.senderName,
+            senderProfileImage: (dm as any).senderProfileImage,
+            timestamp: dm.timestamp,
+            conversationId: dm.conversationId,
+            otherUserId: otherUserId,
+            otherUserName: otherUserId ? searchService.getUserNameById(allUsers, currentUserProfile, otherUserId) : undefined
+          } as SearchMessageResult;
+        });
 
-    const directMessages = allDirectMessages
-      .filter(dm => searchService.isCurrentUserInConversation(dm.conversationId, currentUserId) && !(dm as any).parentMessageId)
-      .filter(dm => searchService.messageMatchesQuery(dm, q))
-      .map(dm => {
-        const otherUserId = searchService.getOtherUserIdFromConversation(dm.conversationId, currentUserId);
-        return {
-          type: 'dm',
-          messageId: dm.id,
-          content: dm.content,
-          senderName: dm.senderName,
-          senderProfileImage: (dm as any).senderProfileImage,
-          timestamp: dm.timestamp,
-          conversationId: dm.conversationId,
-          otherUserId: otherUserId,
-          otherUserName: otherUserId ? searchService.getUserNameById(allUsers, currentUserProfile, otherUserId) : undefined
-        } as SearchMessageResult;
-      });
-
-    return [...channelMessages, ...directMessages]
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-      .slice(0, this.searchResultLimit);
+      this.cachedMessages = [...channelMessages, ...directMessages]
+        .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+        .slice(0, this.searchResultLimit);
+    }
+    if (!q) {
+      this.cachedUsers = [];
+    } else {
+      const isEmail = searchService.isEmailQuery(this.searchQuery);
+      if (!isEmail && q.length < 3) {
+        this.cachedUsers = [];
+      } else if (!isEmail && this.cachedMessages.length > 0) {
+        this.cachedUsers = [];
+      } else {
+        const sourceUsers = searchService.getSearchUsersSource(allUsers, currentUserProfile);
+        if (isEmail) {
+          this.cachedUsers = sourceUsers
+            .filter(u => (u.email || '').toLowerCase().includes(q))
+            .slice(0, this.searchResultLimit);
+        } else {
+          this.cachedUsers = sourceUsers
+            .filter(u => (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q))
+            .slice(0, this.searchResultLimit);
+        }
+      }
+    }
   }
 
-  /** Gets filtered users for mention dropdown */
-  getFilteredMentionUsers(allUsers: User[]): User[] {
-    if (!this.showTagDropdown || this.tagListType !== 'user') return [];
-    const q = this.tagQuery.trim().toLowerCase();
-    if (!q) return allUsers;
-    return allUsers.filter(u => (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q));
+  /** Update mention dropdowns - called immediately without debounce */
+  updateMentionResults(allUsers: User[], searchableChannels: Channel[]): void {
+    if (!this.showTagDropdown || this.tagListType !== 'user') {
+      this.cachedMentionUsers = [];
+    } else {
+      const q = this.tagQuery.trim().toLowerCase();
+      if (!q) {
+        this.cachedMentionUsers = allUsers;
+      } else {
+        this.cachedMentionUsers = allUsers.filter(u =>
+          (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q)
+        );
+      }
+    }
+    if (!this.showTagDropdown || this.tagListType !== 'channel') {
+      this.cachedMentionChannels = [];
+    } else {
+      const q = this.tagQuery.trim().toLowerCase();
+      if (!q) {
+        this.cachedMentionChannels = searchableChannels;
+      } else {
+        this.cachedMentionChannels = searchableChannels.filter(c => (c.name || '').toLowerCase().includes(q));
+      }
+    }
+  }
+  
+  getFilteredSearchChannels(_searchableChannels: Channel[]): Channel[] {
+    return this.cachedChannels;
   }
 
-  /** Gets filtered channels for mention dropdown */
-  getFilteredMentionChannels(searchableChannels: Channel[]): Channel[] {
-    if (!this.showTagDropdown || this.tagListType !== 'channel') return [];
-    const q = this.tagQuery.trim().toLowerCase();
-    if (!q) return searchableChannels;
-    return searchableChannels.filter(c => (c.name || '').toLowerCase().includes(q));
+  getFilteredSearchUsers(
+    _allUsers: User[],
+    _currentUserProfile: User | null,
+    _searchService: SearchService,
+    _hasMessages: boolean
+  ): User[] {
+    return this.cachedUsers;
+  }
+
+  getFilteredSearchMessages(
+    _allChannelMessages: Message[],
+    _allDirectMessages: DirectMessage[],
+    _searchableChannels: Channel[],
+    _currentUserId: string,
+    _allUsers: User[],
+    _currentUserProfile: User | null,
+    _searchService: SearchService
+  ): SearchMessageResult[] {
+    return this.cachedMessages;
+  }
+
+  getFilteredMentionUsers(_allUsers: User[]): User[] {
+    return this.cachedMentionUsers;
+  }
+
+  getFilteredMentionChannels(_searchableChannels: Channel[]): Channel[] {
+    return this.cachedMentionChannels;
   }
 
   /** Clears all search-related state */
   clearSearch(): void {
     this.searchQuery = '';
+    this.debouncedQuery = '';
     this.showSearchResults = false;
     this.showTagDropdown = false;
     this.tagListType = null;
     this.tagQuery = '';
+    this.clearCachedResults();
   }
 
   /** Updates tag dropdown state based on search input */

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { FirebaseService } from './firebase.service';
 import { UserService } from './user.service';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { collection, query, where, onSnapshot, addDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { Message } from '../models/message.model';
 
@@ -15,26 +15,34 @@ import { Message } from '../models/message.model';
 export class ThreadService {
   private firebaseService = inject(FirebaseService);
   private userService = inject(UserService);
+  private threadMessagesCache = new Map<string, Observable<Message[]>>();
+  private dmThreadMessagesCache = new Map<string, Observable<Message[]>>();
 
   /**
-   * Retrieves all messages in a thread as a realtime observable
+   * Retrieves all messages in a thread as a realtime observable.
+   * Uses caching to prevent multiple Firestore listeners for the same thread.
    * @param parentMessageId - The ID of the parent message
    * @returns Observable stream of thread messages sorted by timestamp
    */
   getThreadMessages(parentMessageId: string): Observable<Message[]> {
-    return new Observable(observer => {
+    // Return cached subscription if exists
+    if (this.threadMessagesCache.has(parentMessageId)) {
+      return this.threadMessagesCache.get(parentMessageId)!;
+    }
+
+    const subscription$ = new Observable<Message[]>(observer => {
       const messagesRef = collection(this.firebaseService.db, 'messages');
       const threadQuery = query(
-        messagesRef, 
+        messagesRef,
         where('parentMessageId', '==', parentMessageId)
       );
-      
+
       const unsubscribe = onSnapshot(threadQuery, async (snapshot) => {
         const threadMessages = await Promise.all(
           snapshot.docs.map(async doc => {
             const data = doc.data();
             const senderProfileImage = await this.resolveSenderProfileImage(data);
-            
+
             return {
               id: doc.id,
               channelId: data['channelId'],
@@ -52,9 +60,15 @@ export class ThreadService {
         threadMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
         observer.next(threadMessages);
       });
-      
-      return () => unsubscribe();
-    });
+
+      return () => {
+        unsubscribe();
+        this.threadMessagesCache.delete(parentMessageId);
+      };
+    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+    this.threadMessagesCache.set(parentMessageId, subscription$);
+    return subscription$;
   }
 
   /**
@@ -74,7 +88,6 @@ export class ThreadService {
           return user.profileImageUrl;
         }
       } catch (error) {
-        // Avatar loading failed silently
       }
     }
     
@@ -159,27 +172,32 @@ export class ThreadService {
     });
   }
 
-  // ==================== DIRECT MESSAGE THREAD METHODS ====================
 
   /**
-   * Retrieves all messages in a DM thread as a realtime observable
+   * Retrieves all messages in a DM thread as a realtime observable.
+   * Uses caching to prevent multiple Firestore listeners for the same thread.
    * @param parentMessageId - The ID of the parent direct message
    * @returns Observable stream of thread messages sorted by timestamp
    */
   getDirectMessageThreadMessages(parentMessageId: string): Observable<Message[]> {
-    return new Observable(observer => {
+    // Return cached subscription if exists
+    if (this.dmThreadMessagesCache.has(parentMessageId)) {
+      return this.dmThreadMessagesCache.get(parentMessageId)!;
+    }
+
+    const subscription$ = new Observable<Message[]>(observer => {
       const messagesRef = collection(this.firebaseService.db, 'direct-messages');
       const threadQuery = query(
-        messagesRef, 
+        messagesRef,
         where('parentMessageId', '==', parentMessageId)
       );
-      
+
       const unsubscribe = onSnapshot(threadQuery, async (snapshot) => {
         const threadMessages = await Promise.all(
           snapshot.docs.map(async doc => {
             const data = doc.data();
             const senderProfileImage = await this.resolveSenderProfileImage(data);
-            
+
             return {
               id: doc.id,
               conversationId: data['conversationId'],
@@ -197,9 +215,15 @@ export class ThreadService {
         threadMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
         observer.next(threadMessages);
       });
-      
-      return () => unsubscribe();
-    });
+
+      return () => {
+        unsubscribe();
+        this.dmThreadMessagesCache.delete(parentMessageId);
+      };
+    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+    this.dmThreadMessagesCache.set(parentMessageId, subscription$);
+    return subscription$;
   }
 
   /**

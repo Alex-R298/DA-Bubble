@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { doc, setDoc, collection, onSnapshot, getDoc, updateDoc, query, where, getDocs } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 
 /** User profile data structure */
 export interface User {
@@ -26,6 +26,12 @@ export class UserService {
   private firebaseService = inject(FirebaseService);
   private userCache = new Map<string, { user: User; timestamp: number }>();
   private readonly CACHE_DURATION = 10000;
+  
+  // Shared observable for all users - prevents multiple Firestore listeners
+  private allUsers$: Observable<User[]> | null = null;
+  
+  // Cache for individual user subscriptions - prevents multiple listeners per user
+  private userSubscriptions = new Map<string, Observable<User | null>>();
 
   /**
    * Creates a new user profile in Firestore
@@ -49,18 +55,22 @@ export class UserService {
   }
 
   /**
-   * Subscribes to realtime updates of all users
+   * Subscribes to realtime updates of all users.
+   * Uses shareReplay to prevent multiple Firestore listeners.
    * @returns Observable stream of all user profiles
    */
   getAllUsersRealtime(): Observable<User[]> {
-    return new Observable(observer => {
-      const usersRef = collection(this.firebaseService.db, 'users');
-      const unsubscribe = onSnapshot(usersRef, (snapshot) => {
-        const users = snapshot.docs.map(doc => this.mapDocumentToUser(doc.data()));
-        observer.next(users);
-      });
-      return () => unsubscribe();
-    });
+    if (!this.allUsers$) {
+      this.allUsers$ = new Observable<User[]>(observer => {
+        const usersRef = collection(this.firebaseService.db, 'users');
+        const unsubscribe = onSnapshot(usersRef, (snapshot) => {
+          const users = snapshot.docs.map(doc => this.mapDocumentToUser(doc.data()));
+          observer.next(users);
+        });
+        return () => unsubscribe();
+      }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    }
+    return this.allUsers$;
   }
 
   /**
@@ -180,7 +190,6 @@ export class UserService {
         lastSeen: new Date()
       }, { merge: true });
     } catch (error) {
-      // Status update failed silently
     }
   }
 
@@ -199,12 +208,18 @@ export class UserService {
   }
 
   /**
-   * Subscribes to realtime updates for a specific user
+   * Subscribes to realtime updates for a specific user.
+   * Uses caching to prevent multiple listeners for the same user.
    * @param uid - The user's unique ID
    * @returns Observable stream of the user profile or null
    */
   subscribeToUser(uid: string): Observable<User | null> {
-    return new Observable(observer => {
+    // Return cached subscription if exists
+    if (this.userSubscriptions.has(uid)) {
+      return this.userSubscriptions.get(uid)!;
+    }
+    
+    const subscription$ = new Observable<User | null>(observer => {
       const userDoc = doc(this.firebaseService.db, 'users', uid);
       const unsubscribe = onSnapshot(userDoc, (snapshot) => {
         if (snapshot.exists()) {
@@ -214,7 +229,10 @@ export class UserService {
         }
       });
       return () => unsubscribe();
-    });
+    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    
+    this.userSubscriptions.set(uid, subscription$);
+    return subscription$;
   }
 
   /**

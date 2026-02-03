@@ -60,6 +60,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   channelsExpanded = true;
   directMessagesExpanded = true;
   currentUserId = '';
+  messagesLoaded = false;
 
   @Output() collapsedChange = new EventEmitter<boolean>();
 
@@ -104,8 +105,27 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.subscribeToChannels();
     this.subscribeToUsers();
     this.subscribeToUnread();
-    this.subscribeToMessages();
-    this.subscribeToDirectMessages();
+    this.setupSearchCallback();
+  }
+
+  /** Sets up the debounced search callback */
+  private setupSearchCallback(): void {
+    this.searchHelper.setSearchCallback(() => {
+      this.recalculateSearchResults();
+    });
+  }
+
+  /** Recalculates search results after debounce */
+  private recalculateSearchResults(): void {
+    this.searchHelper.updateSearchResults(
+      this.getSearchableChannels(),
+      this.allUsers,
+      this.currentUserProfile,
+      this.allChannelMessages,
+      this.allDirectMessages,
+      this.currentUserId,
+      this.searchService
+    );
   }
 
   /** Cleans up all subscriptions on component destruction */
@@ -182,6 +202,22 @@ export class SidebarComponent implements OnInit, OnDestroy {
     });
   }
 
+  private loadMessagesForSearch(): void {
+    if (this.messagesLoaded) return;
+    this.messagesLoaded = true;
+    this.subscribeToMessages();
+    this.subscribeToDirectMessages();
+  }
+
+  private unloadMessagesForSearch(): void {
+    if (!this.messagesLoaded) return;
+    this.messagesLoaded = false;
+    this.messagesSubscription?.unsubscribe();
+    this.dmMessagesSubscription?.unsubscribe();
+    this.allChannelMessages = [];
+    this.allDirectMessages = [];
+  }
+
   private updateMemberChannels(): void {
     const currentUid = this.currentUserId || this.authService.getCurrentUser()?.uid;
     this.memberChannels = currentUid ? this.allChannels.filter(c => Array.isArray(c.members) && c.members.includes(currentUid)) : [];
@@ -235,12 +271,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
     return 'status-offline';
   }
 
-  // ==================== Search Methods ====================
 
   /** Handles search input changes */
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
+    if (value.trim() && !this.messagesLoaded) {
+      this.loadMessagesForSearch();
+    }
+    if (!value.trim() && this.messagesLoaded) {
+      this.unloadMessagesForSearch();
+    }
     this.searchHelper.onSearchInput(value);
+    this.searchHelper.updateMentionResults(this.allUsers, this.getSearchableChannels());
   }
 
   /** Gets channels matching the current search query */

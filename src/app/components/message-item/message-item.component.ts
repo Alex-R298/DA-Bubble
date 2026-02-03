@@ -132,8 +132,7 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     this.senderSubscription?.unsubscribe();
     const senderId = this.message?.senderId;
     if (!senderId) return;
-
-    this.senderSubscription = this.userService.getUserByIdRealtime(senderId).subscribe(user => {
+    this.senderSubscription = this.userService.subscribeToUser(senderId).subscribe(user => {
       if (user?.profileImageUrl) {
         this.senderProfileImage = user.profileImageUrl;
       }
@@ -343,11 +342,8 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   /** Checks if the given user name belongs to the current user */
   isCurrentUserName(userName: string): boolean {
     const currentName = this.message?.senderName;
-    // Check if the userName matches the current user by comparing with message reactions
     const reactions = this.message?.reactions;
     if (!reactions) return false;
-
-    // Find the user index in any reaction and compare with currentUserId
     for (const [emoji, reaction] of Object.entries(reactions)) {
       if (reaction && typeof reaction === 'object') {
         const r = reaction as any;

@@ -30,6 +30,8 @@ export class AuthService {
   private currentUserId: string | null = null;
   private activityHandler: (() => void) | null = null;
   private isLoggedOut = false;
+  private lastActivityUpdate = 0;
+  private readonly ACTIVITY_THROTTLE_MS = 60000;
 
   constructor() {
     onAuthStateChanged(this.firebaseService.auth, async (user) => {
@@ -87,13 +89,19 @@ export class AuthService {
 
   /**
    * Resets the activity timer and sets user status to online.
+   * Uses throttling to prevent excessive Firebase writes.
    * @param uid - The user ID to reset the timer for.
    */
   private resetActivityTimer(uid: string): void {
     if (this.isLoggedOut) return;
 
-    this.userService.updateUserStatus(uid, 'online');
-
+    const now = Date.now();
+    
+    // Only update status if enough time has passed since last update
+    if (now - this.lastActivityUpdate >= this.ACTIVITY_THROTTLE_MS) {
+      this.lastActivityUpdate = now;
+      this.userService.updateUserStatus(uid, 'online');
+    }
     clearTimeout(this.activityTimeout);
     this.activityTimeout = setTimeout(async () => {
       if (!this.isLoggedOut) {
@@ -120,7 +128,6 @@ export class AuthService {
     try {
       await this.channelService.addMemberToChannelByName('Entwicklerteam', userCredential.user.uid);
     } catch {
-      // ignore
     }
     return userCredential.user;
   }
@@ -179,7 +186,7 @@ export class AuthService {
       try {
         await this.userService.updateUserStatus(uid, 'offline');
       } catch (error) {
-        // Status update failed silently
+
       }
     }
 

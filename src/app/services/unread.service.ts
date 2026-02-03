@@ -1,167 +1,194 @@
-import { Injectable, inject } from '@angular/core';
-import { doc, setDoc, getDoc, onSnapshot, collection, query, where, orderBy, limit } from 'firebase/firestore';
+import { Injectable, inject, OnDestroy } from '@angular/core';
+import { doc, setDoc, getDoc, onSnapshot, collection } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
 import { AuthService } from './auth.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-
-export class UnreadService {
+export class UnreadService implements OnDestroy {
   private firebaseService = inject(FirebaseService);
   private authService = inject(AuthService);
-  
-  // Map von channelId/oderId -> hat ungelesene Nachrichten
+
   private unreadChannels = new BehaviorSubject<Set<string>>(new Set());
   private unreadDMs = new BehaviorSubject<Set<string>>(new Set());
-  
+
+  // Only 2 listeners instead of 20+ - one listener per collection
+  private messagesUnsubscribe: (() => void) | null = null;
+  private dmUnsubscribe: (() => void) | null = null;
+
+  // Tracking which channels/users we are watching
+  private watchedChannelIds = new Set<string>();
+  private watchedUserIds = new Set<string>();
+  private lastReadCache = new Map<string, Date>();
+
+  private isListeningMessages = false;
+  private isListeningDMs = false;
+
   unreadChannels$ = this.unreadChannels.asObservable();
   unreadDMs$ = this.unreadDMs.asObservable();
 
-  /**
-   * Markiert einen Channel als gelesen (speichert aktuellen Timestamp)
-   */
+  ngOnDestroy(): void {
+    this.cleanup();
+  }
+
+  cleanup(): void {
+    this.messagesUnsubscribe?.();
+    this.messagesUnsubscribe = null;
+    this.dmUnsubscribe?.();
+    this.dmUnsubscribe = null;
+    this.isListeningMessages = false;
+    this.isListeningDMs = false;
+    this.watchedChannelIds.clear();
+    this.watchedUserIds.clear();
+    this.lastReadCache.clear();
+  }
+
   async markChannelAsRead(channelId: string): Promise<void> {
     const uid = this.authService.getCurrentUser()?.uid;
     if (!uid || !channelId) return;
-    
+
     const lastReadDoc = doc(this.firebaseService.db, 'users', uid, 'lastRead', channelId);
-    await setDoc(lastReadDoc, { 
-      timestamp: new Date(),
-      type: 'channel'
-    });
-    
-    // Entferne aus unread Set
+    await setDoc(lastReadDoc, { timestamp: new Date(), type: 'channel' });
+
+    this.lastReadCache.set(`channel_${channelId}`, new Date());
     const current = new Set(this.unreadChannels.value);
     current.delete(channelId);
     this.unreadChannels.next(current);
   }
 
-  /**
-   * Markiert eine DM-Konversation als gelesen
-   */
   async markDMAsRead(otherUserId: string): Promise<void> {
     const uid = this.authService.getCurrentUser()?.uid;
     if (!uid || !otherUserId) return;
-    
+
     const conversationId = this.getDMConversationId(uid, otherUserId);
     const lastReadDoc = doc(this.firebaseService.db, 'users', uid, 'lastRead', conversationId);
-    await setDoc(lastReadDoc, { 
-      timestamp: new Date(),
-      type: 'dm'
-    });
-    
-    // Entferne aus unread Set
+    await setDoc(lastReadDoc, { timestamp: new Date(), type: 'dm' });
+
+    this.lastReadCache.set(`dm_${otherUserId}`, new Date());
     const current = new Set(this.unreadDMs.value);
     current.delete(otherUserId);
     this.unreadDMs.next(current);
   }
 
-  /**
-   * Prüft ob ein Channel ungelesene Nachrichten hat
-   */
   hasUnreadChannel(channelId: string): boolean {
     return this.unreadChannels.value.has(channelId);
   }
 
-  /**
-   * Prüft ob eine DM ungelesene Nachrichten hat
-   */
   hasUnreadDM(userId: string): boolean {
     return this.unreadDMs.value.has(userId);
   }
 
   /**
-   * Startet das Listening auf neue Nachrichten für alle Channels
+   * Registers channels to watch for new messages - uses a single listener for all.
+   * @param channelIds - Array of channel IDs to watch
    */
-  startListeningForChannelMessages(channelIds: string[]): void {
+  async startListeningForChannelMessages(channelIds: string[]): Promise<void> {
     const uid = this.authService.getCurrentUser()?.uid;
-    if (!uid) return;
-
-    channelIds.forEach(channelId => {
-      this.listenToChannelMessages(channelId, uid);
-    });
+    if (!uid || !channelIds.length) return;
+    channelIds.forEach(id => this.watchedChannelIds.add(id));
+    await this.loadLastReadTimestamps(channelIds, uid, 'channel');
+    if (!this.isListeningMessages) {
+      this.isListeningMessages = true;
+      this.startSingleMessagesListener(uid);
+    }
   }
 
-  private async listenToChannelMessages(channelId: string, uid: string): Promise<void> {
-    // Hole lastRead Timestamp
-    const lastReadDoc = doc(this.firebaseService.db, 'users', uid, 'lastRead', channelId);
-    const lastReadSnap = await getDoc(lastReadDoc);
-    const lastReadTime = lastReadSnap.exists() 
-      ? lastReadSnap.data()['timestamp']?.toDate() || new Date(0)
-      : new Date(0);
+  /**
+   * Registers users to watch for new DMs - uses a single listener for all.
+   * @param userIds - Array of user IDs to watch
+   */
+  async startListeningForDMMessages(userIds: string[]): Promise<void> {
+    const uid = this.authService.getCurrentUser()?.uid;
+    if (!uid || !userIds.length) return;
+    userIds.forEach(id => this.watchedUserIds.add(id));
+    await this.loadLastReadTimestamps(userIds, uid, 'dm');
+    if (!this.isListeningDMs) {
+      this.isListeningDMs = true;
+      this.startSingleDMListener(uid);
+    }
+  }
 
-    // Höre auf Nachrichten in diesem Channel
+  private async loadLastReadTimestamps(ids: string[], uid: string, type: 'channel' | 'dm'): Promise<void> {
+    await Promise.all(ids.map(async id => {
+      const cacheKey = type === 'channel' ? `channel_${id}` : `dm_${id}`;
+      if (this.lastReadCache.has(cacheKey)) return;
+
+      const docId = type === 'channel' ? id : this.getDMConversationId(uid, id);
+      const lastReadDoc = doc(this.firebaseService.db, 'users', uid, 'lastRead', docId);
+      const lastReadSnap = await getDoc(lastReadDoc);
+      const timestamp = lastReadSnap.exists()
+        ? lastReadSnap.data()['timestamp']?.toDate() || new Date(0)
+        : new Date(0);
+      this.lastReadCache.set(cacheKey, timestamp);
+    }));
+  }
+
+  /**
+   * Single listener for ALL channel messages.
+   * @param uid - Current user's ID
+   */
+  private startSingleMessagesListener(uid: string): void {
     const messagesRef = collection(this.firebaseService.db, 'messages');
-    
-    onSnapshot(messagesRef, (snapshot) => {
-      const hasUnread = snapshot.docs.some(doc => {
-        const data = doc.data();
-        if (data['channelId'] !== channelId) return false;
-        if (data['senderId'] === uid) return false; // Eigene Nachrichten ignorieren
-        
+
+    this.messagesUnsubscribe = onSnapshot(messagesRef, (snapshot) => {
+      const unreadSet = new Set<string>();
+
+      snapshot.docs.forEach(docSnap => {
+        const data = docSnap.data();
+        const channelId = data['channelId'];
+        if (!channelId || !this.watchedChannelIds.has(channelId)) return;
+        if (data['senderId'] === uid) return;
+        if (data['parentMessageId']) return;
+
+        const lastReadTime = this.lastReadCache.get(`channel_${channelId}`) || new Date(0);
         const messageTime = data['timestamp']?.toDate() || new Date(0);
-        return messageTime > lastReadTime;
+
+        if (messageTime > lastReadTime) {
+          unreadSet.add(channelId);
+        }
       });
 
-      const current = new Set(this.unreadChannels.value);
-      if (hasUnread) {
-        current.add(channelId);
-      } else {
-        current.delete(channelId);
-      }
-      this.unreadChannels.next(current);
+      this.unreadChannels.next(unreadSet);
     });
   }
 
   /**
-   * Startet das Listening auf neue DMs
+   * Single listener for ALL direct messages.
+   * @param uid - Current user's ID
    */
-  startListeningForDMMessages(userIds: string[]): void {
-    const uid = this.authService.getCurrentUser()?.uid;
-    if (!uid) return;
+  private startSingleDMListener(uid: string): void {
+    const dmRef = collection(this.firebaseService.db, 'direct-messages');
 
-    userIds.forEach(userId => {
-      this.listenToDMMessages(userId, uid);
+    this.dmUnsubscribe = onSnapshot(dmRef, (snapshot) => {
+      const unreadSet = new Set<string>();
+
+      snapshot.docs.forEach(docSnap => {
+        const data = docSnap.data();
+        const conversationId = data['conversationId'];
+        if (!conversationId) return;
+        const otherUserId = this.getOtherUserIdFromConversation(conversationId, uid);
+        if (!otherUserId || !this.watchedUserIds.has(otherUserId)) return;
+        if (data['senderId'] === uid) return;
+        if (data['parentMessageId']) return;
+
+        const lastReadTime = this.lastReadCache.get(`dm_${otherUserId}`) || new Date(0);
+        const messageTime = data['timestamp']?.toDate() || new Date(0);
+
+        if (messageTime > lastReadTime) {
+          unreadSet.add(otherUserId);
+        }
+      });
+
+      this.unreadDMs.next(unreadSet);
     });
   }
 
-  private async listenToDMMessages(otherUserId: string, uid: string): Promise<void> {
-    const conversationId = this.getDMConversationId(uid, otherUserId);
-    
-    // Hole lastRead Timestamp
-    const lastReadDoc = doc(this.firebaseService.db, 'users', uid, 'lastRead', conversationId);
-    const lastReadSnap = await getDoc(lastReadDoc);
-    const lastReadTime = lastReadSnap.exists() 
-      ? lastReadSnap.data()['timestamp']?.toDate() || new Date(0)
-      : new Date(0);
-
-    // Höre auf DM Nachrichten - Collection ist 'direct-messages' (flat structure)
-    const dmRef = collection(this.firebaseService.db, 'direct-messages');
-    
-    onSnapshot(dmRef, (snapshot) => {
-      const hasUnread = snapshot.docs.some(docSnap => {
-        const data = docSnap.data();
-        // Nur Nachrichten dieser Konversation
-        if (data['conversationId'] !== conversationId) return false;
-        // Eigene Nachrichten ignorieren
-        if (data['senderId'] === uid) return false;
-        // Thread-Antworten ignorieren
-        if (data['parentMessageId']) return false;
-        
-        const messageTime = data['timestamp']?.toDate() || new Date(0);
-        return messageTime > lastReadTime;
-      });
-
-      const current = new Set(this.unreadDMs.value);
-      if (hasUnread) {
-        current.add(otherUserId);
-      } else {
-        current.delete(otherUserId);
-      }
-      this.unreadDMs.next(current);
-    });
+  private getOtherUserIdFromConversation(conversationId: string, currentUid: string): string | null {
+    const parts = conversationId.split('_');
+    if (parts.length !== 2) return null;
+    return parts[0] === currentUid ? parts[1] : parts[0];
   }
 
   private getDMConversationId(uid1: string, uid2: string): string {

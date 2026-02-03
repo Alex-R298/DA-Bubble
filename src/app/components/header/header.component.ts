@@ -46,6 +46,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private newMessageSub?: Subscription;
   private messagesSubscription?: Subscription;
   private dmMessagesSubscription?: Subscription;
+  private messagesLoaded = false;
   allUsers: User[] = [];
   allChannels: Channel[] = [];
   memberChannels: Channel[] = [];
@@ -85,6 +86,27 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.setupDataSubscriptions();
     this.setupRouterSubscription();
     this.setupThreadSubscription();
+    this.setupSearchCallback();
+  }
+
+  /** Sets up the debounced search callback */
+  private setupSearchCallback(): void {
+    this.searchHelper.setSearchCallback(() => {
+      this.recalculateSearchResults();
+    });
+  }
+
+  /** Recalculates search results after debounce */
+  private recalculateSearchResults(): void {
+    this.searchHelper.updateSearchResults(
+      this.getSearchableChannels(),
+      this.allUsers,
+      this.currentUserProfile,
+      this.allChannelMessages,
+      this.allDirectMessages,
+      this.currentUserId,
+      this.searchService
+    );
   }
 
   /** Cleans up all subscriptions when component is destroyed */
@@ -152,13 +174,39 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.memberChannels = currentUid ? channels.filter(c => Array.isArray(c.members) && c.members.includes(currentUid)) : [];
     });
 
+    // Messages are loaded lazily when user starts searching
+  }
+
+  /** Lazy load messages only when user starts searching */
+  private loadMessagesForSearch(): void {
+    if (this.messagesLoaded) return;
+    this.messagesLoaded = true;
+
     this.messagesSubscription = this.messageService.getAllMessages().subscribe(messages => {
       this.allChannelMessages = messages;
+      if (this.searchHelper.normalizedSearchQuery) {
+        this.recalculateSearchResults();
+      }
     });
 
     this.dmMessagesSubscription = this.directMessageService.getAllDirectMessages().subscribe(messages => {
       this.allDirectMessages = messages;
+      if (this.searchHelper.normalizedSearchQuery) {
+        this.recalculateSearchResults();
+      }
     });
+  }
+
+  /** Unsubscribe from messages when search is cleared */
+  private unloadMessagesForSearch(): void {
+    if (!this.messagesLoaded) return;
+    this.messagesLoaded = false;
+    this.messagesSubscription?.unsubscribe();
+    this.dmMessagesSubscription?.unsubscribe();
+    this.messagesSubscription = undefined;
+    this.dmMessagesSubscription = undefined;
+    this.allChannelMessages = [];
+    this.allDirectMessages = [];
   }
 
   private setupRouterSubscription(): void {
@@ -197,7 +245,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   /** Handles search input changes */
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
+    if (value.trim() && !this.messagesLoaded) {
+      this.loadMessagesForSearch();
+    }
+    if (!value.trim() && this.messagesLoaded) {
+      this.unloadMessagesForSearch();
+    }
+    
     this.searchHelper.onSearchInput(value);
+    this.searchHelper.updateMentionResults(this.allUsers, this.getSearchableChannels());
   }
 
   /** Gets filtered channels based on search query */
