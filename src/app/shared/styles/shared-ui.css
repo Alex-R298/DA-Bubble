@@ -519,3 +519,20 @@
         margin-left: 0;
     }
 }
+
+/* Pages: limit central content to 1920px when imprint or privacy pages are rendered
+   Implemented via global selectors so no TS body-class is required. */
+app-imprint .imprint-content,
+app-privacy-policy .privacy-content {
+    max-width: 1920px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Ensure paragraph font-size on those pages is 16px expressed in rem (14px = 1rem) */
+app-imprint .imprint-section p,
+app-privacy-policy .privacy-section p {
+    font-size: 1.142857rem;
+    /* 16px when 14px = 1rem */
+}

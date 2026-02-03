@@ -11,7 +11,7 @@ import { SvgImagesComponent } from '../svg-images/svg-images.component';
   styleUrl: './imprint.component.css'
 })
 export class ImprintComponent {
-  constructor(private location: Location) {}
+  constructor(private location: Location) { }
 
   goBack(): void {
     this.location.back();
