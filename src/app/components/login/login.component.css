@@ -219,20 +219,20 @@
   height: 4.2857rem;
   padding: 0 2.2857rem;
   background: #ECEEFE;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 7.1429rem;
   font-size: 16px;
   font-weight: 600;
   font-family: inherit;
-  color: #2d3748;
+  color: #444DF2;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.125s ease;
   box-sizing: border-box;
 }
 
 .google-login-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: #444DF2;
+  font-weight: 700;
 }
 
 .google-icon {
@@ -309,7 +309,7 @@
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.125s ease;
   box-sizing: border-box;
 }
 
