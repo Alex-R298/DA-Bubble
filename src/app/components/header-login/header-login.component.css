@@ -26,8 +26,15 @@
 
 .header-right {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
+}
+
+.header-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
 }
 
 .header-text {
@@ -37,23 +44,21 @@
 }
 
 .signup-link {
-  padding: 0.75rem 1.5rem;
-  background-color: #FFFFFF;
-  color: #444DF2;
-  border: 2px solid transparent;
+  padding: 0.75rem 1.2rem;
+  background-color: transparent;
+  color: #797EF3;
+  border: 1px solid transparent;
   border-radius: 30px;
   font-size: 1.125rem;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .signup-link:hover {
-  background-color: #444DF2;
-  color: #FFFFFF;
-  box-shadow: 0 4px 12px rgba(68, 77, 242, 0.3);
+  border-color: #ADB0D9;
+  color: #444DF2;
 }
 
 /* Language Selector Styles */

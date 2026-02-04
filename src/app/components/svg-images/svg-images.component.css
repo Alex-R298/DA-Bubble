@@ -2,6 +2,11 @@ svg {
   display: block;
 }
 
+svg.google-icon {
+  width: 2.4286rem;
+  height: 2.4286rem;
+}
+
 svg.icon-colored {
   color: inherit;
 }
