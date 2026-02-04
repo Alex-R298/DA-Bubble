@@ -125,11 +125,11 @@
   background: #ECEEFE;
   border: 1px solid transparent;
   border-radius: 7.1429rem;
-  font-size: 1rem;
+  font-size: 1.14rem;
   font-weight: 400;
   color: #2d3748;
   box-sizing: border-box;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.125s ease;
 }
 
 .form-input::placeholder {
