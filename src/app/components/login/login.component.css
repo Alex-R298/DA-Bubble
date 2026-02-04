@@ -198,7 +198,7 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+  background: #ADB0D9;
 }
 
 .divider span {
