@@ -233,10 +233,13 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 880px) {
   .imprint-content {
     margin-top: 64px;
   }
+}
+
+@media (max-width: 480px) {
 
   .imprint-title {
     font-size: clamp(1.56rem, 5vw, 2rem);

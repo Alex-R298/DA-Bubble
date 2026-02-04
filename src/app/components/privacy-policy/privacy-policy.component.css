@@ -190,6 +190,12 @@
   scrollbar-color: rgba(68, 77, 242, 0.5) rgba(255, 255, 255, 0.1);
 }
 
+@media (max-width: 880px) {
+  .privacy-content {
+    margin-top: 64px;
+  }
+}
+
 @media (max-width: 768px) {
   .privacy-container {
     padding: 1.5rem;
@@ -234,9 +240,6 @@
 }
 
 @media (max-width: 480px) {
-  .privacy-content {
-    margin-top: 64px;
-  }
 
   .privacy-title {
     font-size: clamp(1.56rem, 5vw, 2rem);
