@@ -27,6 +27,10 @@ export class SignupComponent implements OnInit, OnDestroy {
   confirmEmail: string = '';
   password: string = '';
   privacyAccepted: boolean = false;
+  submitted: boolean = false;
+
+  private nameRegex = /^[a-zA-ZäöüÄÖÜß]+\s+[a-zA-ZäöüÄÖÜß]+$/;
+  private emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   showOverlay: boolean = false;
   overlayType: 'error' | 'success' = 'error';
@@ -100,31 +104,62 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Validates the display name (must contain first and last name).
+   * @returns True if valid, false otherwise.
+   */
+  isNameValid(): boolean {
+    const trimmedName = this.displayName.trim();
+    return this.nameRegex.test(trimmedName);
+  }
+
+  /**
+   * Validates the email format.
+   * @returns True if valid, false otherwise.
+   */
+  isEmailValid(): boolean {
+    const email = this.email.trim();
+    if (email.includes('@@') || email.includes('::') || email.includes('..')) {
+      return false;
+    }
+    const atCount = (email.match(/@/g) || []).length;
+    if (atCount !== 1) {
+      return false;
+    }
+    return this.emailRegex.test(email);
+  }
+
+  /**
+   * Validates the password (minimum 6 characters).
+   * @returns True if valid, false otherwise.
+   */
+  isPasswordValid(): boolean {
+    return this.password.length >= 6;
+  }
+
+  /**
+   * Checks if the entire form is valid.
+   * @returns True if all fields are valid, false otherwise.
+   */
+  isFormValid(): boolean {
+    return this.isNameValid() && this.isEmailValid() && this.isPasswordValid() && this.privacyAccepted;
+  }
+
+  /**
    * Handles the form submission for user registration.
    * Validates the form data and attempts to register the user via AuthService.
    */
   async onSubmit(): Promise<void> {
-    if (this.displayName.length < 3) {
-      this.overlayType = 'error';
-      this.overlayTitle = 'Name zu kurz';
-      this.overlayMessage = 'Der Name muss mindestens 3 Zeichen lang sein.';
-      this.showOverlay = true;
+    this.submitted = true;
+
+    if (!this.isNameValid()) {
       return;
     }
 
-    if (!this.checkEmailsMatch()) {
-      this.overlayType = 'error';
-      this.overlayTitle = 'E-Mails stimmen nicht überein';
-      this.overlayMessage = 'Die eingegebenen E-Mail-Adressen stimmen nicht überein. Bitte überprüfen Sie Ihre Eingaben.';
-      this.showOverlay = true;
+    if (!this.isEmailValid()) {
       return;
     }
 
-    if (this.password.length < 6) {
-      this.overlayType = 'error';
-      this.overlayTitle = 'Passwort zu schwach';
-      this.overlayMessage = 'Das Passwort muss mindestens 6 Zeichen lang sein.';
-      this.showOverlay = true;
+    if (!this.isPasswordValid()) {
       return;
     }
 

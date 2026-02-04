@@ -10,29 +10,29 @@
         <div class="input-icon">
           <app-svg-images iconName="person" [width]="'20'" [height]="'20'"></app-svg-images>
         </div>
-        <input type="text" id="displayName" name="displayName" [(ngModel)]="displayName" required minlength="3"
+        <input type="text" id="displayName" name="displayName" [(ngModel)]="displayName" required
           #nameInput="ngModel" [placeholder]="'SIGNUP.NAME_PLACEHOLDER' | translate" class="form-input"
-          [class.input-error]="nameInput.invalid && (nameInput.dirty || nameInput.touched)" />
+          [class.input-error]="submitted && !isNameValid()" />
       </div>
-      <div *ngIf="nameInput.invalid && (nameInput.dirty || nameInput.touched)" class="validation-message">
-        <span *ngIf="nameInput.errors?.['required']">Name ist erforderlich.</span>
-        <span *ngIf="nameInput.errors?.['minlength']">Name muss mindestens 3 Zeichen lang sein.</span>
+      <div *ngIf="submitted && !isNameValid()" class="validation-message-name">
+        <span *ngIf="!displayName.trim()">Name ist erforderlich.</span>
+        <span *ngIf="displayName.trim() && !isNameValid()">Bitte Vor- und Nachname eingeben.</span>
       </div>
 
       <div class="input-group">
         <div class="input-icon">
           <app-svg-images iconName="mail" [width]="'20'" [height]="'16'"></app-svg-images>
         </div>
-        <input type="email" id="email" name="email" [(ngModel)]="email" required email #emailInput="ngModel"
+        <input type="email" id="email" name="email" [(ngModel)]="email" required #emailInput="ngModel"
           autocomplete="email" [placeholder]="'SIGNUP.EMAIL_PLACEHOLDER' | translate" class="form-input"
-          [class.input-error]="emailInput.invalid && (emailInput.dirty || emailInput.touched)" />
+          [class.input-error]="submitted && !isEmailValid()" />
       </div>
-      <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="validation-message">
-        <span *ngIf="emailInput.errors?.['required']">E-Mail ist erforderlich.</span>
-        <span *ngIf="emailInput.errors?.['email']">Ungültige E-Mail-Adresse.</span>
+      <div *ngIf="submitted && !isEmailValid()" class="validation-message-email">
+        <span *ngIf="!email.trim()">E-Mail ist erforderlich.</span>
+        <span *ngIf="email.trim() && !isEmailValid()">Ungültige E-Mail-Adresse.</span>
       </div>
 
-      <div class="input-group">
+      <!-- <div class="input-group">
         <div class="input-icon">
           <app-svg-images iconName="mail" [width]="'20'" [height]="'16'"></app-svg-images>
         </div>
@@ -45,20 +45,20 @@
         class="validation-message">
         <span *ngIf="confirmEmailInput.errors?.['required']">Bestätigung erforderlich.</span>
         <span *ngIf="!confirmEmailInput.errors && !checkEmailsMatch()">E-Mails stimmen nicht überein.</span>
-      </div>
+      </div> -->
 
       <div class="input-group">
         <div class="input-icon">
           <app-svg-images iconName="lock" [width]="'16'" [height]="'21'"></app-svg-images>
         </div>
-        <input type="password" id="password" name="password" [(ngModel)]="password" required minlength="6"
+        <input type="password" id="password" name="password" [(ngModel)]="password" required
           #passwordInput="ngModel" autocomplete="new-password" [placeholder]="'SIGNUP.PASSWORD_PLACEHOLDER' | translate"
           class="form-input"
-          [class.input-error]="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" />
+          [class.input-error]="submitted && !isPasswordValid()" />
       </div>
-      <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="validation-message">
-        <span *ngIf="passwordInput.errors?.['required']">Passwort ist erforderlich.</span>
-        <span *ngIf="passwordInput.errors?.['minlength']">Passwort muss mindestens 6 Zeichen lang sein.</span>
+      <div *ngIf="submitted && !isPasswordValid()" class="validation-message-password">
+        <span *ngIf="!password">Passwort ist erforderlich.</span>
+        <span *ngIf="password && !isPasswordValid()">Mindestens 6 Zeichen.</span>
       </div>
 
       <div class="checkbox-group">
@@ -83,7 +83,7 @@
         </label>
       </div>
 
-      <button type="submit" [disabled]="!signupForm.valid || !privacyAccepted" class="primary-button">
+      <button type="submit" [disabled]="!privacyAccepted" class="primary-button">
         {{ 'SIGNUP.CONTINUE' | translate }}
       </button>
     </form>

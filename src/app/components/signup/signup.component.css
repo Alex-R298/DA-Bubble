@@ -95,7 +95,7 @@
 .signup-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 2.25rem;
 }
 
 .input-group {
@@ -121,7 +121,7 @@
   width: 100%;
   height: 4.2857rem;
   padding: 1.2857rem 2.2857rem;
-  padding-left: 5.8572rem;
+  padding-left: 4.8572rem;
   background: #ECEEFE;
   border: 1px solid transparent;
   border-radius: 7.1429rem;
@@ -333,7 +333,7 @@
 
   .form-input {
     font-size: 14px;
-    padding: 0.875rem 0.875rem 0.875rem 3rem;
+    padding: 0.875rem 0.875rem 0.875rem 4rem;
   }
 
   .checkbox-label {
@@ -366,21 +366,46 @@
   }
 }
 
-.validation-message {
-  color: #ff3333;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-  margin-left: 1rem;
-  margin-bottom: 0.5rem;
-  text-align: left;
-  width: 100%;
+.validation-message-name {
+  color: #E60000;
+    font-size: 14px;
+    margin-top: 4.5rem;
+    margin-left: 1rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
+    width: 100%;
+    position: fixed;
+}
+
+.validation-message-email {
+  color: #E60000;
+    font-size: 14px;
+    margin-top: 11.3rem;
+    margin-left: 1rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
+    width: 100%;
+    position: fixed;
+}
+
+.validation-message-password {
+  color: #E60000;
+    font-size: 14px;
+    margin-top: 17.6rem;
+    margin-left: 1rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
+    width: 100%;
+    position: fixed;
 }
 
 .input-error {
-  border: 1px solid #ff3333 !important;
+  border: 1px solid #E60000 !important;
 }
 
 /* Adjust input-group bottom margin when error message is present */
-.input-group:has(+ .validation-message) {
+.input-group:has(+ .validation-message-name),
+.input-group:has(+ .validation-message-email),
+.input-group:has(+ .validation-message-password) {
   margin-bottom: 0;
 }
