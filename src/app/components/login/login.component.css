@@ -141,7 +141,6 @@
 .form-input:active {
   outline: none;
   border-color: #444DF2;
-  box-shadow: 0 0 0 3px rgba(68, 77, 242, 0.1);
 }
 
 .form-input:focus+.input-icon,

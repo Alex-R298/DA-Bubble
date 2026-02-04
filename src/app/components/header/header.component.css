@@ -62,7 +62,6 @@
 .search-input:focus {
   outline: none;
   border-color: #787DF5;
-  box-shadow: 0 0 0 3px rgba(120, 125, 245, 0.15);
 }
 
 .search-icon {

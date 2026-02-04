@@ -144,7 +144,6 @@
 .form-input:active {
   outline: none;
   border-color: #444DF2;
-  box-shadow: 0 0 0 3px rgba(68, 77, 242, 0.1);
 }
 
 .form-input:focus+.input-icon,
@@ -368,35 +367,35 @@
 
 .validation-message-name {
   color: #E60000;
-    font-size: 14px;
-    margin-top: 4.5rem;
-    margin-left: 1rem;
-    margin-bottom: 0.5rem;
-    text-align: left;
-    width: 100%;
-    position: fixed;
+  font-size: 14px;
+  margin-top: 4.5rem;
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 100%;
+  position: fixed;
 }
 
 .validation-message-email {
   color: #E60000;
-    font-size: 14px;
-    margin-top: 11.3rem;
-    margin-left: 1rem;
-    margin-bottom: 0.5rem;
-    text-align: left;
-    width: 100%;
-    position: fixed;
+  font-size: 14px;
+  margin-top: 11.3rem;
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 100%;
+  position: fixed;
 }
 
 .validation-message-password {
   color: #E60000;
-    font-size: 14px;
-    margin-top: 17.6rem;
-    margin-left: 1rem;
-    margin-bottom: 0.5rem;
-    text-align: left;
-    width: 100%;
-    position: fixed;
+  font-size: 14px;
+  margin-top: 17.6rem;
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 100%;
+  position: fixed;
 }
 
 .input-error {

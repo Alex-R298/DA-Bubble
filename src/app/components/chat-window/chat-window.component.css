@@ -60,7 +60,6 @@
 
 .new-message-recipient-chip-input:focus-within .chips {
   border-color: #787DF5;
-  box-shadow: 0 0 0 3px rgba(120, 125, 245, 0.15);
 }
 
 .recipient-chip {
@@ -450,7 +449,7 @@
 
 @media (max-width: 480px) {
 
-  .date-separator span{
+  .date-separator span {
     font-size: 16px !important;
   }
 }

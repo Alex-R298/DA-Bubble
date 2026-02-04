@@ -193,9 +193,15 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    min-height: 64px;
     padding: 10px 12px;
     border: 1px solid #ADB0D9;
     border-radius: 30px;
+    transition: all 0.125s ease;
+}
+
+.chips:focus-within {
+    border-color: #787DF5;
 }
 
 .chip {

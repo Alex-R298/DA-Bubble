@@ -249,7 +249,6 @@
 .ui-input-rounded:focus {
     outline: none;
     border-color: #787DF5;
-    box-shadow: 0 0 0 3px rgba(120, 125, 245, 0.15);
 }
 
 .ui-input-with-prefix {
