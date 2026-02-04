@@ -177,7 +177,7 @@
 @media (max-width: 768px) {
   .header-login {
     position: static;
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.75rem;
     padding: 1.5rem 1.5rem 0;
   }
@@ -198,7 +198,8 @@
   }
 
   .header-left app-svg-images {
-    height: 2.25rem;
+    width: 10rem;
+    height: 2.9286rem;
   }
 
   .language-button {
