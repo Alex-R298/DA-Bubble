@@ -92,7 +92,7 @@
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 2.25rem;
 }
 
 .input-group {
@@ -427,4 +427,46 @@
   .button-group {
     gap: 6px;
   }
+}
+
+/* Validation styles */
+.validation-message-email {
+  color: #E60000;
+  font-size: 14px;
+  margin-top: 4.5rem;
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 100%;
+  position: fixed;
+}
+
+.validation-message-password {
+  color: #E60000;
+  font-size: 14px;
+  margin-top: 11.3rem;
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 100%;
+  position: fixed;
+}
+
+.validation-message-login {
+  color: #E60000;
+  font-size: 14px;
+  margin-top: -1.5rem;
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 100%;
+}
+
+.input-error {
+  border: 1px solid #E60000 !important;
+}
+
+.input-group:has(+ .validation-message-email),
+.input-group:has(+ .validation-message-password) {
+  margin-bottom: 0;
 }

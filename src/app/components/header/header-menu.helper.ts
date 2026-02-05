@@ -81,10 +81,12 @@ export class HeaderMenuHelper {
   closeEditProfileView(): void {
     this.showEditProfileView = false;
     this.showProfileView = true;
+    this.pendingAvatar = null;
   }
 
   /** Cancels profile editing */
   cancelEditProfile(): void {
+    this.pendingAvatar = null;
     this.closeEditProfileView();
   }
 

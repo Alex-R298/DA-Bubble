@@ -39,11 +39,13 @@ export class AvatarModalComponent {
             const selectedAvatarUrl = this.avatars[this.selectedAvatar];
             this.saved.emit(selectedAvatarUrl);
         }
+        this.selectedAvatar = null;
         this.closed.emit();
     }
 
     /** Closes the modal without saving */
     close(): void {
+        this.selectedAvatar = null;
         this.closed.emit();
     }
 }

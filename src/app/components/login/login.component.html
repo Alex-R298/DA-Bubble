@@ -19,7 +19,13 @@
           autocomplete="email"
           [placeholder]="'LOGIN.EMAIL_PLACEHOLDER' | translate"
           class="form-input"
+          [class.input-error]="(submitted && !isEmailValid()) || passwordError"
+          (input)="clearErrors()"
         />
+      </div>
+      <div *ngIf="submitted && !isEmailValid()" class="validation-message-email">
+        <span *ngIf="!email.trim()">E-Mail ist erforderlich.</span>
+        <span *ngIf="email.trim() && !isEmailValid()">Ungültige E-Mail-Adresse.</span>
       </div>
       
       <div class="input-group">
@@ -35,7 +41,12 @@
           autocomplete="current-password"
           [placeholder]="'LOGIN.PASSWORD_PLACEHOLDER' | translate"
           class="form-input"
+          [class.input-error]="passwordError"
+          (input)="clearErrors()"
         />
+      </div>
+      <div *ngIf="passwordError" class="validation-message-password">
+        <span>{{ passwordError }}</span>
       </div>
       
       <a routerLink="/forgot-password" class="forgot-password-link">{{ 'LOGIN.FORGOT_PASSWORD' | translate }}</a>

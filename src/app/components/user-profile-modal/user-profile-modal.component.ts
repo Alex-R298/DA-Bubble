@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
@@ -21,7 +21,7 @@ export type UserProfileModalUser = {
     templateUrl: './user-profile-modal.component.html',
     styleUrls: ['../../shared/styles/shared-ui.css', './user-profile-modal.component.css']
 })
-export class UserProfileModalComponent {
+export class UserProfileModalComponent implements OnChanges, OnInit {
     private authService = inject(AuthService);
     private userService = inject(UserService);
 
@@ -32,6 +32,10 @@ export class UserProfileModalComponent {
     @Output() closed = new EventEmitter<void>();
     @Output() message = new EventEmitter<UserProfileModalUser>();
 
+    // Lokale Kopie des Users um Änderungen zu isolieren
+    displayUser: UserProfileModalUser | null = null;
+    originalProfileImageUrl: string | null = null;
+
     isEditing = false;
     editedFullName = '';
     editNameFocused = false;
@@ -39,12 +43,35 @@ export class UserProfileModalComponent {
     nameError: string | null = null;
     pendingAvatar: string | null = null;
 
+    /** Initialisiert die Komponente */
+    ngOnInit(): void {
+        this.initializeFromUser();
+    }
+
+    /** Erstellt eine lokale Kopie wenn sich der Input ändert */
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['user']) {
+            this.initializeFromUser();
+        }
+    }
+
+    /** Initialisiert displayUser und originalProfileImageUrl vom user Input */
+    private initializeFromUser(): void {
+        if (this.user) {
+            this.displayUser = { ...this.user };
+            this.originalProfileImageUrl = this.user.profileImageUrl || null;
+            this.pendingAvatar = null;
+            this.isEditing = false;
+        }
+    }
+
     /**
      * Closes the modal and resets the editing state.
      */
     close(): void {
-        this.isEditing = false;
-        this.showAvatarModal = false;
+        // Setze alles auf den ursprünglichen Zustand zurück
+        this.initializeFromUser();
+        this.resetEditState();
         this.closed.emit();
     }
 
@@ -52,8 +79,8 @@ export class UserProfileModalComponent {
      * Starts the edit mode for the user profile.
      */
     startEdit(): void {
-        if (!this.allowEdit || !this.user) return;
-        this.editedFullName = this.user.name || '';
+        if (!this.allowEdit || !this.displayUser) return;
+        this.editedFullName = this.displayUser.name || '';
         this.editNameFocused = false;
         this.nameError = null;
         this.pendingAvatar = null;
@@ -64,7 +91,18 @@ export class UserProfileModalComponent {
      * Cancels the edit mode without saving changes.
      */
     cancelEdit(): void {
+        // Setze alles auf den ursprünglichen Zustand zurück
+        this.initializeFromUser();
         this.isEditing = false;
+    }
+
+    /**
+     * Resets the edit state variables.
+     */
+    private resetEditState(): void {
+        this.isEditing = false;
+        this.showAvatarModal = false;
+        this.pendingAvatar = null;
     }
 
     /** Opens the avatar selection modal */
@@ -81,9 +119,6 @@ export class UserProfileModalComponent {
     /** Receives selected avatar from AvatarModal but does not persist here */
     onAvatarSaved(avatarUrl: string): void {
         this.pendingAvatar = avatarUrl;
-        if (this.user) {
-            this.user = { ...this.user, profileImageUrl: avatarUrl };
-        }
     }
 
     /**
@@ -105,7 +140,7 @@ export class UserProfileModalComponent {
      * Only allows editing the current user's own profile.
      */
     async saveEdit(): Promise<void> {
-        if (!this.user) return;
+        if (!this.displayUser) return;
         this.nameError = null;
         const nextName = this.editedFullName.trim();
         if (!nextName) {
@@ -113,17 +148,18 @@ export class UserProfileModalComponent {
             return;
         }
         const currentUid = this.authService.getCurrentUser()?.uid;
-        if (!currentUid || currentUid !== this.user.uid) {
+        if (!currentUid || currentUid !== this.displayUser.uid) {
             this.isEditing = false;
             return;
         }
-        this.user = { ...this.user, name: nextName };
+        this.displayUser = { ...this.displayUser, name: nextName };
 
         try {
             await this.userService.updateUserProfile(currentUid, nextName);
             if (this.pendingAvatar) {
                 await this.userService.updateUserAvatar(currentUid, this.pendingAvatar);
-                this.user = { ...this.user, profileImageUrl: this.pendingAvatar };
+                this.displayUser = { ...this.displayUser, profileImageUrl: this.pendingAvatar };
+                this.originalProfileImageUrl = this.pendingAvatar;
                 this.pendingAvatar = null;
             }
             this.userService.clearUserCache();
@@ -136,8 +172,8 @@ export class UserProfileModalComponent {
      * Emits an event to initiate a message with the displayed user.
      */
     sendMessage(): void {
-        if (!this.user) return;
-        this.message.emit(this.user);
+        if (!this.displayUser) return;
+        this.message.emit(this.displayUser);
     }
 
     /**

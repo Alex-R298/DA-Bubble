@@ -29,13 +29,35 @@ export class LoginComponent {
 
   email = '';
   password = '';
+  submitted = false;
+  emailError = '';     // Fehlermeldung für E-Mail-Feld
+  passwordError = '';  // Fehlermeldung für Passwort-Feld
 
   showOverlay = false;
   overlayType: 'error' | 'success' = 'error';
   overlayTitle = '';
   overlayMessage = '';
 
-  /** UX-only E-Mail-Formatprüfung (keine Sicherheitssemantik) */
+  private emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  /** Setzt Fehlermeldungen zurück beim Tippen */
+  clearErrors(): void {
+    this.passwordError = '';
+    this.emailError = '';
+  }
+
+  isEmailValid(): boolean {
+    const email = this.email.trim();
+    if (email.includes('@@') || email.includes('::') || email.includes('..')) {
+      return false;
+    }
+    const atCount = (email.match(/@/g) || []).length;
+    if (atCount !== 1) {
+      return false;
+    }
+    return this.emailRegex.test(email);
+  }
+
   private isValidEmailFormat(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -76,19 +98,16 @@ export class LoginComponent {
   }
 
   async onSubmit(): Promise<void> {
-    if (!this.email || !this.password) {
-      this.overlayType = 'error';
-      this.overlayTitle = 'Eingaben unvollständig';
-      this.overlayMessage = 'Bitte füllen Sie alle Felder aus.';
-      this.showOverlay = true;
+    this.submitted = true;
+    this.emailError = '';
+    this.passwordError = '';
+
+    if (!this.isEmailValid()) {
       return;
     }
 
-    if (!this.isValidEmailFormat(this.email)) {
-      this.overlayType = 'error';
-      this.overlayTitle = 'Ungültige E-Mail-Adresse';
-      this.overlayMessage = 'Die eingegebene E-Mail-Adresse hat kein gültiges Format.';
-      this.showOverlay = true;
+    if (!this.password) {
+      this.passwordError = 'Passwort ist erforderlich.';
       return;
     }
 
@@ -106,7 +125,17 @@ export class LoginComponent {
         this.router.navigate(['/dashboard']);
       }, 1500);
     } catch (error: any) {
-      const errorInfo = this.getErrorMessage(error?.code ?? '');
+      const errorCode = error?.code ?? '';
+      
+
+      if (errorCode === 'auth/wrong-password' ||
+          errorCode === 'auth/invalid-credential' ||
+          errorCode === 'auth/user-not-found' || 
+          errorCode === 'auth/invalid-email') {
+        this.passwordError = 'E-Mail oder Passwort ist falsch.';
+        return;
+      }
+      const errorInfo = this.getErrorMessage(errorCode);
       this.overlayType = 'error';
       this.overlayTitle = errorInfo.title;
       this.overlayMessage = errorInfo.message;
