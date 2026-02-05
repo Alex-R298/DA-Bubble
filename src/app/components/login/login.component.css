@@ -341,8 +341,8 @@
 }
 
 .mobile-auth-button {
-  padding: 0.875rem 1.5rem;
-  background: #ffffff;
+  padding: 0.5rem 1.2rem;
+  background: transparent;
   color: #444DF2;
   border: 2px solid #444DF2;
   border-radius: 30px;
@@ -358,6 +358,22 @@
   background: #444DF2;
   color: #ffffff;
   box-shadow: 0 4px 12px rgba(68, 77, 242, 0.3);
+}
+
+/* Small height devices - scrollable layout */
+@media (max-height: 880px) {
+  .login-container {
+    padding: 1.5rem;
+    padding-top: 2rem;
+    min-height: 100dvh;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-card {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
 }
 
 /* Mobile width adjustments */
@@ -390,10 +406,6 @@
     padding: 0.875rem 0.875rem 0.875rem 4rem;
   }
 
-  .button-group {
-    flex-direction: column;
-  }
-
   .primary-login-button,
   .guest-login-button {
     font-size: 16px;
@@ -410,18 +422,9 @@
   }
 }
 
-/* Small height devices - scrollable layout */
-@media (max-height: 880px) {
-  .login-container {
-    padding: 1.5rem;
-    padding-top: 2rem;
-    min-height: 100dvh;
-    justify-content: center;
-    align-items: center;
-  }
 
-  .login-card {
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
+@media (max-width: 380px) {
+  .button-group {
+    gap: 6px;
   }
 }

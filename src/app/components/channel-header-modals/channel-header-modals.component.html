@@ -130,6 +130,12 @@
 
     <!-- Add Members Modal -->
     <ng-container *ngIf="activeType === 'add-members'">
+      <button
+        type="button"
+        class="modal-handle"
+        aria-label="Modal schließen"
+        (click)="close()"
+      ></button>
       <div class="modal-header">
         <div class="title-row display-ai-center-jc-spacebetween">
           <span class="title">Leute hinzufügen</span>

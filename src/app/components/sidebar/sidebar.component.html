@@ -297,6 +297,12 @@
   <ng-container *ngIf="showAddPeopleModal">
     <div class="modal-overlay display-center-center" (click)="closeAddPeopleModal()">
       <div class="modal ui-panel ui-panel--modal add-people-modal" (click)="$event.stopPropagation()">
+        <button
+          type="button"
+          class="modal-handle"
+          aria-label="Modal schließen"
+          (click)="closeAddPeopleModal()"
+        ></button>
         <div class="modal-header ui-panel-header">
           <h3>Leute hinzufügen</h3>
           <button class="ui-btn-icon-round display-center-center" type="button" (click)="closeAddPeopleModal()" aria-label="Close">

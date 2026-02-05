@@ -51,7 +51,7 @@
 }
 
 .signup-logo {
-    display: none;
+    display: block;
     height: 2.9rem;
 }
 
@@ -180,7 +180,7 @@
     }
 
     .signup-logo {
-        display: none;
+        display: block;
     }
 
     .back-button {

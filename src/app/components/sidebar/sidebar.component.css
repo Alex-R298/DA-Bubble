@@ -384,7 +384,6 @@
 .sidebar-search-input:focus {
   outline: none;
   border-color: #787DF5;
-  box-shadow: 0 0 0 3px rgba(120, 125, 245, 0.15);
 }
 
 .sidebar-search-icon {
@@ -416,6 +415,34 @@
   .sidebar-wrapper {
     height: 100%;
     width: 100%;
+  }
+
+  .add-people-modal {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
+    height: auto;
+    border-radius: 30px 30px 0 0;
+    box-shadow: 0px -3px 10px 0px #00000033;
+    --ui-panel-width: 100%;
+    --ui-panel-padding: 30px 26px;
+  }
+
+  .add-people-modal .modal-handle {
+    display: block;
+    width: 62px;
+    height: 6px;
+    background: #D9D9D9;
+    border: none;
+    border-radius: 23px;
+    opacity: 1;
+    margin: 0 auto 1rem;
+    cursor: pointer;
   }
 
   .sidebar {

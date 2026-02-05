@@ -13,6 +13,7 @@ import {
 import { FirebaseService } from './firebase.service';
 import { UserService } from './user.service';
 import { ChannelService } from './channel.service';
+import { ThreadStateService } from './thread-state.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -22,6 +23,7 @@ export class AuthService {
   private firebaseService = inject(FirebaseService);
   private userService = inject(UserService);
   private channelService = inject(ChannelService);
+  private threadStateService = inject(ThreadStateService);
 
   private authStateSubject = new BehaviorSubject<any>(undefined);
   authState$ = this.authStateSubject.asObservable();
@@ -42,6 +44,8 @@ export class AuthService {
         this.isLoggedOut = false;
         await this.userService.updateUserStatus(user.uid, 'online');
         this.startActivityMonitoring(user.uid);
+      } else {
+        this.threadStateService.closeThread();
       }
     });
 
@@ -96,7 +100,7 @@ export class AuthService {
     if (this.isLoggedOut) return;
 
     const now = Date.now();
-    
+
     // Only update status if enough time has passed since last update
     if (now - this.lastActivityUpdate >= this.ACTIVITY_THROTTLE_MS) {
       this.lastActivityUpdate = now;
@@ -179,6 +183,7 @@ export class AuthService {
   async logout() {
     this.isLoggedOut = true;
     this.stopActivityMonitoring();
+    this.threadStateService.closeThread();
 
     const uid = this.currentUserId || this.firebaseService.auth.currentUser?.uid;
 

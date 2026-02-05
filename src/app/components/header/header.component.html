@@ -204,8 +204,16 @@
       </div>
 
       <div class="user-dropdown ui-panel ui-panel--popover" *ngIf="showUserMenu">
+        <button
+          type="button"
+          class="user-dropdown-handle"
+          aria-label="Dropdown schließen"
+          (click)="closeMenus()"
+        ></button>
         <button class="dropdown-item display-center-center" (click)="openProfile()">
-          <span></span>
+          <span class="dropdown-icon">
+            <app-svg-images iconName="account_circle" [width]="'20'" [height]="'20'"></app-svg-images>
+          </span>
           <p>{{ 'HEADER.PROFILE' | translate }}</p>
         </button>
 
@@ -217,7 +225,9 @@
         -->
 
         <button class="dropdown-item logout display-center-center" (click)="onLogout()">
-          <span></span>
+          <span class="dropdown-icon">
+            <app-svg-images iconName="logout" [width]="'20'" [height]="'20'"></app-svg-images>
+          </span>
           <p>{{ 'HEADER.LOGOUT' | translate }}</p>
         </button>
       </div>
@@ -318,6 +328,7 @@
 
 <div
   class="menu-overlay"
+  [class.menu-overlay--light]="isMobile && showUserMenu && !showProfileView && !showEditProfileView && !showAvatarModal"
   *ngIf="showUserMenu || showProfileView || showEditProfileView || showAvatarModal"
   (click)="closeMenus()"
 ></div>

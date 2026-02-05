@@ -105,6 +105,8 @@ export class SvgImagesComponent {
         return '0 0 20 19';
       case 'more_vert':
         return '0 0 4 16';
+      case 'logout':
+        return '0 0 22 23';
       default:
         return '0 0 24 24';
     }
@@ -251,6 +253,10 @@ export class SvgImagesComponent {
 
   isSendIcon(): boolean {
     return this.iconName === 'send';
+  }
+
+  isLogoutIcon(): boolean {
+    return this.iconName === 'logout';
   }
 
   isSearchIcon(): boolean {

@@ -86,7 +86,6 @@
     gap: 0.125rem;
     margin-bottom: 0.25rem;
     z-index: 10;
-    border: 1px solid #787DF5;
 }
 
 .reaction-picker.hover-picker {
