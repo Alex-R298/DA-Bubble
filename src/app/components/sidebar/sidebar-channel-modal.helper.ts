@@ -68,14 +68,20 @@ export class SidebarChannelModalHelper {
 
   /** Gets the filtered list of users available for adding to the channel */
   getFilteredAddPeople(users: any[]): any[] {
-    const query = this.addPeopleQuery.trim().toLowerCase();
-    if (!query) return [];
+    const rawQuery = this.addPeopleQuery.trim();
+    if (!rawQuery) return [];
+    const isMentionQuery = rawQuery.startsWith('@');
+    const query = (isMentionQuery ? rawQuery.slice(1) : rawQuery).trim().toLowerCase();
     const selectedIds = new Set(this.selectedAddPeople.map(u => u.uid));
     const candidates = users.filter(u => !selectedIds.has(u.uid));
 
+    if (isMentionQuery && !query) {
+      return candidates;
+    }
+
     // Prefer name matches. For short queries (1-2 chars) only match names to avoid noisy email matches.
     const nameMatches = candidates.filter(u => (u.name || '').toLowerCase().includes(query));
-    if (query.length < 3) {
+    if (isMentionQuery || query.length < 3) {
       return nameMatches;
     }
 

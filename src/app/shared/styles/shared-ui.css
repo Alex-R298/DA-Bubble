@@ -376,9 +376,8 @@
     left: 0;
     right: 0;
     background: #fff;
-    border: 1px solid #ADB0D9;
     border-radius: 16px;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     padding: 6px;
     max-height: 264px;
     overflow-y: auto;
