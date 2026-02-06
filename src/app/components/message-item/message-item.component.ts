@@ -305,7 +305,18 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
   checkTooltipPosition(wrapper: HTMLElement, index: number): void {
     const rect = wrapper.getBoundingClientRect();
     const tooltipWidth = 180; // approximate tooltip width
-    const tooltipHeight = 130; // approximate tooltip height
+    
+    // Calculate tooltip height based on number of user names
+    const visibleReactions = this.getVisibleReactions();
+    const reaction = visibleReactions[index];
+    const nameCount = reaction?.userNames?.length || 1;
+    // Base height (emoji + "haben reagiert" text) + height per name
+    const baseHeight = 100;
+    const heightPerName = 24;
+    const tooltipHeight = baseHeight + (nameCount * heightPerName);
+    
+    // Add buffer for thread header and other UI elements
+    const headerBuffer = 150;
 
     // For own messages (right-aligned), always show tooltip to the left
     if (this.isOwnMessage) {
@@ -321,7 +332,8 @@ export class MessageItemComponent implements AfterViewChecked, OnInit, OnDestroy
     }
 
     // Check vertical space - use element position from top of viewport
-    const spaceAbove = rect.top;
+    // Include header buffer for thread/chat containers
+    const spaceAbove = rect.top - headerBuffer;
     if (spaceAbove < tooltipHeight) {
       this.tooltipBottomIndex = index;
     } else {

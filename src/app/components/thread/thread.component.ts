@@ -189,10 +189,13 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
     if (!event.messageId || !this.currentUserId) return;
 
     try {
-      // Always fetch userName if not available
-      if (!this.currentUserName) {
-        const currentUser = await this.userService.getUserById(this.currentUserId);
-        this.currentUserName = currentUser?.name || 'Unbekannt';
+      // Always fetch userName fresh to ensure it's not "Unbekannt"
+      const currentUser = await this.userService.getUserById(this.currentUserId);
+      const userName = currentUser?.name || this.currentUserName || 'Unbekannt';
+      
+      // Update cached name if we got a real one
+      if (currentUser?.name) {
+        this.currentUserName = currentUser.name;
       }
 
       if (this.isDirectMessage) {
@@ -200,14 +203,14 @@ export class ThreadComponent implements OnInit, OnDestroy, OnChanges {
           event.messageId,
           event.emoji,
           this.currentUserId,
-          this.currentUserName
+          userName
         );
       } else {
         await this.messageService.toggleReaction(
           event.messageId,
           event.emoji,
           this.currentUserId,
-          this.currentUserName
+          userName
         );
       }
     } catch (error) {
