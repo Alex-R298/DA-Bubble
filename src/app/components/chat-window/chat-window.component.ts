@@ -121,6 +121,15 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewChecked 
           return;
         }
         this.memberChannels = channels.filter(c => Array.isArray(c.members) && c.members.includes(currentUid));
+        
+        // Update currentChannel with latest data from realtime stream
+        if (this.currentChannel?.id) {
+          const updatedChannel = channels.find(c => c.id === this.currentChannel.id);
+          if (updatedChannel) {
+            this.currentChannel = updatedChannel;
+            this.loadChannelMemberUsers();
+          }
+        }
       })
     );
 
