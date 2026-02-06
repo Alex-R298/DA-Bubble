@@ -331,6 +331,10 @@
     width: min(520px, calc(100vw - 32px));
 }
 
+.modal.add-members .modal-handle {
+    display: none;
+}
+
 @media (max-width: 1024px) {
 
     .modal.members,

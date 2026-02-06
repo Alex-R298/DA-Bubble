@@ -355,6 +355,10 @@
   padding: 0 1rem;
 }
 
+.add-people-modal .modal-handle {
+  display: none;
+}
+
 .hash {
   width: 1.2rem;
 }
