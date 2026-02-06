@@ -57,6 +57,7 @@ export class HeaderMenuHelper {
   openEditProfile(currentUserName: string): void {
     this.editedFullName = currentUserName || '';
     this.editNameFocused = false;
+    this.nameError = null;
     this.showProfileView = false;
     this.showEditProfileView = true;
     this.showUserMenu = false;
@@ -82,11 +83,13 @@ export class HeaderMenuHelper {
     this.showEditProfileView = false;
     this.showProfileView = true;
     this.pendingAvatar = null;
+    this.nameError = null;
   }
 
   /** Cancels profile editing */
   cancelEditProfile(): void {
     this.pendingAvatar = null;
+    this.nameError = null;
     this.closeEditProfileView();
   }
 

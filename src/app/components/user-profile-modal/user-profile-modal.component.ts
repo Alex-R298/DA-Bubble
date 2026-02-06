@@ -61,6 +61,7 @@ export class UserProfileModalComponent implements OnChanges, OnInit {
             this.displayUser = { ...this.user };
             this.originalProfileImageUrl = this.user.profileImageUrl || null;
             this.pendingAvatar = null;
+            this.nameError = null;
             this.isEditing = false;
         }
     }
