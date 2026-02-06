@@ -90,18 +90,43 @@ export class HeaderMenuHelper {
     this.closeEditProfileView();
   }
 
+  /** Regex for valid names - only letters, spaces and apostrophes */
+  private readonly nameRegex = /^[a-zA-ZäöüÄÖÜßéèêëàâáãåçñíìîïóòôõúùûýÿæœÀÂÁÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÕÚÙÛÝŸÆŒ\s']+$/;
+
+  /** Validates the name input */
+  validateName(): boolean {
+    const name = this.editedFullName.trim();
+    if (!name) {
+      this.nameError = 'Bitte einen Namen eingeben!';
+      return false;
+    }
+    if (!this.nameRegex.test(name)) {
+      this.nameError = 'Bitte nur Buchstaben, Leerzeichen und Apostrophe verwenden.';
+      return false;
+    }
+    if (name.length < 2) {
+      this.nameError = 'Der Name muss mindestens 2 Zeichen haben.';
+      return false;
+    }
+    this.nameError = null;
+    return true;
+  }
+
+  /** Clears the name error */
+  clearNameError(): void {
+    this.nameError = null;
+  }
+
   /** Saves the edited profile information */
   async saveEditProfile(
     authService: AuthService,
     userService: UserService,
     updateUserCallback: (name: string, avatar?: string) => void
   ): Promise<void> {
-    this.nameError = null;
-    const nextName = this.editedFullName.trim();
-    if (!nextName) {
-      this.nameError = 'Bitte einen Namen eingeben!';
+    if (!this.validateName()) {
       return;
     }
+    const nextName = this.editedFullName.trim();
 
     const currentUser = authService.getCurrentUser();
     if (currentUser) {

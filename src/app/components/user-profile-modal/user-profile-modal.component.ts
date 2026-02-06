@@ -128,11 +128,38 @@ export class UserProfileModalComponent implements OnChanges, OnInit {
         this.editNameFocused = true;
     }
 
+    /** Regex for valid names - only letters, spaces and apostrophes */
+    private readonly nameRegex = /^[a-zA-ZäöüÄÖÜßéèêëàâáãåçñíìîïóòôõúùûýÿæœÀÂÁÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÕÚÙÛÝŸÆŒ\s']+$/;
+
     /**
      * Handles blur event on the name input field.
      */
     onEditNameBlur(): void {
         this.editNameFocused = false;
+    }
+
+    /** Validates the name input */
+    private validateName(): boolean {
+        const name = this.editedFullName.trim();
+        if (!name) {
+            this.nameError = 'Bitte einen Namen eingeben!';
+            return false;
+        }
+        if (!this.nameRegex.test(name)) {
+            this.nameError = 'Bitte nur Buchstaben, Leerzeichen und Apostrophe verwenden.';
+            return false;
+        }
+        if (name.length < 2) {
+            this.nameError = 'Der Name muss mindestens 2 Zeichen haben.';
+            return false;
+        }
+        this.nameError = null;
+        return true;
+    }
+
+    /** Clears the name error */
+    clearNameError(): void {
+        this.nameError = null;
     }
 
     /**
@@ -141,12 +168,10 @@ export class UserProfileModalComponent implements OnChanges, OnInit {
      */
     async saveEdit(): Promise<void> {
         if (!this.displayUser) return;
-        this.nameError = null;
-        const nextName = this.editedFullName.trim();
-        if (!nextName) {
-            this.nameError = 'Bitte einen Namen eingeben!';
+        if (!this.validateName()) {
             return;
         }
+        const nextName = this.editedFullName.trim();
         const currentUid = this.authService.getCurrentUser()?.uid;
         if (!currentUid || currentUid !== this.displayUser.uid) {
             this.isEditing = false;

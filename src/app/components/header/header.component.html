@@ -306,11 +306,13 @@
 
           <input
             class="edit-input"
+            [class.input-error-border]="menuHelper.nameError"
             type="text"
             [(ngModel)]="editedFullName"
             [placeholder]="editNameFocused ? '' : (user?.name || ('HEADER.USER' | translate))"
             (focus)="onEditNameFocus()"
             (blur)="onEditNameBlur()"
+            (input)="menuHelper.clearNameError()"
           />
           <div *ngIf="menuHelper.nameError" class="input-error">{{ menuHelper.nameError }}</div>
         </div>
