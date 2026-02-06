@@ -521,6 +521,10 @@
     margin-top: 1.25rem;
 }
 
+.mt-8px {
+    margin-top: 0.5rem;
+}
+
 .icon-colored:hover {
     color: #444DF2;
 }
