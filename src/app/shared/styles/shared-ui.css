@@ -327,9 +327,13 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    padding: 10px 12px;
+    padding: 1.125rem 1.25rem;
     border: 1px solid #ADB0D9;
     border-radius: 30px;
+}
+
+.chips:focus-within {
+    border-color: #787DF5;
 }
 
 .chip {
@@ -376,6 +380,16 @@
     border-radius: 16px;
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
     padding: 6px;
+    max-height: 264px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+}
+
+@media (max-width: 1024px) {
+    .add-people-modal .suggestions {
+        top: auto;
+        bottom: calc(100% + 6px);
+    }
 }
 
 .suggestion {

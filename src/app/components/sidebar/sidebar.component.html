@@ -309,77 +309,79 @@
             <app-svg-images [iconName]="'close'" [width]="'24'" [height]="'24'" [className]="'icon-colored'"></app-svg-images>
           </button>
         </div>
-        <div *ngIf="channelModalHelper.newChannelError" class="input-error" style="padding:0 1rem">{{ channelModalHelper.newChannelError }}</div>
+        <div class="add-people-body">
+          <div *ngIf="channelModalHelper.newChannelError" class="input-error" style="padding:0 1rem">{{ channelModalHelper.newChannelError }}</div>
 
-        <div class="add-people-options">
-          <ng-container *ngIf="memberChannels.length">
-            <button
-              type="button"
-              class="radio-option"
-              *ngFor="let channel of memberChannels"
-              (click)="setAddPeopleSelection('all', channel)"
-            >
+          <div class="add-people-options">
+            <ng-container *ngIf="memberChannels.length">
+              <button
+                type="button"
+                class="radio-option"
+                *ngFor="let channel of memberChannels"
+                (click)="setAddPeopleSelection('all', channel)"
+              >
+                <app-svg-images
+                  [iconName]="addPeopleSelection === 'all' && selectedSourceChannelId === channel.id ? 'radio_checked' : 'radio_unchecked'"
+                  [width]="'20'"
+                  [height]="'20'"
+                ></app-svg-images>
+                <span>
+                  Alle Mitglieder von
+                  <span class="channel-name-inline">{{ channel.name }}</span>
+                  hinzufügen
+                </span>
+              </button>
+            </ng-container>
+
+            <button type="button" class="radio-option" (click)="setAddPeopleSelection('specific')">
               <app-svg-images
-                [iconName]="addPeopleSelection === 'all' && selectedSourceChannelId === channel.id ? 'radio_checked' : 'radio_unchecked'"
+                [iconName]="addPeopleSelection === 'specific' ? 'radio_checked' : 'radio_unchecked'"
                 [width]="'20'"
                 [height]="'20'"
               ></app-svg-images>
-              <span>
-                Alle Mitglieder von
-                <span class="channel-name-inline">{{ channel.name }}</span>
-                hinzufügen
-              </span>
+              <span>Bestimmte Leute hinzufügen</span>
             </button>
-          </ng-container>
-
-          <button type="button" class="radio-option" (click)="setAddPeopleSelection('specific')">
-            <app-svg-images
-              [iconName]="addPeopleSelection === 'specific' ? 'radio_checked' : 'radio_unchecked'"
-              [width]="'20'"
-              [height]="'20'"
-            ></app-svg-images>
-            <span>Bestimmte Leute hinzufügen</span>
-          </button>
-        </div>
-
-        <div *ngIf="addPeopleSelection === 'specific'" class="chip-input">
-          <div class="chips">
-            <div class="chip" *ngFor="let u of selectedAddPeople">
-              <app-svg-images
-                class="user-avatar add-member-avatar"
-                [iconName]="u?.profileImageUrl || 'steffen-hoffmann'"
-                [width]="'100%'"
-                [height]="'100%'"
-                [className]="'avatar-icon'">
-              </app-svg-images>
-              <span class="chip-name">{{ u.name }}</span>
-              <button type="button" class="chip-remove" (click)="removeSelectedAddPerson(u.uid)">×</button>
-            </div>
-
-            <input
-              class="member-input"
-              type="text"
-              [(ngModel)]="addPeopleQuery"
-              placeholder="Name oder E-Mail"
-            />
           </div>
 
-          <div class="suggestions" *ngIf="filteredAddPeople.length">
-            <button
-              type="button"
-              class="suggestion"
-              *ngFor="let user of filteredAddPeople"
-              (mousedown)="addPersonToSelection(user); $event.preventDefault()"
-            >
-              <app-svg-images
-                class="user-avatar add-member-avatar"
-                [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
-                [width]="'100%'"
-                [height]="'100%'"
-                [className]="'avatar-icon'">
-              </app-svg-images>
-              <span class="name">{{ user.name }}</span>
-            </button>
+          <div *ngIf="addPeopleSelection === 'specific'" class="chip-input">
+            <div class="chips">
+              <div class="chip" *ngFor="let u of selectedAddPeople">
+                <app-svg-images
+                  class="user-avatar add-member-avatar"
+                  [iconName]="u?.profileImageUrl || 'steffen-hoffmann'"
+                  [width]="'100%'"
+                  [height]="'100%'"
+                  [className]="'avatar-icon'">
+                </app-svg-images>
+                <span class="chip-name">{{ u.name }}</span>
+                <button type="button" class="chip-remove" (click)="removeSelectedAddPerson(u.uid)">×</button>
+              </div>
+
+              <input
+                class="member-input"
+                type="text"
+                [(ngModel)]="addPeopleQuery"
+                placeholder="Name oder E-Mail"
+              />
+            </div>
+
+            <div class="suggestions" *ngIf="filteredAddPeople.length">
+              <button
+                type="button"
+                class="suggestion"
+                *ngFor="let user of filteredAddPeople"
+                (mousedown)="addPersonToSelection(user); $event.preventDefault()"
+              >
+                <app-svg-images
+                  class="user-avatar add-member-avatar"
+                  [iconName]="user?.profileImageUrl || 'steffen-hoffmann'"
+                  [width]="'100%'"
+                  [height]="'100%'"
+                  [className]="'avatar-icon'">
+                </app-svg-images>
+                <span class="name">{{ user.name }}</span>
+              </button>
+            </div>
           </div>
         </div>
 

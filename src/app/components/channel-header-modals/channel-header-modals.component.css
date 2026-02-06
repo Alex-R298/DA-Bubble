@@ -402,6 +402,10 @@
         transform: none;
     }
 
+    .modal.add-members .ui-btn-icon-round {
+        display: none;
+    }
+
     .modal.add-members .modal-handle {
         display: block;
         width: 62px;
